@@ -3,7 +3,7 @@
 //  Copyright © 2017 Flinesoft. All rights reserved.
 //
 
-@testable import NewFrameworkTemplate
+@testable import Microya
 import XCTest
 
 class ExampleTests: XCTestCase {

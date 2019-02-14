@@ -1,14 +1,14 @@
 Pod::Spec.new do |s|
 
-  s.name         = "NewFrameworkTemplate"
+  s.name         = "Microya"
   s.version      = "0.1.0"
-  s.summary      = "TODO: Short Framework description"
+  s.summary      = "A micro version of the Moya network abstraction layer written in Swift."
 
   s.description  = <<-DESC
-    TODO: Describe this framework in detail here.
+    A micro version of the Moya network abstraction layer written in Swift.
                    DESC
 
-  s.homepage     = "https://github.com/Flinesoft/NewFrameworkTemplate"
+  s.homepage     = "https://github.com/Flinesoft/Microya"
   s.license      = { :type => "MIT", :file => "LICENSE" }
 
   s.author             = { "Cihat Gündüz" => "cocoapods@cihatguenduez.de" }
@@ -18,7 +18,7 @@ Pod::Spec.new do |s|
   s.osx.deployment_target = "10.10"
   s.tvos.deployment_target = "9.0"
 
-  s.source       = { :git => "https://github.com/Flinesoft/NewFrameworkTemplate.git", :tag => "#{s.version}" }
+  s.source       = { :git => "https://github.com/Flinesoft/Microya.git", :tag => "#{s.version}" }
   s.source_files = "Sources", "Sources/**/*.swift"
   s.framework    = "Foundation"
   s.swift_version = "4.2"

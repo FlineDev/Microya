@@ -1,5 +1,5 @@
 // swiftlint:disable file_header
 import Foundation
-import NewFrameworkTemplate
+import Microya
 
 // Add your usage examples here.

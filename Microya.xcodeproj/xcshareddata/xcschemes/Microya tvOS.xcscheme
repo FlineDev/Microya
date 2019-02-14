@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "A102BD781F023582000C6B38"
-               BuildableName = "NewFrameworkTemplate.framework"
-               BlueprintName = "NewFrameworkTemplate tvOS"
-               ReferencedContainer = "container:NewFrameworkTemplate.xcodeproj">
+               BuildableName = "Microya.framework"
+               BlueprintName = "Microya tvOS"
+               ReferencedContainer = "container:Microya.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -33,9 +33,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "A102BD801F023582000C6B38"
-               BuildableName = "NewFrameworkTemplate-tvOS-Tests.xctest"
-               BlueprintName = "NewFrameworkTemplate tvOS Tests"
-               ReferencedContainer = "container:NewFrameworkTemplate.xcodeproj">
+               BuildableName = "Microya-tvOS-Tests.xctest"
+               BlueprintName = "Microya tvOS Tests"
+               ReferencedContainer = "container:Microya.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
@@ -43,9 +43,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "A102BD781F023582000C6B38"
-            BuildableName = "NewFrameworkTemplate.framework"
-            BlueprintName = "NewFrameworkTemplate tvOS"
-            ReferencedContainer = "container:NewFrameworkTemplate.xcodeproj">
+            BuildableName = "Microya.framework"
+            BlueprintName = "Microya tvOS"
+            ReferencedContainer = "container:Microya.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <AdditionalOptions>
@@ -65,9 +65,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "A102BD781F023582000C6B38"
-            BuildableName = "NewFrameworkTemplate.framework"
-            BlueprintName = "NewFrameworkTemplate tvOS"
-            ReferencedContainer = "container:NewFrameworkTemplate.xcodeproj">
+            BuildableName = "Microya.framework"
+            BlueprintName = "Microya tvOS"
+            ReferencedContainer = "container:Microya.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <AdditionalOptions>
@@ -83,9 +83,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "A102BD781F023582000C6B38"
-            BuildableName = "NewFrameworkTemplate.framework"
-            BlueprintName = "NewFrameworkTemplate tvOS"
-            ReferencedContainer = "container:NewFrameworkTemplate.xcodeproj">
+            BuildableName = "Microya.framework"
+            BlueprintName = "Microya tvOS"
+            ReferencedContainer = "container:Microya.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
    </ProfileAction>

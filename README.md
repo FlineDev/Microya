@@ -1,27 +1,22 @@
-
 <p align="center">
-    <img src="https://raw.githubusercontent.com/Flinesoft/NewFrameworkTemplate/stable/Logo.png"
+    <img src="https://raw.githubusercontent.com/Flinesoft/Microya/stable/Logo.png"
       width=600>
 </p>
 
 <p align="center">
-    <a href="https://app.bitrise.io/app/3a9e984eba8c73b8">
-        <img src="https://app.bitrise.io/app/3a9e984eba8c73b8/status.svg?token=0njkrtWxlHnbM9cP4Iwi7g"
+    <a href="https://app.bitrise.io/app/9144757ac274834d">
+        <img src="https://app.bitrise.io/app/9144757ac274834d/status.svg?token=wnogmmQA9Zy7_2u75vRKdg"
              alt="Build Status">
     </a>    
-    <a href="https://codebeat.co/projects/github-com-flinesoft-newframeworktemplate-stable">
-        <img src="https://codebeat.co/badges/b50c9729-5b5a-4ac8-b05d-bf4ae7827ac6"
+    <a href="https://codebeat.co/projects/github-com-flinesoft-microya-stable">
+        <img src="https://codebeat.co/badges/a669e100-d30d-4801-b72d-3625ab7240be"
              alt="codebeat badge">
-    </a>
-    <a href="https://github.com/Flinesoft/NewFrameworkTemplate/releases">
-        <img src="https://img.shields.io/badge/Version-0.1.0-blue.svg"
-             alt="Version: 0.1.0">
     </a>
     <img src="https://img.shields.io/badge/Swift-4.2-FFAC45.svg"
          alt="Swift: 4.2">
     <img src="https://img.shields.io/badge/Platforms-iOS%20%7C%20macOS%20%7C%20tvOS%20%7C%20watchOS-FF69B4.svg"
         alt="Platforms: iOS | macOS | tvOS | watchOS">
-    <a href="https://github.com/Flinesoft/NewFrameworkTemplate/blob/stable/LICENSE">
+    <a href="https://github.com/Flinesoft/Microya/blob/stable/LICENSE.md">
         <img src="https://img.shields.io/badge/License-MIT-lightgrey.svg"
               alt="License: MIT">
     </a>
@@ -30,51 +25,177 @@
 <p align="center">
     <a href="#installation">Installation</a>
   • <a href="#usage">Usage</a>
-  • <a href="https://github.com/Flinesoft/NewFrameworkTemplate/issues">Issues</a>
+  • <a href="https://github.com/Flinesoft/Microya/issues">Issues</a>
   • <a href="#contributing">Contributing</a>
   • <a href="#license">License</a>
 </p>
 
+# Microya
 
-# NewFrameworkTemplate
+A micro version of the Moya network abstraction layer written in Swift.
 
-A preconfigured template for new framework projects with batteries included.
+## Installation
 
-Specifically this is what "battries included" currently means:
+Installation is supported via [CocoaPods](https://github.com/CocoaPods/CocoaPods), [Carthage](https://github.com/Carthage/Carthage), [SwiftPM](https://github.com/apple/swift-package-manager) and [Mint](https://github.com/yonaskolb/Mint).
 
-- There's a sensible `.gitignore` for Swift projects included (based on [GitHub gitignore](https://github.com/github/gitignore/blob/master/Swift.gitignore))
-- Targets are configured for iOS, macOS, tvOS & watchOS (just remove what you don't need)
-- SwiftLint is preconfigured to help embrace a unified code style
-- Support for [Carthage](https://github.com/Carthage/Carthage), [CocoaPods](https://github.com/CocoaPods/CocoaPods) and [Swift Package Manager](https://github.com/apple/swift-package-manager) is setup
-- A `README.md` file is setup with appropriate sections
-- A `LICENSE` file is setup with MIT license preconfigured
+## Usage
 
-## Prerequisites
+### Step 1: Defining your Endpoints
+Create an Api `enum` with all supported endpoints as `cases` with the request parameters/data specified as parameters.
 
-To use this framework, you need to install a few tools:
+For example, when writing a client for the [Microsoft Translator API](https://docs.microsoft.com/en-us/azure/cognitive-services/translator/reference/v3-0-languages):
 
-- [Homebrew](https://brew.sh): `/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"`
-- [Beak](https://github.com/yonaskolb/Beak): `brew tap yonaskolb/Beak https://github.com/yonaskolb/Beak.git && brew install Beak`
-- [Carthage](https://github.com/Carthage/Carthage): `brew install carthage`
-- [SwiftLint](https://github.com/realm/SwiftLint): `brew install swiftlint`
+```Swift
+enum MicrosoftTranslatorApi {
+    case languages
+    case translate(texts: [String], from: Language, to: [Language])
+}
+```
 
+Note that the `Language` type used above does not necessarily need to be an `Encodable` type:
 
-## Getting Started
+```Swift
+enum Language: String {
+    case english = "en"
+    case german = "de"
+    case japanese = "jp"
+    case turkish = "tr"
+}
+```
 
-Here's a few simple steps on how you can use this project to kick-start your next framework project:
+### Step 2: Making your Api `JsonApi` compliant
 
-1. **Clone this repo** to your own Git server or **download as ZIP file** (beware)
-2. Run `beak run initialize --projectName YourFrameworkName --organization "Your Organization"` to **initialize the project**
-3. Set the the **Development Team** to yours (at least in the test targets)
-4. Update the **author and social_media_url** entries in the .podspec file
+Add an extension for your Api `enum` that makes it `JsonApi` compliant, which means you need to add implementations for the following protocol:
 
-Additional options you probably want to check:
+```Swift
+protocol JsonApi {
+    var decoder: JSONDecoder { get }
+    var encoder: JSONEncoder { get }
 
-5. **Remove the targets and schemes** you are not planning to develop for (all Apple platforms supported by default)
-6. Configure the **minimum deployment target** per target (the latest major version by default)
+    var baseUrl: URL { get }
+    var headers: [String: String] { get }
+    var path: String { get }
+    var method: Method { get }
+    var queryParameters: [(key: String, value: String)] { get }
+    var bodyData: Data? { get }
+}
+```
 
-That's it! Start coding. 🎉 😊
+Use `switch` statements over `self` to differentiate between the cases (if needed) and to provide the appropriate data the protocol asks for (using [Value Bindings](https://docs.swift.org/swift-book/LanguageGuide/ControlFlow.html#ID133)).
 
+<details>
+<summary>Toggle me to see an example</summary>
+
+```Swift
+extension MicrosoftTranslatorApi: JsonApi {
+    var decoder: JSONDecoder {
+        return JSONDecoder()
+    }
+
+    var encoder: JSONEncoder {
+        return JSONEncoder()
+    }
+
+    var baseUrl: URL {
+        return URL(string: "https://api.cognitive.microsofttranslator.com")!
+    }
+
+    var path: String {
+        switch self {
+        case .languages:
+		        return "/languages"
+
+        case .translate:
+            return "/translate"
+        }
+    }
+
+    var method: Method {
+        switch self {
+        case .languages:
+		        return .get
+
+        case .translate:
+            return .post
+        }
+    }
+
+    var queryParameters: [(key: String, value: String)] {
+        var urlParameters: [(String, String)] = [(key: "api-version", value: "3.0")]
+
+        switch self {
+        case .languages:
+            break
+
+        case let .translate(_, sourceLanguage, targetLanguages, _):
+            urlParameters.append((key: "from", value: sourceLanguage.rawValue))
+
+            for targetLanguage in targetLanguages {
+                urlParameters.append((key: "to", value: targetLanguage.rawValue))
+            }              
+        }
+
+        return urlParameters
+    }
+
+    var bodyData: Data? {
+        switch self {
+        case .translate:
+            return nil // no request data needed
+
+        case let .translate(texts, _, _, _):
+            return try! encoder.encode(texts)
+        }
+    }
+
+    var headers: [String: String] {
+        switch self {
+        case .languages:
+		        return [:]
+
+        case .translate:
+            return [
+                "Ocp-Apim-Subscription-Key": "<SECRET>",
+                "Content-Type": "application/json"
+            ]
+        }
+    }
+}
+```
+
+</details>
+
+### Step 3: Calling your API endpoint with the result type
+
+Call an API endpoint providing a `Decodable` type of the expected result (if any) by using this method pre-implemented in the `JsonApi` protocol:
+
+```Swift
+func request<ResultType: Decodable>(type: ResultType.Type) -> Result<ResultType, JsonApiError>
+```
+
+For example:
+
+```Swift
+let endpoint = MicrosoftTranslatorApi.translate(texts: ["Test"], from: .english, to: [.german, .japanese, .turkish])
+
+switch endpoint.request(type: [String: String].self) {
+case let .success(translationsByLanguage):
+    // use the already decoded `[String: String]` result
+
+case let .failure(error):
+    // error handling
+}
+```
+
+Note that you can also use the throwing `get()` function of Swift 5's `Result` type instead of using a `switch` statement:
+
+```Swift
+let endpoint = MicrosoftTranslatorApi.translate(texts: ["Test"], from: .english, to: [.german, .japanese, .turkish])
+let translationsByLanguage = try endpoint.request(type: [String: String].self)
+// use the already decoded `[String: String]` result
+```
+
+There's even useful functional methods defines on the `Results` type like `map()`, `flatMap()` or `mapError()` and `flatMapError()`. See the "Transforming Result" section in [this](https://www.hackingwithswift.com/articles/161/how-to-use-result-in-swift) article for more information.
 
 ## Contributing
 

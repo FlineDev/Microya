@@ -5,7 +5,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 ## [Unreleased]
 ### Added
-- None.
+- Add `JsonApi` type similar to `TargetType` in Moya with additional JSON `Codable` support.
+- Add basic usage documentation based on the Microsoft Translator API.
 ### Changed
 - None.
 ### Deprecated
