@@ -14,10 +14,10 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "A102BD3D1F02355A000C6B38"
-               BuildableName = "NewFrameworkTemplate.framework"
-               BlueprintName = "NewFrameworkTemplate iOS"
-               ReferencedContainer = "container:NewFrameworkTemplate.xcodeproj">
+               BlueprintIdentifier = "A102BD941F02358E000C6B38"
+               BuildableName = "Microya.framework"
+               BlueprintName = "Microya watchOS"
+               ReferencedContainer = "container:Microya.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -28,26 +28,7 @@
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       shouldUseLaunchSchemeArgsEnv = "YES">
       <Testables>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "A102BD461F02355A000C6B38"
-               BuildableName = "NewFrameworkTemplate-iOS-Tests.xctest"
-               BlueprintName = "NewFrameworkTemplate iOS Tests"
-               ReferencedContainer = "container:NewFrameworkTemplate.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
       </Testables>
-      <MacroExpansion>
-         <BuildableReference
-            BuildableIdentifier = "primary"
-            BlueprintIdentifier = "A102BD3D1F02355A000C6B38"
-            BuildableName = "NewFrameworkTemplate.framework"
-            BlueprintName = "NewFrameworkTemplate iOS"
-            ReferencedContainer = "container:NewFrameworkTemplate.xcodeproj">
-         </BuildableReference>
-      </MacroExpansion>
       <AdditionalOptions>
       </AdditionalOptions>
    </TestAction>
@@ -64,10 +45,10 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "A102BD3D1F02355A000C6B38"
-            BuildableName = "NewFrameworkTemplate.framework"
-            BlueprintName = "NewFrameworkTemplate iOS"
-            ReferencedContainer = "container:NewFrameworkTemplate.xcodeproj">
+            BlueprintIdentifier = "A102BD941F02358E000C6B38"
+            BuildableName = "Microya.framework"
+            BlueprintName = "Microya watchOS"
+            ReferencedContainer = "container:Microya.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <AdditionalOptions>
@@ -82,10 +63,10 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "A102BD3D1F02355A000C6B38"
-            BuildableName = "NewFrameworkTemplate.framework"
-            BlueprintName = "NewFrameworkTemplate iOS"
-            ReferencedContainer = "container:NewFrameworkTemplate.xcodeproj">
+            BlueprintIdentifier = "A102BD941F02358E000C6B38"
+            BuildableName = "Microya.framework"
+            BlueprintName = "Microya watchOS"
+            ReferencedContainer = "container:Microya.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
    </ProfileAction>

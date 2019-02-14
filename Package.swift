@@ -2,9 +2,9 @@
 import PackageDescription
 
 let package = Package(
-    name: "NewFrameworkTemplate",
+    name: "Microya",
     products: [
-        .library(name: "NewFrameworkTemplate", targets: ["NewFrameworkTemplate"])
+        .library(name: "Microya", targets: ["Microya"])
     ],
     dependencies: [
 //        .package(url: "https://github.com/Flinesoft/HandySwift.git", .upToNextMajor(from: "2.5.0")),
@@ -12,17 +12,17 @@ let package = Package(
     ],
     targets: [
         .target(
-            name: "NewFrameworkTemplate",
+            name: "Microya",
             dependencies: [
 //                "HandySwift",
 //                "HandyUIKit"
             ],
-            path: "Frameworks/NewFrameworkTemplate",
+            path: "Frameworks/Microya",
             exclude: ["Frameworks/SupportingFiles"]
         ),
         .testTarget(
-            name: "NewFrameworkTemplateTests",
-            dependencies: ["NewFrameworkTemplate"],
+            name: "MicroyaTests",
+            dependencies: ["Microya"],
             exclude: ["Tests/SupportingFiles"]
         )
     ]

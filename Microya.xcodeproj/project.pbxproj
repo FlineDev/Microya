@@ -7,16 +7,16 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		A102BD481F02355A000C6B38 /* NewFrameworkTemplate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A102BD3E1F02355A000C6B38 /* NewFrameworkTemplate.framework */; };
-		A102BD661F023573000C6B38 /* NewFrameworkTemplate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A102BD5D1F023573000C6B38 /* NewFrameworkTemplate.framework */; };
-		A102BD821F023582000C6B38 /* NewFrameworkTemplate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A102BD791F023582000C6B38 /* NewFrameworkTemplate.framework */; };
+		A102BD481F02355A000C6B38 /* Microya.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A102BD3E1F02355A000C6B38 /* Microya.framework */; };
+		A102BD661F023573000C6B38 /* Microya.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A102BD5D1F023573000C6B38 /* Microya.framework */; };
+		A102BD821F023582000C6B38 /* Microya.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A102BD791F023582000C6B38 /* Microya.framework */; };
 		A102BDB31F0238E8000C6B38 /* ExampleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A102BDB01F0238BD000C6B38 /* ExampleTests.swift */; };
 		A102BDB41F0238E8000C6B38 /* ExampleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A102BDB01F0238BD000C6B38 /* ExampleTests.swift */; };
 		A102BDB51F0238E9000C6B38 /* ExampleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A102BDB01F0238BD000C6B38 /* ExampleTests.swift */; };
-		A102BDFF1F023E32000C6B38 /* NewFrameworkTemplate.h in Headers */ = {isa = PBXBuildFile; fileRef = A102BDFE1F023E13000C6B38 /* NewFrameworkTemplate.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		A102BE001F023E33000C6B38 /* NewFrameworkTemplate.h in Headers */ = {isa = PBXBuildFile; fileRef = A102BDFE1F023E13000C6B38 /* NewFrameworkTemplate.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		A102BE011F023E33000C6B38 /* NewFrameworkTemplate.h in Headers */ = {isa = PBXBuildFile; fileRef = A102BDFE1F023E13000C6B38 /* NewFrameworkTemplate.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		A102BE021F023E34000C6B38 /* NewFrameworkTemplate.h in Headers */ = {isa = PBXBuildFile; fileRef = A102BDFE1F023E13000C6B38 /* NewFrameworkTemplate.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A102BDFF1F023E32000C6B38 /* Microya.h in Headers */ = {isa = PBXBuildFile; fileRef = A102BDFE1F023E13000C6B38 /* Microya.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A102BE001F023E33000C6B38 /* Microya.h in Headers */ = {isa = PBXBuildFile; fileRef = A102BDFE1F023E13000C6B38 /* Microya.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A102BE011F023E33000C6B38 /* Microya.h in Headers */ = {isa = PBXBuildFile; fileRef = A102BDFE1F023E13000C6B38 /* Microya.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A102BE021F023E34000C6B38 /* Microya.h in Headers */ = {isa = PBXBuildFile; fileRef = A102BDFE1F023E13000C6B38 /* Microya.h */; settings = {ATTRIBUTES = (Public, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -25,21 +25,21 @@
 			containerPortal = A102BD351F02355A000C6B38 /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = A102BD3D1F02355A000C6B38;
-			remoteInfo = NewFrameworkTemplate;
+			remoteInfo = Microya;
 		};
 		A102BD671F023573000C6B38 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = A102BD351F02355A000C6B38 /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = A102BD5C1F023573000C6B38;
-			remoteInfo = "NewFrameworkTemplate macOS";
+			remoteInfo = "Microya macOS";
 		};
 		A102BD831F023582000C6B38 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = A102BD351F02355A000C6B38 /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = A102BD781F023582000C6B38;
-			remoteInfo = "NewFrameworkTemplate tvOS";
+			remoteInfo = "Microya tvOS";
 		};
 /* End PBXContainerItemProxy section */
 
@@ -83,21 +83,21 @@
 		820560AA217DE92600E23A81 /* CODE_OF_CONDUCT.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = CODE_OF_CONDUCT.md; sourceTree = "<group>"; };
 		820560AB217DE93100E23A81 /* CONTRIBUTING.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = CONTRIBUTING.md; sourceTree = "<group>"; };
 		820560AD217DE95A00E23A81 /* CHANGELOG.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = CHANGELOG.md; sourceTree = "<group>"; };
-		A102BD3E1F02355A000C6B38 /* NewFrameworkTemplate.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = NewFrameworkTemplate.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		A102BD471F02355A000C6B38 /* NewFrameworkTemplate-iOS-Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "NewFrameworkTemplate-iOS-Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
-		A102BD5D1F023573000C6B38 /* NewFrameworkTemplate.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = NewFrameworkTemplate.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		A102BD651F023573000C6B38 /* NewFrameworkTemplate-macOS-Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "NewFrameworkTemplate-macOS-Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
-		A102BD791F023582000C6B38 /* NewFrameworkTemplate.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = NewFrameworkTemplate.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		A102BD811F023582000C6B38 /* NewFrameworkTemplate-tvOS-Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "NewFrameworkTemplate-tvOS-Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
-		A102BD951F02358E000C6B38 /* NewFrameworkTemplate.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = NewFrameworkTemplate.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		A102BD3E1F02355A000C6B38 /* Microya.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Microya.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		A102BD471F02355A000C6B38 /* Microya-iOS-Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Microya-iOS-Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		A102BD5D1F023573000C6B38 /* Microya.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Microya.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		A102BD651F023573000C6B38 /* Microya-macOS-Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Microya-macOS-Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		A102BD791F023582000C6B38 /* Microya.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Microya.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		A102BD811F023582000C6B38 /* Microya-tvOS-Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Microya-tvOS-Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		A102BD951F02358E000C6B38 /* Microya.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Microya.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		A102BDA31F02387A000C6B38 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		A102BDB01F0238BD000C6B38 /* ExampleTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExampleTests.swift; sourceTree = "<group>"; };
 		A102BDB21F0238BD000C6B38 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		A102BDB71F023A7D000C6B38 /* Cartfile */ = {isa = PBXFileReference; lastKnownFileType = text; path = Cartfile; sourceTree = "<group>"; };
 		A102BDB91F023A9A000C6B38 /* Cartfile.resolved */ = {isa = PBXFileReference; lastKnownFileType = text; path = Cartfile.resolved; sourceTree = "<group>"; };
 		A102BDD51F023CAA000C6B38 /* .swiftlint.yml */ = {isa = PBXFileReference; lastKnownFileType = text; path = .swiftlint.yml; sourceTree = "<group>"; };
-		A102BDFE1F023E13000C6B38 /* NewFrameworkTemplate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NewFrameworkTemplate.h; sourceTree = "<group>"; };
-		A15AD1201F0240C9004D7ED3 /* NewFrameworkTemplate.podspec */ = {isa = PBXFileReference; lastKnownFileType = text; path = NewFrameworkTemplate.podspec; sourceTree = "<group>"; };
+		A102BDFE1F023E13000C6B38 /* Microya.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Microya.h; sourceTree = "<group>"; };
+		A15AD1201F0240C9004D7ED3 /* Microya.podspec */ = {isa = PBXFileReference; lastKnownFileType = text; path = Microya.podspec; sourceTree = "<group>"; };
 		A15AD1211F02447E004D7ED3 /* Package.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Package.swift; sourceTree = "<group>"; };
 		A15AD1241F0262D1004D7ED3 /* LICENSE */ = {isa = PBXFileReference; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
 		A1F167732215A5260094788D /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
@@ -115,7 +115,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A102BD481F02355A000C6B38 /* NewFrameworkTemplate.framework in Frameworks */,
+				A102BD481F02355A000C6B38 /* Microya.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -130,7 +130,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A102BD661F023573000C6B38 /* NewFrameworkTemplate.framework in Frameworks */,
+				A102BD661F023573000C6B38 /* Microya.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -145,7 +145,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A102BD821F023582000C6B38 /* NewFrameworkTemplate.framework in Frameworks */,
+				A102BD821F023582000C6B38 /* Microya.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -187,13 +187,13 @@
 		A102BD3F1F02355A000C6B38 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				A102BD3E1F02355A000C6B38 /* NewFrameworkTemplate.framework */,
-				A102BD471F02355A000C6B38 /* NewFrameworkTemplate-iOS-Tests.xctest */,
-				A102BD5D1F023573000C6B38 /* NewFrameworkTemplate.framework */,
-				A102BD651F023573000C6B38 /* NewFrameworkTemplate-macOS-Tests.xctest */,
-				A102BD791F023582000C6B38 /* NewFrameworkTemplate.framework */,
-				A102BD811F023582000C6B38 /* NewFrameworkTemplate-tvOS-Tests.xctest */,
-				A102BD951F02358E000C6B38 /* NewFrameworkTemplate.framework */,
+				A102BD3E1F02355A000C6B38 /* Microya.framework */,
+				A102BD471F02355A000C6B38 /* Microya-iOS-Tests.xctest */,
+				A102BD5D1F023573000C6B38 /* Microya.framework */,
+				A102BD651F023573000C6B38 /* Microya-macOS-Tests.xctest */,
+				A102BD791F023582000C6B38 /* Microya.framework */,
+				A102BD811F023582000C6B38 /* Microya-tvOS-Tests.xctest */,
+				A102BD951F02358E000C6B38 /* Microya.framework */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -201,26 +201,26 @@
 		A102BD9D1F02387A000C6B38 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				A102BDA01F02387A000C6B38 /* NewFrameworkTemplate */,
+				A102BDA01F02387A000C6B38 /* Microya */,
 				A102BDA21F02387A000C6B38 /* SupportingFiles */,
 			);
 			path = Frameworks;
 			sourceTree = "<group>";
 		};
-		A102BDA01F02387A000C6B38 /* NewFrameworkTemplate */ = {
+		A102BDA01F02387A000C6B38 /* Microya */ = {
 			isa = PBXGroup;
 			children = (
 				82056065217DCF0700E23A81 /* Globals */,
 				82056066217DCF1700E23A81 /* Models */,
 			);
-			path = NewFrameworkTemplate;
+			path = Microya;
 			sourceTree = "<group>";
 		};
 		A102BDA21F02387A000C6B38 /* SupportingFiles */ = {
 			isa = PBXGroup;
 			children = (
 				A102BDA31F02387A000C6B38 /* Info.plist */,
-				A102BDFE1F023E13000C6B38 /* NewFrameworkTemplate.h */,
+				A102BDFE1F023E13000C6B38 /* Microya.h */,
 			);
 			path = SupportingFiles;
 			sourceTree = "<group>";
@@ -228,18 +228,18 @@
 		A102BDAE1F0238BD000C6B38 /* Tests */ = {
 			isa = PBXGroup;
 			children = (
-				A102BDAF1F0238BD000C6B38 /* NewFrameworkTemplateTests */,
+				A102BDAF1F0238BD000C6B38 /* MicroyaTests */,
 				A102BDB11F0238BD000C6B38 /* SupportingFiles */,
 			);
 			path = Tests;
 			sourceTree = "<group>";
 		};
-		A102BDAF1F0238BD000C6B38 /* NewFrameworkTemplateTests */ = {
+		A102BDAF1F0238BD000C6B38 /* MicroyaTests */ = {
 			isa = PBXGroup;
 			children = (
 				A102BDB01F0238BD000C6B38 /* ExampleTests.swift */,
 			);
-			path = NewFrameworkTemplateTests;
+			path = MicroyaTests;
 			sourceTree = "<group>";
 		};
 		A102BDB11F0238BD000C6B38 /* SupportingFiles */ = {
@@ -263,7 +263,7 @@
 				820560AA217DE92600E23A81 /* CODE_OF_CONDUCT.md */,
 				820560AB217DE93100E23A81 /* CONTRIBUTING.md */,
 				A15AD1241F0262D1004D7ED3 /* LICENSE */,
-				A15AD1201F0240C9004D7ED3 /* NewFrameworkTemplate.podspec */,
+				A15AD1201F0240C9004D7ED3 /* Microya.podspec */,
 				A15AD1211F02447E004D7ED3 /* Package.swift */,
 				000E616F2086425500C0638C /* README.md */,
 			);
@@ -356,7 +356,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A102BDFF1F023E32000C6B38 /* NewFrameworkTemplate.h in Headers */,
+				A102BDFF1F023E32000C6B38 /* Microya.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -364,7 +364,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A102BE001F023E33000C6B38 /* NewFrameworkTemplate.h in Headers */,
+				A102BE001F023E33000C6B38 /* Microya.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -372,7 +372,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A102BE011F023E33000C6B38 /* NewFrameworkTemplate.h in Headers */,
+				A102BE011F023E33000C6B38 /* Microya.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -380,16 +380,16 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A102BE021F023E34000C6B38 /* NewFrameworkTemplate.h in Headers */,
+				A102BE021F023E34000C6B38 /* Microya.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
-		A102BD3D1F02355A000C6B38 /* NewFrameworkTemplate iOS */ = {
+		A102BD3D1F02355A000C6B38 /* Microya iOS */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = A102BD521F02355A000C6B38 /* Build configuration list for PBXNativeTarget "NewFrameworkTemplate iOS" */;
+			buildConfigurationList = A102BD521F02355A000C6B38 /* Build configuration list for PBXNativeTarget "Microya iOS" */;
 			buildPhases = (
 				A102BD391F02355A000C6B38 /* Sources */,
 				A102BD3A1F02355A000C6B38 /* Frameworks */,
@@ -401,14 +401,14 @@
 			);
 			dependencies = (
 			);
-			name = "NewFrameworkTemplate iOS";
-			productName = NewFrameworkTemplate;
-			productReference = A102BD3E1F02355A000C6B38 /* NewFrameworkTemplate.framework */;
+			name = "Microya iOS";
+			productName = Microya;
+			productReference = A102BD3E1F02355A000C6B38 /* Microya.framework */;
 			productType = "com.apple.product-type.framework";
 		};
-		A102BD461F02355A000C6B38 /* NewFrameworkTemplate iOS Tests */ = {
+		A102BD461F02355A000C6B38 /* Microya iOS Tests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = A102BD551F02355A000C6B38 /* Build configuration list for PBXNativeTarget "NewFrameworkTemplate iOS Tests" */;
+			buildConfigurationList = A102BD551F02355A000C6B38 /* Build configuration list for PBXNativeTarget "Microya iOS Tests" */;
 			buildPhases = (
 				A102BD431F02355A000C6B38 /* Sources */,
 				A102BD441F02355A000C6B38 /* Frameworks */,
@@ -420,14 +420,14 @@
 			dependencies = (
 				A102BD4A1F02355A000C6B38 /* PBXTargetDependency */,
 			);
-			name = "NewFrameworkTemplate iOS Tests";
-			productName = NewFrameworkTemplateTests;
-			productReference = A102BD471F02355A000C6B38 /* NewFrameworkTemplate-iOS-Tests.xctest */;
+			name = "Microya iOS Tests";
+			productName = MicroyaTests;
+			productReference = A102BD471F02355A000C6B38 /* Microya-iOS-Tests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		A102BD5C1F023573000C6B38 /* NewFrameworkTemplate macOS */ = {
+		A102BD5C1F023573000C6B38 /* Microya macOS */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = A102BD6E1F023573000C6B38 /* Build configuration list for PBXNativeTarget "NewFrameworkTemplate macOS" */;
+			buildConfigurationList = A102BD6E1F023573000C6B38 /* Build configuration list for PBXNativeTarget "Microya macOS" */;
 			buildPhases = (
 				A102BD581F023573000C6B38 /* Sources */,
 				A102BD591F023573000C6B38 /* Frameworks */,
@@ -439,14 +439,14 @@
 			);
 			dependencies = (
 			);
-			name = "NewFrameworkTemplate macOS";
-			productName = "NewFrameworkTemplate macOS";
-			productReference = A102BD5D1F023573000C6B38 /* NewFrameworkTemplate.framework */;
+			name = "Microya macOS";
+			productName = "Microya macOS";
+			productReference = A102BD5D1F023573000C6B38 /* Microya.framework */;
 			productType = "com.apple.product-type.framework";
 		};
-		A102BD641F023573000C6B38 /* NewFrameworkTemplate macOS Tests */ = {
+		A102BD641F023573000C6B38 /* Microya macOS Tests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = A102BD711F023573000C6B38 /* Build configuration list for PBXNativeTarget "NewFrameworkTemplate macOS Tests" */;
+			buildConfigurationList = A102BD711F023573000C6B38 /* Build configuration list for PBXNativeTarget "Microya macOS Tests" */;
 			buildPhases = (
 				A102BD611F023573000C6B38 /* Sources */,
 				A102BD621F023573000C6B38 /* Frameworks */,
@@ -458,14 +458,14 @@
 			dependencies = (
 				A102BD681F023573000C6B38 /* PBXTargetDependency */,
 			);
-			name = "NewFrameworkTemplate macOS Tests";
-			productName = "NewFrameworkTemplate macOSTests";
-			productReference = A102BD651F023573000C6B38 /* NewFrameworkTemplate-macOS-Tests.xctest */;
+			name = "Microya macOS Tests";
+			productName = "Microya macOSTests";
+			productReference = A102BD651F023573000C6B38 /* Microya-macOS-Tests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		A102BD781F023582000C6B38 /* NewFrameworkTemplate tvOS */ = {
+		A102BD781F023582000C6B38 /* Microya tvOS */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = A102BD8A1F023582000C6B38 /* Build configuration list for PBXNativeTarget "NewFrameworkTemplate tvOS" */;
+			buildConfigurationList = A102BD8A1F023582000C6B38 /* Build configuration list for PBXNativeTarget "Microya tvOS" */;
 			buildPhases = (
 				A102BD741F023582000C6B38 /* Sources */,
 				A102BD751F023582000C6B38 /* Frameworks */,
@@ -477,14 +477,14 @@
 			);
 			dependencies = (
 			);
-			name = "NewFrameworkTemplate tvOS";
-			productName = "NewFrameworkTemplate tvOS";
-			productReference = A102BD791F023582000C6B38 /* NewFrameworkTemplate.framework */;
+			name = "Microya tvOS";
+			productName = "Microya tvOS";
+			productReference = A102BD791F023582000C6B38 /* Microya.framework */;
 			productType = "com.apple.product-type.framework";
 		};
-		A102BD801F023582000C6B38 /* NewFrameworkTemplate tvOS Tests */ = {
+		A102BD801F023582000C6B38 /* Microya tvOS Tests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = A102BD8D1F023582000C6B38 /* Build configuration list for PBXNativeTarget "NewFrameworkTemplate tvOS Tests" */;
+			buildConfigurationList = A102BD8D1F023582000C6B38 /* Build configuration list for PBXNativeTarget "Microya tvOS Tests" */;
 			buildPhases = (
 				A102BD7D1F023582000C6B38 /* Sources */,
 				A102BD7E1F023582000C6B38 /* Frameworks */,
@@ -496,14 +496,14 @@
 			dependencies = (
 				A102BD841F023582000C6B38 /* PBXTargetDependency */,
 			);
-			name = "NewFrameworkTemplate tvOS Tests";
-			productName = "NewFrameworkTemplate tvOSTests";
-			productReference = A102BD811F023582000C6B38 /* NewFrameworkTemplate-tvOS-Tests.xctest */;
+			name = "Microya tvOS Tests";
+			productName = "Microya tvOSTests";
+			productReference = A102BD811F023582000C6B38 /* Microya-tvOS-Tests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		A102BD941F02358E000C6B38 /* NewFrameworkTemplate watchOS */ = {
+		A102BD941F02358E000C6B38 /* Microya watchOS */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = A102BD9A1F02358E000C6B38 /* Build configuration list for PBXNativeTarget "NewFrameworkTemplate watchOS" */;
+			buildConfigurationList = A102BD9A1F02358E000C6B38 /* Build configuration list for PBXNativeTarget "Microya watchOS" */;
 			buildPhases = (
 				A102BD901F02358E000C6B38 /* Sources */,
 				A102BD911F02358E000C6B38 /* Frameworks */,
@@ -515,9 +515,9 @@
 			);
 			dependencies = (
 			);
-			name = "NewFrameworkTemplate watchOS";
-			productName = "NewFrameworkTemplate watchOS";
-			productReference = A102BD951F02358E000C6B38 /* NewFrameworkTemplate.framework */;
+			name = "Microya watchOS";
+			productName = "Microya watchOS";
+			productReference = A102BD951F02358E000C6B38 /* Microya.framework */;
 			productType = "com.apple.product-type.framework";
 		};
 /* End PBXNativeTarget section */
@@ -558,7 +558,7 @@
 					};
 				};
 			};
-			buildConfigurationList = A102BD381F02355A000C6B38 /* Build configuration list for PBXProject "NewFrameworkTemplate" */;
+			buildConfigurationList = A102BD381F02355A000C6B38 /* Build configuration list for PBXProject "Microya" */;
 			compatibilityVersion = "Xcode 8.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -570,13 +570,13 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				A102BD3D1F02355A000C6B38 /* NewFrameworkTemplate iOS */,
-				A102BD461F02355A000C6B38 /* NewFrameworkTemplate iOS Tests */,
-				A102BD5C1F023573000C6B38 /* NewFrameworkTemplate macOS */,
-				A102BD641F023573000C6B38 /* NewFrameworkTemplate macOS Tests */,
-				A102BD781F023582000C6B38 /* NewFrameworkTemplate tvOS */,
-				A102BD801F023582000C6B38 /* NewFrameworkTemplate tvOS Tests */,
-				A102BD941F02358E000C6B38 /* NewFrameworkTemplate watchOS */,
+				A102BD3D1F02355A000C6B38 /* Microya iOS */,
+				A102BD461F02355A000C6B38 /* Microya iOS Tests */,
+				A102BD5C1F023573000C6B38 /* Microya macOS */,
+				A102BD641F023573000C6B38 /* Microya macOS Tests */,
+				A102BD781F023582000C6B38 /* Microya tvOS */,
+				A102BD801F023582000C6B38 /* Microya tvOS Tests */,
+				A102BD941F02358E000C6B38 /* Microya watchOS */,
 			);
 		};
 /* End PBXProject section */
@@ -750,17 +750,17 @@
 /* Begin PBXTargetDependency section */
 		A102BD4A1F02355A000C6B38 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = A102BD3D1F02355A000C6B38 /* NewFrameworkTemplate iOS */;
+			target = A102BD3D1F02355A000C6B38 /* Microya iOS */;
 			targetProxy = A102BD491F02355A000C6B38 /* PBXContainerItemProxy */;
 		};
 		A102BD681F023573000C6B38 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = A102BD5C1F023573000C6B38 /* NewFrameworkTemplate macOS */;
+			target = A102BD5C1F023573000C6B38 /* Microya macOS */;
 			targetProxy = A102BD671F023573000C6B38 /* PBXContainerItemProxy */;
 		};
 		A102BD841F023582000C6B38 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = A102BD781F023582000C6B38 /* NewFrameworkTemplate tvOS */;
+			target = A102BD781F023582000C6B38 /* Microya tvOS */;
 			targetProxy = A102BD831F023582000C6B38 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -824,7 +824,7 @@
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.flinesoft.$(PRODUCT_NAME:c99extidentifier)";
-				PRODUCT_NAME = NewFrameworkTemplate;
+				PRODUCT_NAME = Microya;
 				SDKROOT = iphoneos;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -885,7 +885,7 @@
 				MACOSX_DEPLOYMENT_TARGET = 10.10;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.flinesoft.$(PRODUCT_NAME:c99extidentifier)";
-				PRODUCT_NAME = NewFrameworkTemplate;
+				PRODUCT_NAME = Microya;
 				SDKROOT = iphoneos;
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
 				SWIFT_VERSION = 4.2;
@@ -1146,7 +1146,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		A102BD381F02355A000C6B38 /* Build configuration list for PBXProject "NewFrameworkTemplate" */ = {
+		A102BD381F02355A000C6B38 /* Build configuration list for PBXProject "Microya" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				A102BD501F02355A000C6B38 /* Debug */,
@@ -1155,7 +1155,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		A102BD521F02355A000C6B38 /* Build configuration list for PBXNativeTarget "NewFrameworkTemplate iOS" */ = {
+		A102BD521F02355A000C6B38 /* Build configuration list for PBXNativeTarget "Microya iOS" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				A102BD531F02355A000C6B38 /* Debug */,
@@ -1164,7 +1164,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		A102BD551F02355A000C6B38 /* Build configuration list for PBXNativeTarget "NewFrameworkTemplate iOS Tests" */ = {
+		A102BD551F02355A000C6B38 /* Build configuration list for PBXNativeTarget "Microya iOS Tests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				A102BD561F02355A000C6B38 /* Debug */,
@@ -1173,7 +1173,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		A102BD6E1F023573000C6B38 /* Build configuration list for PBXNativeTarget "NewFrameworkTemplate macOS" */ = {
+		A102BD6E1F023573000C6B38 /* Build configuration list for PBXNativeTarget "Microya macOS" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				A102BD6F1F023573000C6B38 /* Debug */,
@@ -1182,7 +1182,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		A102BD711F023573000C6B38 /* Build configuration list for PBXNativeTarget "NewFrameworkTemplate macOS Tests" */ = {
+		A102BD711F023573000C6B38 /* Build configuration list for PBXNativeTarget "Microya macOS Tests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				A102BD721F023573000C6B38 /* Debug */,
@@ -1191,7 +1191,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		A102BD8A1F023582000C6B38 /* Build configuration list for PBXNativeTarget "NewFrameworkTemplate tvOS" */ = {
+		A102BD8A1F023582000C6B38 /* Build configuration list for PBXNativeTarget "Microya tvOS" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				A102BD8B1F023582000C6B38 /* Debug */,
@@ -1200,7 +1200,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		A102BD8D1F023582000C6B38 /* Build configuration list for PBXNativeTarget "NewFrameworkTemplate tvOS Tests" */ = {
+		A102BD8D1F023582000C6B38 /* Build configuration list for PBXNativeTarget "Microya tvOS Tests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				A102BD8E1F023582000C6B38 /* Debug */,
@@ -1209,7 +1209,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		A102BD9A1F02358E000C6B38 /* Build configuration list for PBXNativeTarget "NewFrameworkTemplate watchOS" */ = {
+		A102BD9A1F02358E000C6B38 /* Build configuration list for PBXNativeTarget "Microya watchOS" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				A102BD9B1F02358E000C6B38 /* Debug */,

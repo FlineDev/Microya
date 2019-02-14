@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "A102BD5C1F023573000C6B38"
-               BuildableName = "NewFrameworkTemplate.framework"
-               BlueprintName = "NewFrameworkTemplate macOS"
-               ReferencedContainer = "container:NewFrameworkTemplate.xcodeproj">
+               BuildableName = "Microya.framework"
+               BlueprintName = "Microya macOS"
+               ReferencedContainer = "container:Microya.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -33,9 +33,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "A102BD641F023573000C6B38"
-               BuildableName = "NewFrameworkTemplate-macOS-Tests.xctest"
-               BlueprintName = "NewFrameworkTemplate macOS Tests"
-               ReferencedContainer = "container:NewFrameworkTemplate.xcodeproj">
+               BuildableName = "Microya-macOS-Tests.xctest"
+               BlueprintName = "Microya macOS Tests"
+               ReferencedContainer = "container:Microya.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
@@ -43,9 +43,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "A102BD5C1F023573000C6B38"
-            BuildableName = "NewFrameworkTemplate.framework"
-            BlueprintName = "NewFrameworkTemplate macOS"
-            ReferencedContainer = "container:NewFrameworkTemplate.xcodeproj">
+            BuildableName = "Microya.framework"
+            BlueprintName = "Microya macOS"
+            ReferencedContainer = "container:Microya.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <AdditionalOptions>
@@ -65,9 +65,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "A102BD5C1F023573000C6B38"
-            BuildableName = "NewFrameworkTemplate.framework"
-            BlueprintName = "NewFrameworkTemplate macOS"
-            ReferencedContainer = "container:NewFrameworkTemplate.xcodeproj">
+            BuildableName = "Microya.framework"
+            BlueprintName = "Microya macOS"
+            ReferencedContainer = "container:Microya.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <AdditionalOptions>
@@ -83,9 +83,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "A102BD5C1F023573000C6B38"
-            BuildableName = "NewFrameworkTemplate.framework"
-            BlueprintName = "NewFrameworkTemplate macOS"
-            ReferencedContainer = "container:NewFrameworkTemplate.xcodeproj">
+            BuildableName = "Microya.framework"
+            BlueprintName = "Microya macOS"
+            ReferencedContainer = "container:Microya.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
    </ProfileAction>

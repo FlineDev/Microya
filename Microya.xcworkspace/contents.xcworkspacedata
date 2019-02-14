@@ -2,7 +2,7 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "group:NewFrameworkTemplate.xcodeproj">
+      location = "group:Microya.xcodeproj">
    </FileRef>
    <FileRef
       location = "group:UsageExamples.playground">
