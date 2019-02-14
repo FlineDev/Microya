@@ -32,7 +32,7 @@
 
 # Microya
 
-A micro version of the Moya network abstraction layer written in Swift.
+A micro version of the [Moya](https://github.com/Moya/Moya) network abstraction layer written in Swift.
 
 ## Installation
 
