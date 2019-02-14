@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum JsonApiError: Error {
+public enum JsonApiError: Error {
     case noResponseReceived
     case noDataReceived
     case responseDataConversionFailed(type: String, error: Error)
@@ -15,7 +15,7 @@ enum JsonApiError: Error {
     case unknownError(Error)
 }
 
-protocol JsonApi {
+public protocol JsonApi {
     var decoder: JSONDecoder { get }
     var encoder: JSONEncoder { get }
 
@@ -28,7 +28,7 @@ protocol JsonApi {
 }
 
 extension JsonApi {
-    func request<ResultType: Decodable>(type: ResultType.Type) -> Result<ResultType, JsonApiError> {
+    public func request<ResultType: Decodable>(type: ResultType.Type) -> Result<ResultType, JsonApiError> {
         let dispatchGroup = DispatchGroup()
         dispatchGroup.enter()
 
