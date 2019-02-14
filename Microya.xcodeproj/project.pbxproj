@@ -17,6 +17,18 @@
 		A102BE001F023E33000C6B38 /* Microya.h in Headers */ = {isa = PBXBuildFile; fileRef = A102BDFE1F023E13000C6B38 /* Microya.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		A102BE011F023E33000C6B38 /* Microya.h in Headers */ = {isa = PBXBuildFile; fileRef = A102BDFE1F023E13000C6B38 /* Microya.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		A102BE021F023E34000C6B38 /* Microya.h in Headers */ = {isa = PBXBuildFile; fileRef = A102BDFE1F023E13000C6B38 /* Microya.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A1F167752215AE6E0094788D /* JsonApi.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1F167742215AE6E0094788D /* JsonApi.swift */; };
+		A1F167762215AE6E0094788D /* JsonApi.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1F167742215AE6E0094788D /* JsonApi.swift */; };
+		A1F167772215AE6E0094788D /* JsonApi.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1F167742215AE6E0094788D /* JsonApi.swift */; };
+		A1F167782215AE6E0094788D /* JsonApi.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1F167742215AE6E0094788D /* JsonApi.swift */; };
+		A1F167C82215AFE50094788D /* Result.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1F167C72215AFE50094788D /* Result.swift */; };
+		A1F167C92215AFE50094788D /* Result.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1F167C72215AFE50094788D /* Result.swift */; };
+		A1F167CA2215AFE50094788D /* Result.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1F167C72215AFE50094788D /* Result.swift */; };
+		A1F167CB2215AFE50094788D /* Result.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1F167C72215AFE50094788D /* Result.swift */; };
+		A1F167CD2215B0360094788D /* Method.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1F167CC2215B0360094788D /* Method.swift */; };
+		A1F167CE2215B0360094788D /* Method.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1F167CC2215B0360094788D /* Method.swift */; };
+		A1F167CF2215B0360094788D /* Method.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1F167CC2215B0360094788D /* Method.swift */; };
+		A1F167D02215B0360094788D /* Method.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1F167CC2215B0360094788D /* Method.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -101,6 +113,9 @@
 		A15AD1211F02447E004D7ED3 /* Package.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Package.swift; sourceTree = "<group>"; };
 		A15AD1241F0262D1004D7ED3 /* LICENSE */ = {isa = PBXFileReference; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
 		A1F167732215A5260094788D /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
+		A1F167742215AE6E0094788D /* JsonApi.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JsonApi.swift; sourceTree = "<group>"; };
+		A1F167C72215AFE50094788D /* Result.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Result.swift; sourceTree = "<group>"; };
+		A1F167CC2215B0360094788D /* Method.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Method.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -162,6 +177,7 @@
 		82056065217DCF0700E23A81 /* Globals */ = {
 			isa = PBXGroup;
 			children = (
+				A1F167C72215AFE50094788D /* Result.swift */,
 			);
 			path = Globals;
 			sourceTree = "<group>";
@@ -169,6 +185,8 @@
 		82056066217DCF1700E23A81 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				A1F167742215AE6E0094788D /* JsonApi.swift */,
+				A1F167CC2215B0360094788D /* Method.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -532,6 +550,7 @@
 				TargetAttributes = {
 					A102BD3D1F02355A000C6B38 = {
 						CreatedOnToolsVersion = 9.0;
+						LastSwiftMigration = 1010;
 						ProvisioningStyle = Automatic;
 					};
 					A102BD461F02355A000C6B38 = {
@@ -541,12 +560,14 @@
 					};
 					A102BD5C1F023573000C6B38 = {
 						CreatedOnToolsVersion = 9.0;
+						LastSwiftMigration = 1010;
 					};
 					A102BD641F023573000C6B38 = {
 						CreatedOnToolsVersion = 9.0;
 					};
 					A102BD781F023582000C6B38 = {
 						CreatedOnToolsVersion = 9.0;
+						LastSwiftMigration = 1010;
 						ProvisioningStyle = Automatic;
 					};
 					A102BD801F023582000C6B38 = {
@@ -554,6 +575,7 @@
 					};
 					A102BD941F02358E000C6B38 = {
 						CreatedOnToolsVersion = 9.0;
+						LastSwiftMigration = 1010;
 						ProvisioningStyle = Automatic;
 					};
 				};
@@ -697,6 +719,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A1F167C82215AFE50094788D /* Result.swift in Sources */,
+				A1F167752215AE6E0094788D /* JsonApi.swift in Sources */,
+				A1F167CD2215B0360094788D /* Method.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -712,6 +737,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A1F167C92215AFE50094788D /* Result.swift in Sources */,
+				A1F167762215AE6E0094788D /* JsonApi.swift in Sources */,
+				A1F167CE2215B0360094788D /* Method.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -727,6 +755,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A1F167CA2215AFE50094788D /* Result.swift in Sources */,
+				A1F167772215AE6E0094788D /* JsonApi.swift in Sources */,
+				A1F167CF2215B0360094788D /* Method.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -742,6 +773,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A1F167CB2215AFE50094788D /* Result.swift in Sources */,
+				A1F167782215AE6E0094788D /* JsonApi.swift in Sources */,
+				A1F167D02215B0360094788D /* Method.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -898,9 +932,11 @@
 		A102BD531F02355A000C6B38 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
+				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = "";
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
@@ -910,6 +946,8 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SKIP_INSTALL = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -917,9 +955,11 @@
 		A102BD541F02355A000C6B38 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
+				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = "";
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
@@ -929,6 +969,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
@@ -936,6 +977,7 @@
 		A102BD561F02355A000C6B38 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 8DHP3ZYQ2N;
@@ -951,6 +993,7 @@
 		A102BD571F02355A000C6B38 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 8DHP3ZYQ2N;
@@ -966,8 +1009,10 @@
 		A102BD6F1F023573000C6B38 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "";
 				COMBINE_HIDPI_IMAGES = YES;
+				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = "";
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
@@ -978,14 +1023,18 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 4.2;
 			};
 			name = Debug;
 		};
 		A102BD701F023573000C6B38 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "";
 				COMBINE_HIDPI_IMAGES = YES;
+				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = "";
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
@@ -996,12 +1045,14 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 4.2;
 			};
 			name = Release;
 		};
 		A102BD721F023573000C6B38 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_IDENTITY = "Mac Developer";
 				COMBINE_HIDPI_IMAGES = YES;
 				DEVELOPMENT_TEAM = 767S6EFMJ8;
@@ -1017,6 +1068,7 @@
 		A102BD731F023573000C6B38 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_IDENTITY = "Mac Developer";
 				COMBINE_HIDPI_IMAGES = YES;
 				DEVELOPMENT_TEAM = 767S6EFMJ8;
@@ -1032,9 +1084,11 @@
 		A102BD8B1F023582000C6B38 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "";
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
+				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = "";
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
@@ -1045,6 +1099,8 @@
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = appletvos;
 				SKIP_INSTALL = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = 3;
 				TVOS_DEPLOYMENT_TARGET = 9.0;
 			};
@@ -1053,9 +1109,11 @@
 		A102BD8C1F023582000C6B38 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "";
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
+				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = "";
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
@@ -1066,6 +1124,7 @@
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = appletvos;
 				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = 3;
 				TVOS_DEPLOYMENT_TARGET = 9.0;
 			};
@@ -1074,6 +1133,7 @@
 		A102BD8E1F023582000C6B38 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = Tests/SupportingFiles/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
@@ -1088,6 +1148,7 @@
 		A102BD8F1F023582000C6B38 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = Tests/SupportingFiles/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
@@ -1103,9 +1164,11 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				APPLICATION_EXTENSION_API_ONLY = YES;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
+				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = "";
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
@@ -1116,6 +1179,8 @@
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = 4;
 				WATCHOS_DEPLOYMENT_TARGET = 4.0;
 			};
@@ -1125,9 +1190,11 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				APPLICATION_EXTENSION_API_ONLY = YES;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
+				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = "";
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
@@ -1138,6 +1205,7 @@
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = 4;
 				WATCHOS_DEPLOYMENT_TARGET = 4.0;
 			};
