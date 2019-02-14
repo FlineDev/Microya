@@ -12,6 +12,9 @@
         <img src="https://codebeat.co/badges/a669e100-d30d-4801-b72d-3625ab7240be"
              alt="codebeat badge">
     </a>
+    <a href="https://github.com/Flinesoft/HandySwift/releases">
+    <img src="https://img.shields.io/badge/Version-0.1.1-blue.svg"
+         alt="Version: 0.1.1">
     <img src="https://img.shields.io/badge/Swift-4.2-FFAC45.svg"
          alt="Swift: 4.2">
     <img src="https://img.shields.io/badge/Platforms-iOS%20%7C%20macOS%20%7C%20tvOS%20%7C%20watchOS-FF69B4.svg"
