@@ -6,6 +6,7 @@ Pod::Spec.new do |s|
 
   s.description  = <<-DESC
     A micro version of the Moya network abstraction layer written in Swift.
+    Currently only supports JSON APIs.
                    DESC
 
   s.homepage     = "https://github.com/Flinesoft/Microya"
@@ -19,7 +20,7 @@ Pod::Spec.new do |s|
   s.tvos.deployment_target = "9.0"
 
   s.source       = { :git => "https://github.com/Flinesoft/Microya.git", :tag => "#{s.version}" }
-  s.source_files = "Sources", "Sources/**/*.swift"
+  s.source_files = "Frameworks/**/*.swift"
   s.framework    = "Foundation"
   s.swift_version = "4.2"
 
