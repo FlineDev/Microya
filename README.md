@@ -36,65 +36,166 @@ A micro version of the Moya network abstraction layer written in Swift.
 
 ## Installation
 
-### Carthage
-
-Place the following line to your Cartfile:
-
-``` Swift
-github "Flinesoft/Microya" ~> 0.1
-```
-
-Now run `carthage update`. Then drag & drop the Microya.framework in the Carthage/Build folder to your project. Now you can `import Microya` in each class you want to use its features. Refer to the [Carthage README](https://github.com/Carthage/Carthage#adding-frameworks-to-an-application) for detailed / updated instructions.
-
-### CocoaPods
-
-Add the line `pod 'Microya'` to your target in your `Podfile` and make sure to include `use_frameworks!`
-at the top. The result might look similar to this:
-
-``` Ruby
-platform :ios, '8.0'
-use_frameworks!
-
-target 'MyAppTarget' do
-    pod 'Microya', '~> 0.1'
-end
-```
-
-Now close your project and run `pod install` from the command line. Then open the `.xcworkspace` from within your project folder.
-Build your project once (with `Cmd+B`) to update the frameworks known to Xcode. Now you can `import Microya` in each class you want to use its features.
-Refer to [CocoaPods.org](https://cocoapods.org) for detailed / updates instructions.
+Installation is supported via [CocoaPods](https://github.com/CocoaPods/CocoaPods), [Carthage](https://github.com/Carthage/Carthage), [SwiftPM](https://github.com/apple/swift-package-manager) and [Mint](https://github.com/yonaskolb/Mint).
 
 ## Usage
 
-Please have a look at the UsageExamples.playground for a complete list of features provided.
-Open the Playground from within the `.xcworkspace` in order for it to work.
+### Step 1: Defining your Endpoints
+Create an Api `enum` with all supported endpoints as `cases` with the request parameters/data specified as parameters.
 
----
-#### Features Overview
+For example, when writing a client for the [Microsoft Translator API](https://docs.microsoft.com/en-us/azure/cognitive-services/translator/reference/v3-0-languages):
 
-- [Short Section](#short-section)
-- Sections Group
-  - [SubSection1](#subsection1)
-  - [SubSection2](#subsection2)
+```Swift
+enum MicrosoftTranslatorApi {
+    case languages
+    case translate(texts: [String], from: Language, to: [Language])
+}
+```
 
----
+Note that the `Language` type used above does not necessarily need to be an `Encodable` type:
 
-### Short Section
+```Swift
+enum Language: String {
+    case english = "en"
+    case german = "de"
+    case japanese = "jp"
+    case turkish = "tr"
+}
+```
 
-TODO: Add some usage information here.
+### Step 2: Making your Api `JsonApi` compliant
 
-### Sections Group
+Add an extension for your Api `enum` that makes it `JsonApi` compliant, which means you need to add implementations for the following protocol:
 
-TODO: Summarize the section here.
+```Swift
+protocol JsonApi {
+    var decoder: JSONDecoder { get }
+    var encoder: JSONEncoder { get }
 
-#### SubSection1
+    var baseUrl: URL { get }
+    var headers: [String: String] { get }
+    var path: String { get }
+    var method: Method { get }
+    var queryParameters: [(key: String, value: String)] { get }
+    var bodyData: Data? { get }
+}
+```
 
-TODO: Add some usage information here.
+Use `switch` statements over `self` to differentiate between the cases (if needed) and to provide the appropriate data the protocol asks for (using [Value Bindings](https://docs.swift.org/swift-book/LanguageGuide/ControlFlow.html#ID133)).
 
-#### SubSection2
+<details>
+<summary>Toggle me to see an example</summary>
 
-TODO: Add some usage information here.
+```Swift
+extension MicrosoftTranslatorApi: JsonApi {
+    var decoder: JSONDecoder {
+        return JSONDecoder()
+    }
 
+    var encoder: JSONEncoder {
+        return JSONEncoder()
+    }
+
+    var baseUrl: URL {
+        return URL(string: "https://api.cognitive.microsofttranslator.com")!
+    }
+
+    var path: String {
+        switch self {
+        case .languages:
+		        return "/languages"
+
+        case .translate:
+            return "/translate"
+        }
+    }
+
+    var method: Method {
+        switch self {
+        case .languages:
+		        return .get
+
+        case .translate:
+            return .post
+        }
+    }
+
+    var queryParameters: [(key: String, value: String)] {
+        var urlParameters: [(String, String)] = [(key: "api-version", value: "3.0")]
+
+        switch self {
+        case .languages:
+            break
+
+        case let .translate(_, sourceLanguage, targetLanguages, _):
+            urlParameters.append((key: "from", value: sourceLanguage.rawValue))
+
+            for targetLanguage in targetLanguages {
+                urlParameters.append((key: "to", value: targetLanguage.rawValue))
+            }              
+        }
+
+        return urlParameters
+    }
+
+    var bodyData: Data? {
+        switch self {
+        case .translate:
+            return nil // no request data needed
+
+        case let .translate(texts, _, _, _):
+            return try! encoder.encode(texts)
+        }
+    }
+
+    var headers: [String: String] {
+        switch self {
+        case .languages:
+		        return [:]
+
+        case .translate:
+            return [
+                "Ocp-Apim-Subscription-Key": "<SECRET>",
+                "Content-Type": "application/json"
+            ]
+        }
+    }
+}
+```
+
+</details>
+
+### Step 3: Calling your API endpoint with the result type
+
+Call an API endpoint providing a `Decodable` type of the expected result (if any) by using this method pre-implemented in the `JsonApi` protocol:
+
+```Swift
+func request<ResultType: Decodable>(type: ResultType.Type) -> Result<ResultType, JsonApiError>
+```
+
+For example:
+
+```Swift
+let endpoint = MicrosoftTranslatorApi.translate(texts: ["Test"], from: .english, to: [.german, .japanese, .turkish])
+
+switch endpoint.request(type: [String: String].self) {
+case let .success(translationsByLanguage):
+    // use the already decoded `[String: String]` result
+
+case let .failure(error):
+    // error handling
+}
+```
+
+Note that you can also use the throwing `get()` function of Swift 5's `Result` type instead of using a `switch` statement:
+
+```Swift
+let endpoint = MicrosoftTranslatorApi.translate(texts: ["Test"], from: .english, to: [.german, .japanese, .turkish])
+let translationsByLanguage = try endpoint.request(type: [String: String].self)
+// use the already decoded `[String: String]` result
+```
+
+There's even useful functional methods defines on the `Results` type like `map()`, `flatMap()` or `mapError()` and `flatMapError()`. See the "Transforming Result" section in [this](https://www.hackingwithswift.com/articles/161/how-to-use-result-in-swift) article for more information.
 
 ## Contributing
 
