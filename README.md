@@ -1,6 +1,6 @@
 <p align="center">
     <img src="https://raw.githubusercontent.com/Flinesoft/Microya/stable/Logo.png"
-      width=600>
+      width=396>
 </p>
 
 <p align="center">
