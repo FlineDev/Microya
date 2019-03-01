@@ -106,7 +106,7 @@ extension MicrosoftTranslatorApi: JsonApi {
     var path: String {
         switch self {
         case .languages:
-		        return "/languages"
+            return "/languages"
 
         case .translate:
             return "/translate"
@@ -168,7 +168,7 @@ extension MicrosoftTranslatorApi: JsonApi {
 
 </details>
 
-### Step 3: Calling your API endpoint with the result type
+### Step 3: Calling your API endpoint with the Result type
 
 Call an API endpoint providing a `Decodable` type of the expected result (if any) by using this method pre-implemented in the `JsonApi` protocol:
 
@@ -198,7 +198,7 @@ let translationsByLanguage = try endpoint.request(type: [String: String].self)
 // use the already decoded `[String: String]` result
 ```
 
-There's even useful functional methods defines on the `Results` type like `map()`, `flatMap()` or `mapError()` and `flatMapError()`. See the "Transforming Result" section in [this](https://www.hackingwithswift.com/articles/161/how-to-use-result-in-swift) article for more information.
+There's even useful functional methods defined on the `Results` type like `map()`, `flatMap()` or `mapError()` and `flatMapError()`. See the "Transforming Result" section in [this](https://www.hackingwithswift.com/articles/161/how-to-use-result-in-swift) article for more information.
 
 ## Contributing
 
