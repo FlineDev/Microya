@@ -5,7 +5,7 @@
 
 <p align="center">
     <a href="https://app.bitrise.io/app/9144757ac274834d">
-        <img src="https://app.bitrise.io/app/9144757ac274834d/status.svg?token=wnogmmQA9Zy7_2u75vRKdg"
+        <img src="https://app.bitrise.io/app/9144757ac274834d/status.svg?token=wnogmmQA9Zy7_2u75vRKdg&branch=stable"
              alt="Build Status">
     </a>    
     <a href="https://codebeat.co/projects/github-com-flinesoft-microya-stable">
