@@ -116,7 +116,7 @@ extension MicrosoftTranslatorApi: JsonApi {
     var method: Method {
         switch self {
         case .languages:
-		        return .get
+            return .get
 
         case .translate:
             return .post
@@ -154,7 +154,7 @@ extension MicrosoftTranslatorApi: JsonApi {
     var headers: [String: String] {
         switch self {
         case .languages:
-		        return [:]
+            return [:]
 
         case .translate:
             return [
@@ -194,7 +194,7 @@ Note that you can also use the throwing `get()` function of Swift 5's `Result` t
 
 ```Swift
 let endpoint = MicrosoftTranslatorApi.translate(texts: ["Test"], from: .english, to: [.german, .japanese, .turkish])
-let translationsByLanguage = try endpoint.request(type: [String: String].self)
+let translationsByLanguage = try endpoint.request(type: [String: String].self).get()
 // use the already decoded `[String: String]` result
 ```
 
