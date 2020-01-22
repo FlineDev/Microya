@@ -1,10 +1,10 @@
 # Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/JamitLabs/MungoHealer. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](http://contributor-covenant.org) code of conduct.
+Bug reports and pull requests are welcome on GitHub at https://github.com/Flinesoft/Microya. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](http://contributor-covenant.org) code of conduct.
 
 ## Getting Started
 
-This section will tell you how you can get started contributing to MungoHealer.
+This section will tell you how you can get started contributing to Microya.
 
 ### Prerequisites
 
@@ -12,8 +12,6 @@ Before you start developing, please make sure you have the following tools insta
 
 - Xcode 10.0+
 - [SwiftLint](https://github.com/realm/SwiftLint)
-- [ProjLint](https://github.com/JamitLabs/ProjLint)
-- [Beak](https://github.com/yonaskolb/Beak)
 
 ### Commit Messages
 
