@@ -1,14 +1,14 @@
 <p align="center">
-    <img src="https://raw.githubusercontent.com/Flinesoft/Microya/stable/Logo.png"
+    <img src="https://raw.githubusercontent.com/Flinesoft/Microya/main/Logo.png"
       width=396>
 </p>
 
 <p align="center">
     <a href="https://app.bitrise.io/app/9144757ac274834d">
-        <img src="https://app.bitrise.io/app/9144757ac274834d/status.svg?token=wnogmmQA9Zy7_2u75vRKdg&branch=stable"
+        <img src="https://app.bitrise.io/app/9144757ac274834d/status.svg?token=wnogmmQA9Zy7_2u75vRKdg&branch=main"
              alt="Build Status">
     </a>    
-    <a href="https://codebeat.co/projects/github-com-flinesoft-microya-stable">
+    <a href="https://codebeat.co/projects/github-com-flinesoft-microya-main">
         <img src="https://codebeat.co/badges/a669e100-d30d-4801-b72d-3625ab7240be"
              alt="codebeat badge">
     </a>
@@ -19,7 +19,7 @@
          alt="Swift: 4.2">
     <img src="https://img.shields.io/badge/Platforms-iOS%20%7C%20macOS%20%7C%20tvOS%20%7C%20watchOS-FF69B4.svg"
         alt="Platforms: iOS | macOS | tvOS | watchOS">
-    <a href="https://github.com/Flinesoft/Microya/blob/stable/LICENSE.md">
+    <a href="https://github.com/Flinesoft/Microya/blob/main/LICENSE.md">
         <img src="https://img.shields.io/badge/License-MIT-lightgrey.svg"
               alt="License: MIT">
     </a>
@@ -224,7 +224,7 @@ Thank you very much for any donation, it really helps out a lot! 💯
 
 ## Contributing
 
-See the file [CONTRIBUTING.md](https://github.com/Flinesoft/Microya/blob/stable/CONTRIBUTING.md).
+See the file [CONTRIBUTING.md](https://github.com/Flinesoft/Microya/blob/main/CONTRIBUTING.md).
 
 
 ## License
