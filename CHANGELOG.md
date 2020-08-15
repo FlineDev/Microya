@@ -7,7 +7,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 ### Added
 - None.
 ### Changed
-- Make some fields of the `JsonApi` protocol optional by providing default implementation.
+- None.
 ### Deprecated
 - None.
 ### Removed
@@ -16,6 +16,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 - None.
 ### Security
 - None.
+
+## [0.2.0] - 2020-08-15
+### Changed
+- Make some fields of the `JsonApi` protocol optional by providing default implementation.
 
 ## [0.1.0] - 2019-02-14
 ### Added
