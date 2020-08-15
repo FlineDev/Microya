@@ -15,19 +15,35 @@ public enum JsonApiError: Error {
     case unknownError(Error)
 }
 
+/// The protocol which defines the structure of an API endpoint.
 public protocol JsonApi {
+    /// The JSON decoder to be used for decoding.
     var decoder: JSONDecoder { get }
+
+    /// The JSNO encoder to be used for encoding.
     var encoder: JSONEncoder { get }
 
+    /// The common base URL of the API endpoints.
     var baseUrl: URL { get }
+
+    /// The headers to be sent per request.
     var headers: [String: String] { get }
+
+    /// The subpath to be added to the base URL.
     var path: String { get }
+
+    /// The HTTP method to be used for the request.
     var method: Method { get }
+
+    /// The URL query parameters to be sent (part after ? in URLs, e.g. google.com?query=Harry+Potter).
     var queryParameters: [(key: String, value: String)] { get }
+
+    /// The body data to be sent along the request (e.g. JSON contents in a POST request).
     var bodyData: Data? { get }
 }
 
 extension JsonApi {
+    /// Performs the request. Make sure to specify the correct return type (e.g. let result: MyType = api.request...).
     public func request<ResultType: Decodable>(type: ResultType.Type) -> Result<ResultType, JsonApiError> {
         let dispatchGroup = DispatchGroup()
         dispatchGroup.enter()
@@ -91,5 +107,28 @@ extension JsonApi {
         }
 
         return urlComponents.url!
+    }
+}
+
+/// Extension to provide default contents for optional fields.
+extension JsonApi {
+    public var decoder: JSONDecoder {
+        JSONDecoder()
+    }
+
+    public var encoder: JSONEncoder {
+        JSONEncoder()
+    }
+
+    public var headers: [String: String] {
+        [:]
+    }
+
+    public var queryParameters: [(key: String, value: String)] {
+        []
+    }
+
+    public var bodyData: Data? {
+        nil
     }
 }
