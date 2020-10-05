@@ -71,7 +71,7 @@ disabled_rules:
 - type_name
 
 included:
-- Frameworks
+- Sources
 - Tests
 
 excluded:
@@ -86,15 +86,8 @@ explicit_type_interface:
   excluded:
     - local
 
-file_header:
-  required_pattern: |
-                    \/\/
-                    \/\/  Created by [^\(\)\d\n]+ on \S{6,10}\.
-                    \/\/  Copyright © \d{4} Flinesoft\. All rights reserved\.
-                    \/\/
-
 file_name:
-  suffix_pattern: "Extensions?|\\+.*"
+  suffix_pattern: "Ext?|\\+.*"
 
 file_types_order:
   order:

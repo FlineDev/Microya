@@ -15,8 +15,8 @@
     <a href="https://github.com/Flinesoft/HandySwift/releases">
     <img src="https://img.shields.io/badge/Version-0.2.0-blue.svg"
          alt="Version: 0.2.0">
-    <img src="https://img.shields.io/badge/Swift-4.2-FFAC45.svg"
-         alt="Swift: 4.2">
+    <img src="https://img.shields.io/badge/Swift-5.3-FFAC45.svg"
+         alt="Swift: 5.3">
     <img src="https://img.shields.io/badge/Platforms-iOS%20%7C%20macOS%20%7C%20tvOS%20%7C%20watchOS-FF69B4.svg"
         alt="Platforms: iOS | macOS | tvOS | watchOS">
     <a href="https://github.com/Flinesoft/Microya/blob/main/LICENSE.md">
@@ -53,7 +53,7 @@ A micro version of the [Moya](https://github.com/Moya/Moya) network abstraction 
 
 ## Installation
 
-Installation is supported via [CocoaPods](https://github.com/CocoaPods/CocoaPods), [Carthage](https://github.com/Carthage/Carthage), [SwiftPM](https://github.com/apple/swift-package-manager) and [Mint](https://github.com/yonaskolb/Mint).
+Installation is only supported via [SwiftPM](https://github.com/apple/swift-package-manager).
 
 ## Usage
 

@@ -1,17 +1,20 @@
-//
-//  Created by Cihat Gündüz on 14.02.19.
-//  Copyright © 2019 Flinesoft. All rights reserved.
-//
-
-//  Created by Cihat Gündüz on 14.01.19.
-
 import Foundation
 
+/// The collection of errors which can happen on API call.s
 public enum JsonApiError: Error {
+    /// No response received from server.
     case noResponseReceived
+
+    /// Response received, but no data received in body.
     case noDataReceived
+
+    /// Response with data received, but conversion to expected type failed.
     case responseDataConversionFailed(type: String, error: Error)
+
+    /// Received an unexpected status code.
     case unexpectedStatusCode(Int)
+
+    /// Unknown error happened.
     case unknownError(Error)
 }
 
@@ -112,22 +115,27 @@ extension JsonApi {
 
 /// Extension to provide default contents for optional fields.
 extension JsonApi {
+    /// The Decoder to use per request.
     public var decoder: JSONDecoder {
         JSONDecoder()
     }
 
+    /// The Encoder to use per request.
     public var encoder: JSONEncoder {
         JSONEncoder()
     }
 
+    /// The headers to send per request.
     public var headers: [String: String] {
         [:]
     }
 
+    /// The query parameters to send per request.
     public var queryParameters: [(key: String, value: String)] {
         []
     }
 
+    /// The body data to send per request.
     public var bodyData: Data? {
         nil
     }
