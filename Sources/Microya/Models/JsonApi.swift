@@ -1,4 +1,7 @@
 import Foundation
+#if canImport(FoundationNetworking)
+import FoundationNetworking
+#endif
 
 /// The collection of errors which can happen on API call.s
 public enum JsonApiError: Error {
