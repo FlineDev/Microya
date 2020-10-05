@@ -3,7 +3,6 @@
 
 
 @testable import MicroyaTests
-@testable import Utility
 import XCTest
 
 // swiftlint:disable line_length file_length
