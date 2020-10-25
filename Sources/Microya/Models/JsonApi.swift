@@ -3,26 +3,35 @@ import Foundation
 import FoundationNetworking
 #endif
 
-/// The collection of errors which can happen on API call.s
-public enum JsonApiError: Error {
-    /// No response received from server.
-    case noResponseReceived
+/// Collection of all possible exception that can be thrown when using `JsonApi`.
+public enum JsonApiError<ClientErrorType: Decodable>: Error {
+    /// The request was sent, but the server response was not received. Typically an issue with the internet connection.
+    case noResponseReceived(error: Error?)
 
-    /// Response received, but no data received in body.
-    case noDataReceived
+    /// The request was sent and the server responded, but the response did not include any body although a body was requested.
+    case noDataInResponse
 
-    /// Response with data received, but conversion to expected type failed.
+    /// The request was sent and the server responded with a body, but the conversion of the body to the given type failed.
     case responseDataConversionFailed(type: String, error: Error)
 
-    /// Received an unexpected status code.
-    case unexpectedStatusCode(Int)
+    /// The request was sent and the server responded, but the server reports that something is wrong with the request.
+    case clientError(statusCode: Int, clientError: ClientErrorType)
 
-    /// Unknown error happened.
-    case unknownError(Error)
+    /// The request was sent and the server responded, but there seems to be an error which needs to be fixed on the server.
+    case serverError(statusCode: Int)
+
+    /// The request was sent and the server responded, but with an unexpected status code.
+    case unexpectedStatusCode(statusCode: Int)
+
+    /// Server responded with a non HTTP response, although an HTTP request was made. Either a bug in `JsonApi` or on the server side.
+    case unexpectedResponseType(response: URLResponse)
 }
 
 /// The protocol which defines the structure of an API endpoint.
 public protocol JsonApi {
+    /// The error body type the server responds with for any client errors.
+    associatedtype ClientErrorType: Decodable
+
     /// The JSON decoder to be used for decoding.
     var decoder: JSONDecoder { get }
 
@@ -36,76 +45,108 @@ public protocol JsonApi {
     var headers: [String: String] { get }
 
     /// The subpath to be added to the base URL.
-    var path: String { get }
+    var subpath: String { get }
 
     /// The HTTP method to be used for the request.
-    var method: Method { get }
+    var method: HttpMethod { get }
 
     /// The URL query parameters to be sent (part after ? in URLs, e.g. google.com?query=Harry+Potter).
-    var queryParameters: [(key: String, value: String)] { get }
-
-    /// The body data to be sent along the request (e.g. JSON contents in a POST request).
-    var bodyData: Data? { get }
+    var queryParameters: [String: String] { get }
 }
 
 extension JsonApi {
-    /// Performs the request. Make sure to specify the correct return type (e.g. let result: MyType = api.request...).
-    public func request<ResultType: Decodable>(type: ResultType.Type) -> Result<ResultType, JsonApiError> {
-        let dispatchGroup = DispatchGroup()
-        dispatchGroup.enter()
+    /// Performs the request for the chosen endpoint.
+    public func performRequest<ResultType: Decodable>(completion: @escaping (Result<ResultType, JsonApiError<ClientErrorType>>) -> Void) {
+        URLSession.shared.dataTask(with: buildRequest()) { data, response, error in
+            completion(result(data: data, response: response, error: error))
+        }
+    }
 
-        var result: Result<ResultType, JsonApiError>?
+    private func result<ResultType: Decodable>(data: Data?, response: URLResponse?, error: Error?) -> Result<ResultType, JsonApiError<ClientErrorType>> {
+        if let error = error {
+            return .failure(JsonApiError<ClientErrorType>.noResponseReceived(error: error))
+        }
 
-        var request = URLRequest(url: requestUrl())
+        guard let response = response else {
+            return .failure(JsonApiError<ClientErrorType>.noResponseReceived(error: nil))
+        }
+
+        guard let httpResponse = response as? HTTPURLResponse else {
+            return .failure(JsonApiError<ClientErrorType>.unexpectedResponseType(response: response))
+        }
+
+        switch httpResponse.statusCode {
+        case 200 ..< 300:
+            guard let data = data else { return .failure(JsonApiError<ClientErrorType>.noDataInResponse) }
+
+            do {
+                return .success(try decoder.decode(ResultType.self, from: data))
+            } catch {
+                return .failure(
+                    JsonApiError<ClientErrorType>.responseDataConversionFailed(
+                        type: String(describing: ResultType.self),
+                        error: error
+                    )
+                )
+            }
+
+        case 400 ..< 500:
+            guard let data = data else { return .failure(JsonApiError<ClientErrorType>.noDataInResponse) }
+
+            do {
+                let clientError = try decoder.decode(ClientErrorType.self, from: data)
+                return .failure(
+                    JsonApiError<ClientErrorType>.clientError(statusCode: httpResponse.statusCode, clientError: clientError)
+                )
+            } catch {
+                return .failure(
+                    JsonApiError<ClientErrorType>.responseDataConversionFailed(
+                        type: String(describing: ClientErrorType.self),
+                        error: error
+                    )
+                )
+            }
+
+        case 500 ..< 600:
+            return .failure(
+                JsonApiError<ClientErrorType>.serverError(statusCode: httpResponse.statusCode)
+            )
+
+        default:
+            return .failure(
+                JsonApiError<ClientErrorType>.unexpectedStatusCode(statusCode: httpResponse.statusCode)
+            )
+        }
+    }
+
+    private func buildRequest() -> URLRequest {
+        var request = URLRequest(url: buildRequestUrl())
+
+        switch method {
+        case .get:
+            request.httpMethod = "GET"
+
+        case let .post(body):
+            request.httpMethod = "POST"
+            request.httpBody = body
+
+        case let .patch(body):
+            request.httpMethod = "PATCH"
+            request.httpBody = body
+
+        case .delete:
+            request.httpMethod = "DELETE"
+        }
+
         for (field, value) in headers {
             request.setValue(value, forHTTPHeaderField: field)
         }
 
-        if let bodyData = bodyData {
-            request.httpBody = bodyData
-        }
-
-        request.httpMethod = method.rawValue
-
-        let dataTask = URLSession.shared.dataTask(with: request) { data, urlResponse, error in
-            result = {
-                guard error == nil else { return .failure(JsonApiError.unknownError(error!)) }
-                guard let httpUrlResponse = urlResponse as? HTTPURLResponse else {
-                    return .failure(JsonApiError.noResponseReceived)
-                }
-
-                switch httpUrlResponse.statusCode {
-                case 200 ..< 300:
-                    guard let data = data else { return .failure(JsonApiError.noDataReceived) }
-                    do {
-                        let typedResult = try self.decoder.decode(type, from: data)
-                        return .success(typedResult)
-                    } catch {
-                        return .failure(JsonApiError.responseDataConversionFailed(type: String(describing: type), error: error))
-                    }
-
-                case 400 ..< 500:
-                    return .failure(JsonApiError.unexpectedStatusCode(httpUrlResponse.statusCode))
-
-                case 500 ..< 600:
-                    return .failure(JsonApiError.unexpectedStatusCode(httpUrlResponse.statusCode))
-
-                default:
-                    return .failure(JsonApiError.unexpectedStatusCode(httpUrlResponse.statusCode))
-                }
-            }()
-
-            dispatchGroup.leave()
-        }
-
-        dataTask.resume()
-        dispatchGroup.wait()
-
-        return result!
+        return request
     }
 
-    private func requestUrl() -> URL {
-        var urlComponents = URLComponents(url: baseUrl.appendingPathComponent(path), resolvingAgainstBaseURL: false)!
+    private func buildRequestUrl() -> URL {
+        var urlComponents = URLComponents(url: baseUrl.appendingPathComponent(subpath), resolvingAgainstBaseURL: false)!
 
         urlComponents.queryItems = []
         for (key, value) in queryParameters {
@@ -130,16 +171,20 @@ extension JsonApi {
 
     /// The headers to send per request.
     public var headers: [String: String] {
-        [:]
+        [
+            "Content-Type": "application/json",
+            "Accept": "application/json",
+            "Accept-Language": Locale.current.identifier
+        ]
     }
 
     /// The query parameters to send per request.
-    public var queryParameters: [(key: String, value: String)] {
-        []
+    public var queryParameters: [String: String] {
+        [:]
     }
 
     /// The body data to send per request.
-    public var bodyData: Data? {
+    public var body: Data? {
         nil
     }
 }
