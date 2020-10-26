@@ -182,9 +182,4 @@ extension JsonApi {
     public var queryParameters: [String: String] {
         [:]
     }
-
-    /// The body data to send per request.
-    public var body: Data? {
-        nil
-    }
 }
