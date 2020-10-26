@@ -35,7 +35,7 @@ public protocol JsonApi {
     /// The JSON decoder to be used for decoding.
     var decoder: JSONDecoder { get }
 
-    /// The JSNO encoder to be used for encoding.
+    /// The JSON encoder to be used for encoding.
     var encoder: JSONEncoder { get }
 
     /// The common base URL of the API endpoints.
