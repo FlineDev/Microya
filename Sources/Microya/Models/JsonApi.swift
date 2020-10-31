@@ -38,6 +38,9 @@ public protocol JsonApi {
     /// The JSON encoder to be used for encoding.
     var encoder: JSONEncoder { get }
 
+    /// The plugins to apply per request.
+    var plugins: [Plugin<Self>] { get }
+
     /// The common base URL of the API endpoints.
     var baseUrl: URL { get }
 
@@ -55,14 +58,29 @@ public protocol JsonApi {
 }
 
 extension JsonApi {
+    /// The Result received, either the expected `Decodable` response object or a `JsonApiError` case.
+    public typealias TypedResult<T: Decodable> = Result<T, JsonApiError<ClientErrorType>>
+
     /// Performs the request for the chosen endpoint.
-    public func performRequest<ResultType: Decodable>(completion: @escaping (Result<ResultType, JsonApiError<ClientErrorType>>) -> Void) {
-        URLSession.shared.dataTask(with: buildRequest()) { data, response, error in
-            completion(result(data: data, response: response, error: error))
+    public func performRequest<ResultType: Decodable>(completion: @escaping (TypedResult<ResultType>) -> Void) {
+        let request: URLRequest = buildRequest()
+
+        for plugin in plugins {
+            plugin.willPerformRequest(request, endpoint: self)
+        }
+
+        URLSession.shared.dataTask(with: request) { data, response, error in
+            let result: TypedResult<ResultType> = self.result(data: data, response: response, error: error)
+
+            for plugin in plugins {
+                plugin.didPerformRequest(result, endpoint: self)
+            }
+
+            completion(result)
         }
     }
 
-    private func result<ResultType: Decodable>(data: Data?, response: URLResponse?, error: Error?) -> Result<ResultType, JsonApiError<ClientErrorType>> {
+    private func result<ResultType: Decodable>(data: Data?, response: URLResponse?, error: Error?) -> TypedResult<ResultType> {
         if let error = error {
             return .failure(JsonApiError<ClientErrorType>.noResponseReceived(error: error))
         }
@@ -142,6 +160,10 @@ extension JsonApi {
             request.setValue(value, forHTTPHeaderField: field)
         }
 
+        for plugin in plugins {
+            request = plugin.modifyRequest(request, endpoint: self)
+        }
+
         return request
     }
 
@@ -157,19 +179,20 @@ extension JsonApi {
     }
 }
 
-/// Extension to provide default contents for optional fields.
+// swiftlint:disable missing_docs
 extension JsonApi {
-    /// The Decoder to use per request.
     public var decoder: JSONDecoder {
         JSONDecoder()
     }
 
-    /// The Encoder to use per request.
     public var encoder: JSONEncoder {
         JSONEncoder()
     }
 
-    /// The headers to send per request.
+    public var plugins: [Plugin<Self>] {
+        []
+    }
+
     public var headers: [String: String] {
         [
             "Content-Type": "application/json",
@@ -178,7 +201,6 @@ extension JsonApi {
         ]
     }
 
-    /// The query parameters to send per request.
     public var queryParameters: [String: String] {
         [:]
     }
