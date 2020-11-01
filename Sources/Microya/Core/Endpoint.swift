@@ -34,7 +34,19 @@ public protocol Endpoint {
 }
 
 extension Endpoint {
-    func buildRequestUrl() -> URL {
+    func buildRequest() -> URLRequest {
+        var request = URLRequest(url: buildRequestUrl())
+
+        method.apply(to: &request)
+
+        for (field, value) in headers {
+            request.setValue(value, forHTTPHeaderField: field)
+        }
+
+        return request
+    }
+
+    private func buildRequestUrl() -> URL {
         var urlComponents = URLComponents(
             url: baseUrl.appendingPathComponent(subpath),
             resolvingAgainstBaseURL: false

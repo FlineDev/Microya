@@ -13,4 +13,22 @@ public enum HttpMethod {
 
     /// The DELETE HTTP method.
     case delete
+
+    func apply(to request: inout URLRequest) {
+        switch self {
+        case .get:
+            request.httpMethod = "GET"
+
+        case let .post(body):
+            request.httpMethod = "POST"
+            request.httpBody = body
+
+        case let .patch(body):
+            request.httpMethod = "PATCH"
+            request.httpBody = body
+
+        case .delete:
+            request.httpMethod = "DELETE"
+        }
+    }
 }

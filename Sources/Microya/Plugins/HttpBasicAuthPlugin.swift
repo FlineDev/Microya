@@ -12,13 +12,9 @@ public class HttpBasicAuthPlugin<EndpointType: Endpoint>: Plugin<EndpointType> {
         self.tokenClosure = tokenClosure
     }
 
-    override public func modifyRequest(_ request: URLRequest, endpoint: EndpointType) -> URLRequest {
-        var request = request
-
+    override public func modifyRequest(_ request: inout URLRequest, endpoint: EndpointType) {
         if let token = tokenClosure() {
             request.addValue("Basic \(token)", forHTTPHeaderField: "Authorization")
         }
-
-        return request
     }
 }

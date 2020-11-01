@@ -14,7 +14,7 @@ open class Plugin<EndpointType: Endpoint> {
     public init() {}
 
     /// Called to modify a request before sending.
-    open func modifyRequest(_ request: URLRequest, endpoint: EndpointType) -> URLRequest { request }
+    open func modifyRequest(_ request: inout URLRequest, endpoint: EndpointType) { /* no-op */ }
 
     /// Called immediately before a request is sent.
     open func willPerformRequest(_ request: URLRequest, endpoint: EndpointType) { /* no-op */ }

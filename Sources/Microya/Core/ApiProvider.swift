@@ -1,4 +1,7 @@
 import Foundation
+#if canImport(FoundationNetworking)
+import FoundationNetworking
+#endif
 
 /// The API provider class to make the requests on.
 open class ApiProvider<EndpointType: Endpoint> {
@@ -40,7 +43,11 @@ open class ApiProvider<EndpointType: Endpoint> {
         decodeBodyTo: ResultType.Type,
         completion: @escaping (TypedResult<ResultType>) -> Void
     ) {
-        let request: URLRequest = buildRequest(endpoint: endpoint)
+        var request: URLRequest = endpoint.buildRequest()
+
+        for plugin in plugins {
+            plugin.modifyRequest(&request, endpoint: endpoint)
+        }
 
         for plugin in plugins {
             plugin.willPerformRequest(request, endpoint: endpoint)
@@ -48,7 +55,7 @@ open class ApiProvider<EndpointType: Endpoint> {
 
         let dataTask = URLSession.shared.dataTask(with: request) { data, response, error in
             let urlSessionResult: URLSessionResult = (data: data, response: response, error: error)
-            let typedResult: TypedResult<ResultType> = self.typedResult(from: urlSessionResult, on: endpoint)
+            let typedResult: TypedResult<ResultType> = self.decodeBody(from: urlSessionResult, endpoint: endpoint)
 
             for plugin in self.plugins {
                 plugin.didPerformRequest(urlSessionResult: urlSessionResult, typedResult: typedResult, endpoint: endpoint)
@@ -83,9 +90,9 @@ open class ApiProvider<EndpointType: Endpoint> {
         return result!
     }
 
-    private func typedResult<ResultType: Decodable>(
+    private func decodeBody<ResultType: Decodable>(
         from urlSessionResult: URLSessionResult,
-        on endpoint: EndpointType
+        endpoint: EndpointType
     ) -> TypedResult<ResultType> {
         if let error = urlSessionResult.error {
             return .failure(ApiError<EndpointType.ClientErrorType>.noResponseReceived(error: error))
@@ -152,35 +159,5 @@ open class ApiProvider<EndpointType: Endpoint> {
                 ApiError<EndpointType.ClientErrorType>.unexpectedStatusCode(statusCode: httpResponse.statusCode)
             )
         }
-    }
-
-    private func buildRequest(endpoint: EndpointType) -> URLRequest {
-        var request = URLRequest(url: endpoint.buildRequestUrl())
-
-        switch endpoint.method {
-        case .get:
-            request.httpMethod = "GET"
-
-        case let .post(body):
-            request.httpMethod = "POST"
-            request.httpBody = body
-
-        case let .patch(body):
-            request.httpMethod = "PATCH"
-            request.httpBody = body
-
-        case .delete:
-            request.httpMethod = "DELETE"
-        }
-
-        for (field, value) in endpoint.headers {
-            request.setValue(value, forHTTPHeaderField: field)
-        }
-
-        for plugin in plugins {
-            request = plugin.modifyRequest(request, endpoint: endpoint)
-        }
-
-        return request
     }
 }
