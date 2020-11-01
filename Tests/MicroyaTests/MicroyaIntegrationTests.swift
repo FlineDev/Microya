@@ -14,14 +14,15 @@ class MicroyaIntegrationTests: XCTestCase {
     }
 
     func testIndex() throws {
-        let typedResponseBody = try PostmanEchoApi
-            .index(sortedBy: "updatedAt")
-            .performRequestAndWait(decodeBodyTo: PostmanEchoResponse.self).get()
+        let typedResponseBody = try sampleApiProvider.performRequestAndWait(
+            on: .index(sortedBy: "updatedAt"),
+            decodeBodyTo: PostmanEchoResponse.self
+        ).get()
 
         XCTAssertEqual(TestDataStore.request?.allHTTPHeaderFields?["Content-Type"], "application/json")
         XCTAssertEqual(TestDataStore.request?.allHTTPHeaderFields?["Accept"], "application/json")
         XCTAssertEqual(TestDataStore.request?.allHTTPHeaderFields?["Accept-Language"], "en")
-        XCTAssertEqual(TestDataStore.request?.allHTTPHeaderFields?["Authorization"], nil)
+        XCTAssertEqual(TestDataStore.request?.allHTTPHeaderFields?["Authorization"], "Basic abc123")
 
         XCTAssertEqual(TestDataStore.request?.httpMethod, "GET")
         XCTAssertEqual(TestDataStore.request?.url?.path, "/get")
@@ -39,9 +40,10 @@ class MicroyaIntegrationTests: XCTestCase {
     }
 
     func testPost() throws {
-        let typedResponseBody = try PostmanEchoApi
-            .post(fooBar: FooBar(foo: "Lorem", bar: "Ipsum"))
-            .performRequestAndWait(decodeBodyTo: PostmanEchoResponse.self).get()
+        let typedResponseBody = try sampleApiProvider.performRequestAndWait(
+            on: .post(fooBar: FooBar(foo: "Lorem", bar: "Ipsum")),
+            decodeBodyTo: PostmanEchoResponse.self
+        ).get()
 
         XCTAssertEqual(TestDataStore.request?.allHTTPHeaderFields?["Content-Type"], "application/json")
         XCTAssertEqual(TestDataStore.request?.allHTTPHeaderFields?["Accept"], "application/json")
@@ -68,19 +70,17 @@ class MicroyaIntegrationTests: XCTestCase {
 
         XCTAssertFalse(TestDataStore.showingProgressIndicator)
 
-        PostmanEchoApi
-            .get(fooBarID: fooBarID)
-            .performRequest(decodeBodyTo: PostmanEchoResponse.self) { result in
-                switch result {
-                case .success:
-                    XCTFail("Expected to receive error due to missing endpoint path.")
+        sampleApiProvider.performRequest(on: .get(fooBarID: fooBarID), decodeBodyTo: PostmanEchoResponse.self) { result in
+            switch result {
+            case .success:
+                XCTFail("Expected to receive error due to missing endpoint path.")
 
-                default:
-                    break
-                }
-
-                expectation.fulfill()
+            default:
+                break
             }
+
+            expectation.fulfill()
+        }
 
         XCTAssertTrue(TestDataStore.showingProgressIndicator)
         wait(for: [expectation], timeout: 10)
@@ -89,7 +89,7 @@ class MicroyaIntegrationTests: XCTestCase {
         XCTAssertEqual(TestDataStore.request?.allHTTPHeaderFields?["Content-Type"], "application/json")
         XCTAssertEqual(TestDataStore.request?.allHTTPHeaderFields?["Accept"], "application/json")
         XCTAssertEqual(TestDataStore.request?.allHTTPHeaderFields?["Accept-Language"], "en")
-        XCTAssertEqual(TestDataStore.request?.allHTTPHeaderFields?["Authorization"], nil)
+        XCTAssertEqual(TestDataStore.request?.allHTTPHeaderFields?["Authorization"], "Basic abc123")
 
         XCTAssertEqual(TestDataStore.request?.httpMethod, "GET")
         XCTAssertEqual(TestDataStore.request?.url?.path, "/get/\(fooBarID)")
@@ -98,9 +98,10 @@ class MicroyaIntegrationTests: XCTestCase {
 
     func testPatch() throws {
         XCTAssertThrowsError(
-            try PostmanEchoApi
-                .patch(fooBarID: fooBarID, fooBar: FooBar(foo: "Dolor", bar: "Amet"))
-                .performRequestAndWait(decodeBodyTo: PostmanEchoResponse.self).get()
+            try sampleApiProvider.performRequestAndWait(
+                on: .patch(fooBarID: fooBarID, fooBar: FooBar(foo: "Dolor", bar: "Amet")),
+                decodeBodyTo: PostmanEchoResponse.self
+            ).get()
         )
 
         XCTAssertEqual(TestDataStore.request?.allHTTPHeaderFields?["Content-Type"], "application/json")
@@ -118,7 +119,7 @@ class MicroyaIntegrationTests: XCTestCase {
     }
 
     func testDelete() throws {
-        let result = PostmanEchoApi.delete.performRequestAndWait()
+        let result = sampleApiProvider.performRequestAndWait(on: .delete)
 
         switch result {
         case .success:

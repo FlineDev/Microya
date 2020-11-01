@@ -4,7 +4,19 @@ import FoundationNetworking
 @testable import Microya
 import XCTest
 
-enum PostmanEchoApi {
+let sampleApiProvider = ApiProvider<PostmanEchoEndpoint>(
+    plugins: [
+        HttpBasicAuthPlugin<PostmanEchoEndpoint>(tokenClosure: { "abc123" }),
+        RequestLoggerPlugin<PostmanEchoEndpoint>(logClosure: { TestDataStore.request = $0 }),
+        ResponseLoggerPlugin<PostmanEchoEndpoint>(logClosure: { TestDataStore.urlSessionResult = $0 }),
+        ProgressIndicatorPlugin<PostmanEchoEndpoint>(
+            showIndicator: { TestDataStore.showingProgressIndicator = true },
+            hideIndicator: { TestDataStore.showingProgressIndicator = false }
+        )
+    ]
+)
+
+enum PostmanEchoEndpoint {
     // Endpoints
     case index(sortedBy: String)
     case post(fooBar: FooBar)
@@ -22,7 +34,7 @@ enum PostmanEchoApi {
     )
 }
 
-extension PostmanEchoApi: JsonApi {
+extension PostmanEchoEndpoint: Endpoint {
     typealias ClientErrorType = PostmanEchoError
 
     var decoder: JSONDecoder {
