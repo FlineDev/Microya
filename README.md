@@ -4,9 +4,9 @@
 </p>
 
 <p align="center">
-    <a href="https://app.bitrise.io/app/9144757ac274834d">
-        <img src="https://app.bitrise.io/app/9144757ac274834d/status.svg?token=wnogmmQA9Zy7_2u75vRKdg&branch=main"
-             alt="Build Status">
+    <a href="https://github.com/Flinesoft/Microya/actions?query=workflow%3ACI+branch%3Amain">
+        <img src="https://github.com/Flinesoft/Microya/workflows/CI/badge.svg?branch=main"
+             alt="CI Status">
     </a>    
     <a href="https://codebeat.co/projects/github-com-flinesoft-microya-main">
         <img src="https://codebeat.co/badges/a669e100-d30d-4801-b72d-3625ab7240be"
@@ -17,8 +17,8 @@
          alt="Version: 0.2.0">
     <img src="https://img.shields.io/badge/Swift-5.3-FFAC45.svg"
          alt="Swift: 5.3">
-    <img src="https://img.shields.io/badge/Platforms-iOS%20%7C%20macOS%20%7C%20tvOS%20%7C%20watchOS-FF69B4.svg"
-        alt="Platforms: iOS | macOS | tvOS | watchOS">
+    <img src="https://img.shields.io/badge/Platforms-Apple%20%7C%20Linux-FF69B4.svg"
+        alt="Platforms: Apple | Linux">
     <a href="https://github.com/Flinesoft/Microya/blob/main/LICENSE.md">
         <img src="https://img.shields.io/badge/License-MIT-lightgrey.svg"
               alt="License: MIT">
