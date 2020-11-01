@@ -1,4 +1,7 @@
 import Foundation
+#if canImport(FoundationNetworking)
+import FoundationNetworking
+#endif
 
 /// Allows to log requests the given way provided by a closure before the requests are sent.
 public class RequestLoggerPlugin<JsonApiType: JsonApi>: Plugin<JsonApiType> {

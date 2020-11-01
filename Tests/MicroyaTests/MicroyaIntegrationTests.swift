@@ -1,3 +1,6 @@
+#if canImport(FoundationNetworking)
+import FoundationNetworking
+#endif
 @testable import Microya
 import XCTest
 

@@ -1,4 +1,7 @@
 import Foundation
+#if canImport(FoundationNetworking)
+import FoundationNetworking
+#endif
 
 /// A Plugin receives callbacks to perform side effects wherever a request is sent or received.
 ///

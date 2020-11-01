@@ -1,4 +1,7 @@
 import Foundation
+#if canImport(FoundationNetworking)
+import FoundationNetworking
+#endif
 
 /// Provides support for the HTTP "Authorization" header based on the "Basic" scheme.
 /// See also: https://developer.mozilla.org/en-US/docs/Web/HTTP/Authentication

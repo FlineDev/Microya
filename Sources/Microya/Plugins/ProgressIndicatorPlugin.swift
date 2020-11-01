@@ -1,4 +1,7 @@
 import Foundation
+#if canImport(FoundationNetworking)
+import FoundationNetworking
+#endif
 
 /// Allows to show & hide a progress indicator in a given way provided by a closure whenever there are any ongoing requests.
 ///
