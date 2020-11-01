@@ -5,12 +5,12 @@ public enum HttpMethod {
     /// The GET HTTP method.
     case get
 
-    /// The GET HTTP method. Required body data to be sent.
+    /// The POST HTTP method. Required body data to be sent.
     case post(body: Data)
 
-    /// The GET HTTP method. Required body data to be sent.
+    /// The PATCH HTTP method. Required body data to be sent.
     case patch(body: Data)
 
-    /// The GET HTTP method.
+    /// The DELETE HTTP method.
     case delete
 }

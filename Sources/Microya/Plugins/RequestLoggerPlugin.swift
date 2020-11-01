@@ -1,0 +1,14 @@
+import Foundation
+
+/// Allows to log requests the given way provided by a closure before the requests are sent.
+public class RequestLoggerPlugin<JsonApiType: JsonApi>: Plugin<JsonApiType> {
+    private let logClosure: (URLRequest) -> Void
+
+    public init(logClosure: @escaping (URLRequest) -> Void) {
+        self.logClosure = logClosure
+    }
+
+    override public func willPerformRequest(_ request: URLRequest, endpoint: JsonApiType) {
+        logClosure(request)
+    }
+}

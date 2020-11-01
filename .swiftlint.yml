@@ -53,7 +53,6 @@ opt_in_rules:
 - sorted_first_last
 - sorted_imports
 - switch_case_on_newline
-- trailing_closure
 - type_contents_order
 - unavailable_function
 - unneeded_parentheses_in_closure_argument
@@ -98,6 +97,10 @@ file_types_order:
 identifier_name:
   excluded:
     - id
+
+large_tuple:
+  warning: 3
+  error: 5
 
 line_length: 160
 

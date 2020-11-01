@@ -43,9 +43,5 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - uses: maxim-lobanov/setup-xcode@1.0
-        with:
-          xcode-version: 12.0
-
       - name: Run tests
         run: swift test -v

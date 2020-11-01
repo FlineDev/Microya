@@ -3,30 +3,6 @@ import Foundation
 import FoundationNetworking
 #endif
 
-/// Collection of all possible exception that can be thrown when using `JsonApi`.
-public enum JsonApiError<ClientErrorType: Decodable>: Error {
-    /// The request was sent, but the server response was not received. Typically an issue with the internet connection.
-    case noResponseReceived(error: Error?)
-
-    /// The request was sent and the server responded, but the response did not include any body although a body was requested.
-    case noDataInResponse
-
-    /// The request was sent and the server responded with a body, but the conversion of the body to the given type failed.
-    case responseDataConversionFailed(type: String, error: Error)
-
-    /// The request was sent and the server responded, but the server reports that something is wrong with the request.
-    case clientError(statusCode: Int, clientError: ClientErrorType)
-
-    /// The request was sent and the server responded, but there seems to be an error which needs to be fixed on the server.
-    case serverError(statusCode: Int)
-
-    /// The request was sent and the server responded, but with an unexpected status code.
-    case unexpectedStatusCode(statusCode: Int)
-
-    /// Server responded with a non HTTP response, although an HTTP request was made. Either a bug in `JsonApi` or on the server side.
-    case unexpectedResponseType(response: URLResponse)
-}
-
 /// The protocol which defines the structure of an API endpoint.
 public protocol JsonApi {
     /// The error body type the server responds with for any client errors.
@@ -61,7 +37,11 @@ extension JsonApi {
     /// The Result received, either the expected `Decodable` response object or a `JsonApiError` case.
     public typealias TypedResult<T: Decodable> = Result<T, JsonApiError<ClientErrorType>>
 
-    /// Performs the request for the chosen endpoint.
+    /// The lower level Result structure received directly from the native `URLSession` data task calls.
+    public typealias URLSessionResult = (data: Data?, response: URLResponse?, error: Error?)
+
+    /// Performs the asynchornous request for the chosen endpoint and calls the completion closure with the result.
+    /// Specify the expected result type as the `Decodable` generic type.
     public func performRequest<ResultType: Decodable>(completion: @escaping (TypedResult<ResultType>) -> Void) {
         let request: URLRequest = buildRequest()
 
@@ -69,23 +49,46 @@ extension JsonApi {
             plugin.willPerformRequest(request, endpoint: self)
         }
 
-        URLSession.shared.dataTask(with: request) { data, response, error in
-            let result: TypedResult<ResultType> = self.result(data: data, response: response, error: error)
+        let dataTask = URLSession.shared.dataTask(with: request) { data, response, error in
+            let urlSessionResult: URLSessionResult = (data: data, response: response, error: error)
+            let typedResult: TypedResult<ResultType> = self.typedResult(from: urlSessionResult)
 
             for plugin in plugins {
-                plugin.didPerformRequest(result, endpoint: self)
+                plugin.didPerformRequest(urlSessionResult: urlSessionResult, typedResult: typedResult, endpoint: self)
             }
 
-            completion(result)
+            completion(typedResult)
         }
+
+        dataTask.resume()
     }
 
-    private func result<ResultType: Decodable>(data: Data?, response: URLResponse?, error: Error?) -> TypedResult<ResultType> {
-        if let error = error {
+    /// Performs the request for the chosen endpoint synchronously (waits for the result) and returns the result.
+    /// Specify the expected result type as the `Decodable` generic type.
+    ///
+    /// - NOTE: Calling this will block the current thread until the result is available. Use `performRequest` instead for an asynchronous call.
+    public func performRequestAndWait<ResultType: Decodable>() -> TypedResult<ResultType> {
+        let dispatchGroup = DispatchGroup()
+        dispatchGroup.enter()
+
+        var result: TypedResult<ResultType>?
+
+        self.performRequest { (asyncResult: TypedResult<ResultType>) in
+            result = asyncResult
+            dispatchGroup.leave()
+        }
+
+        dispatchGroup.wait()
+
+        return result!
+    }
+
+    private func typedResult<ResultType: Decodable>(from urlSessionResult: URLSessionResult) -> TypedResult<ResultType> {
+        if let error = urlSessionResult.error {
             return .failure(JsonApiError<ClientErrorType>.noResponseReceived(error: error))
         }
 
-        guard let response = response else {
+        guard let response = urlSessionResult.response else {
             return .failure(JsonApiError<ClientErrorType>.noResponseReceived(error: nil))
         }
 
@@ -95,7 +98,7 @@ extension JsonApi {
 
         switch httpResponse.statusCode {
         case 200 ..< 300:
-            guard let data = data else { return .failure(JsonApiError<ClientErrorType>.noDataInResponse) }
+            guard let data = urlSessionResult.data else { return .failure(JsonApiError<ClientErrorType>.noDataInResponse) }
 
             do {
                 return .success(try decoder.decode(ResultType.self, from: data))
@@ -109,7 +112,7 @@ extension JsonApi {
             }
 
         case 400 ..< 500:
-            guard let data = data else { return .failure(JsonApiError<ClientErrorType>.noDataInResponse) }
+            guard let data = urlSessionResult.data else { return .failure(JsonApiError<ClientErrorType>.noDataInResponse) }
 
             do {
                 let clientError = try decoder.decode(ClientErrorType.self, from: data)
@@ -180,6 +183,8 @@ extension JsonApi {
 }
 
 // swiftlint:disable missing_docs
+
+// Provide sensible default to effectively make some of the protocol requirements optional.
 extension JsonApi {
     public var decoder: JSONDecoder {
         JSONDecoder()
@@ -197,7 +202,7 @@ extension JsonApi {
         [
             "Content-Type": "application/json",
             "Accept": "application/json",
-            "Accept-Language": Locale.current.identifier
+            "Accept-Language": Locale.current.languageCode ?? "en"
         ]
     }
 

@@ -7,11 +7,12 @@ import XCTest
 
 // swiftlint:disable line_length file_length
 
-extension ExampleTests {
-    static var allTests: [(String, (ExampleTests) -> () throws -> Void)] = [
+extension MicroyaIntegrationTests {
+    static var allTests: [(String, (MicroyaIntegrationTests) -> () throws -> Void)] = [
+        ("testIndex", testIndex)
     ]
 }
 
 XCTMain([
-    testCase(ExampleTests.allTests)
+    testCase(MicroyaIntegrationTests.allTests)
 ])
