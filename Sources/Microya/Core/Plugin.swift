@@ -10,6 +10,9 @@ import FoundationNetworking
 ///     - hide and show a network activity indicator
 ///     - inject additional information into a request (like for authentication)
 open class Plugin<JsonApiType: JsonApi> {
+    /// Initializes a new plugin object.
+    public init() {}
+
     /// Called to modify a request before sending.
     open func modifyRequest(_ request: URLRequest, endpoint: JsonApiType) -> URLRequest { request }
 
