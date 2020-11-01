@@ -3,7 +3,8 @@ import Foundation
 import FoundationNetworking
 #endif
 
-/// Allows to log responses the given way provided by a closure after the response has been received, but before the completion block is called.
+/// Allows to log responses the given way provided by a closure after the response has been received,
+/// but before the completion block is called.
 public class ResponseLoggerPlugin<JsonApiType: JsonApi>: Plugin<JsonApiType> {
     private let logClosure: (JsonApiType.URLSessionResult) -> Void
 

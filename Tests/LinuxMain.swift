@@ -9,7 +9,11 @@ import XCTest
 
 extension MicroyaIntegrationTests {
     static var allTests: [(String, (MicroyaIntegrationTests) -> () throws -> Void)] = [
-        ("testIndex", testIndex)
+        ("testIndex", testIndex),
+        ("testPost", testPost),
+        ("testGet", testGet),
+        ("testPatch", testPatch),
+        ("testDelete", testDelete)
     ]
 }
 

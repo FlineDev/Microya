@@ -3,6 +3,9 @@ import Foundation
 import FoundationNetworking
 #endif
 
+/// Helper type for request where no body is expected as part of the response.
+public struct EmptyBodyResponse: Decodable { /* no body needed */ }
+
 /// The protocol which defines the structure of an API endpoint.
 public protocol JsonApi {
     /// The error body type the server responds with for any client errors.
@@ -40,9 +43,29 @@ extension JsonApi {
     /// The lower level Result structure received directly from the native `URLSession` data task calls.
     public typealias URLSessionResult = (data: Data?, response: URLResponse?, error: Error?)
 
+    /// Performs the asynchornous request for the chosen write-only endpoint and calls the completion closure with the result.
+    /// Returns a `EmptyBodyResponse` on success.
+    ///
+    /// - WARNING: Do not use this if you expect a body response, use `performRequest(decodeBodyTo:complation:)` instead.
+    public func performRequest(completion: @escaping (TypedResult<EmptyBodyResponse>) -> Void) {
+        self.performRequest(decodeBodyTo: EmptyBodyResponse.self, completion: completion)
+    }
+
+    /// Performs the request for the chosen write-only endpoint synchronously (waits for the result).
+    /// Returns a `EmptyBodyResponse` on success.
+    ///
+    /// - WARNING: Do not use this if you expect a body response, use `performRequestAndWait(decodeBodyTo:)` instead.
+    /// - NOTE: Calling this will block the current thread until the result is available. Use `performRequest` instead for an async call.
+    public func performRequestAndWait() -> TypedResult<EmptyBodyResponse> {
+        self.performRequestAndWait(decodeBodyTo: EmptyBodyResponse.self)
+    }
+
     /// Performs the asynchornous request for the chosen endpoint and calls the completion closure with the result.
     /// Specify the expected result type as the `Decodable` generic type.
-    public func performRequest<ResultType: Decodable>(completion: @escaping (TypedResult<ResultType>) -> Void) {
+    public func performRequest<ResultType: Decodable>(
+        decodeBodyTo: ResultType.Type,
+        completion: @escaping (TypedResult<ResultType>) -> Void
+    ) {
         let request: URLRequest = buildRequest()
 
         for plugin in plugins {
@@ -66,14 +89,16 @@ extension JsonApi {
     /// Performs the request for the chosen endpoint synchronously (waits for the result) and returns the result.
     /// Specify the expected result type as the `Decodable` generic type.
     ///
-    /// - NOTE: Calling this will block the current thread until the result is available. Use `performRequest` instead for an asynchronous call.
-    public func performRequestAndWait<ResultType: Decodable>() -> TypedResult<ResultType> {
+    /// - NOTE: Calling this will block the current thread until the result is available. Use `performRequest` instead for an asyn call.
+    public func performRequestAndWait<ResultType: Decodable>(
+        decodeBodyTo bodyType: ResultType.Type
+    ) -> TypedResult<ResultType> {
         let dispatchGroup = DispatchGroup()
         dispatchGroup.enter()
 
         var result: TypedResult<ResultType>?
 
-        self.performRequest { (asyncResult: TypedResult<ResultType>) in
+        self.performRequest(decodeBodyTo: bodyType) { (asyncResult: TypedResult<ResultType>) in
             result = asyncResult
             dispatchGroup.leave()
         }
@@ -83,7 +108,9 @@ extension JsonApi {
         return result!
     }
 
-    private func typedResult<ResultType: Decodable>(from urlSessionResult: URLSessionResult) -> TypedResult<ResultType> {
+    private func typedResult<ResultType: Decodable>(
+        from urlSessionResult: URLSessionResult
+    ) -> TypedResult<ResultType> {
         if let error = urlSessionResult.error {
             return .failure(JsonApiError<ClientErrorType>.noResponseReceived(error: error))
         }
@@ -98,7 +125,13 @@ extension JsonApi {
 
         switch httpResponse.statusCode {
         case 200 ..< 300:
-            guard let data = urlSessionResult.data else { return .failure(JsonApiError<ClientErrorType>.noDataInResponse) }
+            if ResultType.self == EmptyBodyResponse.self {
+                return .success(EmptyBodyResponse() as! ResultType)
+            }
+
+            guard let data = urlSessionResult.data else {
+                return .failure(JsonApiError<ClientErrorType>.noDataInResponse(statusCode: httpResponse.statusCode))
+            }
 
             do {
                 return .success(try decoder.decode(ResultType.self, from: data))
@@ -112,12 +145,17 @@ extension JsonApi {
             }
 
         case 400 ..< 500:
-            guard let data = urlSessionResult.data else { return .failure(JsonApiError<ClientErrorType>.noDataInResponse) }
+            guard let data = urlSessionResult.data else {
+                return .failure(JsonApiError<ClientErrorType>.noDataInResponse(statusCode: httpResponse.statusCode))
+            }
 
             do {
                 let clientError = try decoder.decode(ClientErrorType.self, from: data)
                 return .failure(
-                    JsonApiError<ClientErrorType>.clientError(statusCode: httpResponse.statusCode, clientError: clientError)
+                    JsonApiError<ClientErrorType>.clientError(
+                        statusCode: httpResponse.statusCode,
+                        clientError: clientError
+                    )
                 )
             } catch {
                 return .failure(
@@ -173,9 +211,11 @@ extension JsonApi {
     private func buildRequestUrl() -> URL {
         var urlComponents = URLComponents(url: baseUrl.appendingPathComponent(subpath), resolvingAgainstBaseURL: false)!
 
-        urlComponents.queryItems = []
-        for (key, value) in queryParameters {
-            urlComponents.queryItems?.append(URLQueryItem(name: key, value: value))
+        if !queryParameters.isEmpty {
+            urlComponents.queryItems = []
+            for (key, value) in queryParameters {
+                urlComponents.queryItems?.append(URLQueryItem(name: key, value: value))
+            }
         }
 
         return urlComponents.url!

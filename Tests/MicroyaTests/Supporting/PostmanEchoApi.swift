@@ -10,7 +10,7 @@ enum PostmanEchoApi {
     case post(fooBar: FooBar)
     case get(fooBarID: String)
     case patch(fooBarID: String, fooBar: FooBar)
-    case delete(fooBarID: String)
+    case delete
 
     // Plugins
     static let basicAuthPlugin = HttpBasicAuthPlugin<Self>(tokenClosure: { "abc123" })
@@ -80,8 +80,8 @@ extension PostmanEchoApi: JsonApi {
         case let .patch(fooBarID, _):
             return "patch/\(fooBarID)"
 
-        case let .delete(fooBarID):
-            return "delete/\(fooBarID)"
+        case .delete:
+            return "delete"
         }
     }
 

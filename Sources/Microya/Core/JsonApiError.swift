@@ -9,7 +9,7 @@ public enum JsonApiError<ClientErrorType: Decodable>: Error {
     case noResponseReceived(error: Error?)
 
     /// The request was sent and the server responded, but the response did not include any body although a body was requested.
-    case noDataInResponse
+    case noDataInResponse(statusCode: Int)
 
     /// The request was sent and the server responded with a body, but the conversion of the body to the given type failed.
     case responseDataConversionFailed(type: String, error: Error)
