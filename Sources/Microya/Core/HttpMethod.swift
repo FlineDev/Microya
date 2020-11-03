@@ -1,4 +1,7 @@
 import Foundation
+#if canImport(FoundationNetworking)
+import FoundationNetworking
+#endif
 
 /// The relevant HTTP request methods defined in the HTTP standard.
 public enum HttpMethod {

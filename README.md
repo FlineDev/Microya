@@ -80,21 +80,20 @@ enum Language: String {
 }
 ```
 
-### Step 2: Making your Api `JsonApi` compliant
+### Step 2: Making your Api `Endpoint` compliant
 
-Add an extension for your Api `enum` that makes it `JsonApi` compliant, which means you need to add implementations for the following protocol:
+Add an extension for your Api `enum` that makes it `Endpoint` compliant, which means you need to add implementations for the following protocol:
 
 ```Swift
-protocol JsonApi {
+public protocol Endpoint {
+    associatedtype ClientErrorType: Decodable
     var decoder: JSONDecoder { get }
     var encoder: JSONEncoder { get }
-
     var baseUrl: URL { get }
     var headers: [String: String] { get }
-    var path: String { get }
-    var method: Method { get }
-    var queryParameters: [(key: String, value: String)] { get }
-    var bodyData: Data? { get }
+    var subpath: String { get }
+    var method: HttpMethod { get }
+    var queryParameters: [String: String] { get }
 }
 ```
 
@@ -104,7 +103,9 @@ Use `switch` statements over `self` to differentiate between the cases (if neede
 <summary>Toggle me to see an example</summary>
 
 ```Swift
-extension MicrosoftTranslatorApi: JsonApi {
+extension MicrosoftTranslatorEndpoint: Endpoint {
+    typealias ClientErrorType = EmptyResponseType
+
     var decoder: JSONDecoder {
         return JSONDecoder()
     }
@@ -116,55 +117,7 @@ extension MicrosoftTranslatorApi: JsonApi {
     var baseUrl: URL {
         return URL(string: "https://api.cognitive.microsofttranslator.com")!
     }
-
-    var path: String {
-        switch self {
-        case .languages:
-            return "/languages"
-
-        case .translate:
-            return "/translate"
-        }
-    }
-
-    var method: Method {
-        switch self {
-        case .languages:
-            return .get
-
-        case .translate:
-            return .post
-        }
-    }
-
-    var queryParameters: [(key: String, value: String)] {
-        var urlParameters: [(String, String)] = [(key: "api-version", value: "3.0")]
-
-        switch self {
-        case .languages:
-            break
-
-        case let .translate(_, sourceLanguage, targetLanguages, _):
-            urlParameters.append((key: "from", value: sourceLanguage.rawValue))
-
-            for targetLanguage in targetLanguages {
-                urlParameters.append((key: "to", value: targetLanguage.rawValue))
-            }              
-        }
-
-        return urlParameters
-    }
-
-    var bodyData: Data? {
-        switch self {
-        case .translate:
-            return nil // no request data needed
-
-        case let .translate(texts, _, _, _):
-            return try! encoder.encode(texts)
-        }
-    }
-
+    
     var headers: [String: String] {
         switch self {
         case .languages:
@@ -177,6 +130,41 @@ extension MicrosoftTranslatorApi: JsonApi {
             ]
         }
     }
+
+    var subpath: String {
+        switch self {
+        case .languages:
+            return "/languages"
+
+        case .translate:
+            return "/translate"
+        }
+    }
+
+    var method: HttpMethod {
+        switch self {
+        case .languages:
+            return .get
+
+        case let .translate(texts, _, _):
+            return .post(try! encoder.encode(texts))
+        }
+    }
+
+    var queryParameters: [String: String] {
+        var queryParameters: [String: String] = ["api-version": "3.0"]
+
+        switch self {
+        case .languages:
+            break
+
+        case let .translate(_, sourceLanguage, targetLanguages, _):
+            queryParameters["from"] = sourceLanguage.rawValue
+            queryParameters["to"] = targetLanguages.map { $0.rawValue }.joined(by: ",")
+        }
+
+        return queryParameters
+    }
 }
 ```
 
@@ -184,22 +172,58 @@ extension MicrosoftTranslatorApi: JsonApi {
 
 ### Step 3: Calling your API endpoint with the Result type
 
-Call an API endpoint providing a `Decodable` type of the expected result (if any) by using this method pre-implemented in the `JsonApi` protocol:
+Call an API endpoint providing a `Decodable` type of the expected result (if any) by using one of the methods pre-implemented in the `ApiProvider` type:
 
 ```Swift
-func request<ResultType: Decodable>(type: ResultType.Type) -> Result<ResultType, JsonApiError>
+/// Performs the asynchornous request for the chosen endpoint and calls the completion closure with the result.
+performRequest<T: Decodable>(
+    on endpoint: EndpointType,
+    decodeBodyTo: T,
+    completion: @escaping (Result<T, ApiError<ClientErrorType>>) -> Void
+)
+
+/// Performs the request for the chosen endpoint synchronously (waits for the result) and returns the result.
+public func performRequestAndWait<ResultType: Decodable>(
+    on endpoint: EndpointType,
+    decodeBodyTo bodyType: ResultType.Type
+)
 ```
 
-For example:
+There's also extra methods for endpoints where you don't expect a response body:
+
+```swift
+/// Performs the asynchronous request for the chosen write-only endpoint and calls the completion closure with the result.
+performRequest(on endpoint: EndpointType, completion: @escaping (Result<T, ApiError<ClientErrorType>>) -> Void)
+
+/// Performs the request for the chosen write-only endpoint synchronously (waits for the result).
+performRequestAndWait(on endpoint: EndpointType) -> Result<EmptyBodyResponse, ApiError<ClientErrorType>>
+```
+
+The `EmptyBodyResponse` returned here is just an empty type, so you can just ignore it.
+
+Here's a full example of a call you could make with Mircoya:
 
 ```Swift
-let endpoint = MicrosoftTranslatorApi.translate(texts: ["Test"], from: .english, to: [.german, .japanese, .turkish])
+let provider = ApiProvider<MicrosoftTranslatorEndpoint>()
+let endpoint = MicrosoftTranslatorEndpoint.translate(texts: ["Test"], from: .english, to: [.german, .japanese, .turkish])
 
-switch endpoint.request(type: [String: String].self) {
+provider.performRequest(on: endpoint, decodeBodyTo: [String: String].self) { result in
+    switch result {
+    case let .success(translationsByLanguage):
+        // use the already decoded `[String: String]` result
+
+    case let .failure(apiError):
+        // error handling
+    }
+}
+
+// OR, if you prefere a synchronous call, use the `AndWait` variant
+
+switch provider.performRequestAndWait(on: endpoint, decodeBodyTo: [String: String].self) {
 case let .success(translationsByLanguage):
     // use the already decoded `[String: String]` result
 
-case let .failure(error):
+case let .failure(apiError):
     // error handling
 }
 ```
@@ -207,13 +231,99 @@ case let .failure(error):
 Note that you can also use the throwing `get()` function of Swift 5's `Result` type instead of using a `switch` statement:
 
 ```Swift
-let endpoint = MicrosoftTranslatorApi.translate(texts: ["Test"], from: .english, to: [.german, .japanese, .turkish])
-let translationsByLanguage = try endpoint.request(type: [String: String].self).get()
+provider.performRequest(on: endpoint, decodeBodyTo: [String: String].self) { result in
+    let translationsByLanguage = try result.get()
+    // use the already decoded `[String: String]` result
+}
+
+// OR, if you prefere a synchronous call, use the `AndWait` variant
+
+let translationsByLanguage = try provider.performRequestAndWait(on: endpoint, decodeBodyTo: [String: String].self).get()
 // use the already decoded `[String: String]` result
 ```
 
 There's even useful functional methods defined on the `Result` type like `map()`, `flatMap()` or `mapError()` and `flatMapError()`. See the "Transforming Result" section in [this](https://www.hackingwithswift.com/articles/161/how-to-use-result-in-swift) article for more information.
 
+### Plugins
+
+The initializer of `ApiProvider` accepts an array of `Plugin` objects. You can implement your own plugins or use one of the existing ones in the [Plugins](https://github.com/Flinesoft/Microya/tree/main/Sources/Microya/Plugins) directory. Here's are the callbacks a custom `Plugin` subclass can override:
+
+```swift
+/// Called to modify a request before sending.
+modifyRequest(_ request: inout URLRequest, endpoint: EndpointType)
+
+/// Called immediately before a request is sent.
+willPerformRequest(_ request: URLRequest, endpoint: EndpointType)
+
+/// Called after a response has been received & decoded, but before calling the completion handler.
+didPerformRequest<ResultType: Decodable>(
+    urlSessionResult: (data: Data?, response: URLResponse?, error: Error?),
+    typedResult: Result<ResultType, ApiError<EndpointType.ClientErrorType>>,
+    endpoint: EndpointType
+)
+```
+
+<details>
+<summary>Toggle me to see a full custom plugin example</summary>
+
+Here's a possible implementation of a `RequestResponseLoggerPlugin` that logs using `print`:
+
+```swift
+class RequestResponseLoggerPlugin<EndpointType: Endpoint>: Plugin<EndpointType> {
+    override func willPerformRequest(_ request: URLRequest, endpoint: EndpointType) {
+        print("Endpoint: \(endpoint), Request: \(request)")
+    }
+    
+    override func didPerformRequest<ResultType: Decodable>(
+        urlSessionResult: ApiProvider<EndpointType>.URLSessionResult,
+        typedResult: ApiProvider<EndpointType>.TypedResult<ResultType>,
+        endpoint: EndpointType
+    ) {
+        print("Endpoint: \(endpoint), URLSession result: \(urlSessionResult), Typed result: \(typedResult)")
+    }
+}
+
+```
+
+</details>
+
+
+
+### Shortcuts
+
+`Endpoint` provides default implementations for most of its required methods, namely:
+
+```swift
+public var decoder: JSONDecoder { JSONDecoder() }
+
+public var encoder: JSONEncoder { JSONEncoder() }
+
+public var plugins: [Plugin<Self>] { [] }
+
+public var headers: [String: String] {
+    [
+        "Content-Type": "application/json",
+        "Accept": "application/json",
+        "Accept-Language": Locale.current.languageCode ?? "en"
+    ]
+}
+
+public var queryParameters: [String: String] { [:] }
+```
+
+So technically, the `Endpoint` type only requires you to specify the following 4 things:
+
+```swift
+protocol Endpoint {
+    associatedtype ClientErrorType: Decodable
+    var baseUrl: URL { get }
+    var subpath: String { get }
+    var method: HttpMethod { get }
+}
+```
+
+This can be a time (/ code) saver for simple APIs you want to access.
+You can also use `EmptyBodyResponse` type for `ClientErrorType` to ignore the client error body structure.
 
 ## Donation
 

@@ -23,15 +23,6 @@ enum PostmanEchoEndpoint {
     case get(fooBarID: String)
     case patch(fooBarID: String, fooBar: FooBar)
     case delete
-
-    // Plugins
-    static let basicAuthPlugin = HttpBasicAuthPlugin<Self>(tokenClosure: { "abc123" })
-    static let requestLoggerPlugin = RequestLoggerPlugin<Self>(logClosure: { TestDataStore.request = $0 })
-    static let responseLoggerPlugin = ResponseLoggerPlugin<Self>(logClosure: { TestDataStore.urlSessionResult = $0 })
-    static let progressIndicatorPlugin = ProgressIndicatorPlugin<Self>(
-        showIndicator: { TestDataStore.showingProgressIndicator = true },
-        hideIndicator: { TestDataStore.showingProgressIndicator = false }
-    )
 }
 
 extension PostmanEchoEndpoint: Endpoint {
@@ -47,23 +38,6 @@ extension PostmanEchoEndpoint: Endpoint {
         let encoder = JSONEncoder()
         encoder.dateEncodingStrategy = .iso8601
         return encoder
-    }
-
-    var plugins: [Plugin<Self>] {
-        var plugins: [Plugin<Self>] = [Self.requestLoggerPlugin, Self.responseLoggerPlugin]
-
-        switch self {
-        case .index:
-            break
-
-        case .get:
-            plugins.append(Self.progressIndicatorPlugin)
-
-        case .post, .patch, .delete:
-            plugins.append(Self.basicAuthPlugin)
-        }
-
-        return plugins
     }
 
     var baseUrl: URL {

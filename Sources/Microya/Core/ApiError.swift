@@ -15,7 +15,7 @@ public enum ApiError<ClientErrorType: Decodable>: Error {
     case responseDataConversionFailed(type: String, error: Error)
 
     /// The request was sent and the server responded, but the server reports that something is wrong with the request.
-    case clientError(statusCode: Int, clientError: ClientErrorType)
+    case clientError(statusCode: Int, clientError: ClientErrorType?)
 
     /// The request was sent and the server responded, but there seems to be an error which needs to be fixed on the server.
     case serverError(statusCode: Int)

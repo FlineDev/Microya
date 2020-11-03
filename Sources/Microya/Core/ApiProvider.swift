@@ -15,11 +15,11 @@ open class ApiProvider<EndpointType: Endpoint> {
     public let plugins: [Plugin<EndpointType>]
 
     /// Initializes a new API provider with the given plugins applied to every request.
-    public init(plugins: [Plugin<EndpointType>]) {
+    public init(plugins: [Plugin<EndpointType>] = []) {
         self.plugins = plugins
     }
 
-    /// Performs the asynchornous request for the chosen write-only endpoint and calls the completion closure with the result.
+    /// Performs the asynchronous request for the chosen write-only endpoint and calls the completion closure with the result.
     /// Returns a `EmptyBodyResponse` on success.
     ///
     /// - WARNING: Do not use this if you expect a body response, use `performRequest(decodeBodyTo:complation:)` instead.
@@ -36,7 +36,7 @@ open class ApiProvider<EndpointType: Endpoint> {
         self.performRequestAndWait(on: endpoint, decodeBodyTo: EmptyBodyResponse.self)
     }
 
-    /// Performs the asynchornous request for the chosen endpoint and calls the completion closure with the result.
+    /// Performs the asynchronous request for the chosen endpoint and calls the completion closure with the result.
     /// Specify the expected result type as the `Decodable` generic type.
     public func performRequest<ResultType: Decodable>(
         on endpoint: EndpointType,
@@ -128,26 +128,26 @@ open class ApiProvider<EndpointType: Endpoint> {
             }
 
         case 400 ..< 500:
+            if ResultType.self == EmptyBodyResponse.self {
+                return .failure(
+                    ApiError<EndpointType.ClientErrorType>.clientError(
+                        statusCode: httpResponse.statusCode,
+                        clientError: nil
+                    )
+                )
+            }
+
             guard let data = urlSessionResult.data else {
                 return .failure(ApiError<EndpointType.ClientErrorType>.noDataInResponse(statusCode: httpResponse.statusCode))
             }
 
-            do {
-                let clientError = try endpoint.decoder.decode(EndpointType.ClientErrorType.self, from: data)
-                return .failure(
-                    ApiError<EndpointType.ClientErrorType>.clientError(
-                        statusCode: httpResponse.statusCode,
-                        clientError: clientError
-                    )
+            let clientError = try? endpoint.decoder.decode(EndpointType.ClientErrorType.self, from: data)
+            return .failure(
+                ApiError<EndpointType.ClientErrorType>.clientError(
+                    statusCode: httpResponse.statusCode,
+                    clientError: clientError
                 )
-            } catch {
-                return .failure(
-                    ApiError<EndpointType.ClientErrorType>.responseDataConversionFailed(
-                        type: String(describing: EndpointType.ClientErrorType.self),
-                        error: error
-                    )
-                )
-            }
+            )
 
         case 500 ..< 600:
             return .failure(
