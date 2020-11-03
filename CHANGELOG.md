@@ -17,6 +17,23 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 ### Security
 - None.
 
+## [0.3.0] - 2020-11-03
+### Added
+- New `ApiProvider` type encapsulating different request methods with support for plugins.
+- New asynchronous `performRequest` methods with completion callbacks. ([#2](https://github.com/Flinesoft/Microya/issues/2))
+- New `Plugin` class to subclass for integrating into the networking logic via callbacks.
+- New pre-implemented plugins: `HttpBasicAuth`, `ProgressIndicator`, `RequestLogger`, `ResponseLogger`.
+- New `EmptyResponseBody` type to use whenever the body is expected to be empty or should be ignored.
+### Changed
+- Renamed `JsonApi` protocol to `Endpoint`.
+- Renamed `Method` to `HttpMethod` and added `body: Data` to the cases `post` and `patch`.
+- Moved the `request` method from `JsonApi` to the new `ApiProvider` & renamed to `performRequestAndWait`.
+- Generally improved the cases in `JsonApiError` & renamed the type to `ApiError`.
+- Moved CI from [Bitrise](https://www.bitrise.io/) to [GitHub Actions](https://github.com/Flinesoft/Microya/actions).
+### Removed
+- The `bodyData: Data?` requirement on `JsonApi` (bodies are not part of `HttpMethod`, see above).
+- Installation is no longer possible via [CocoaPods](https://github.com/CocoaPods/CocoaPods) or [Carthage](https://github.com/Carthage/Carthage). Please use [SwiftPM](https://github.com/apple/swift-package-manager) instead.
+
 ## [0.2.0] - 2020-08-15
 ### Changed
 - Make some fields of the `JsonApi` protocol optional by providing default implementation.
