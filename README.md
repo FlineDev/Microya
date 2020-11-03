@@ -69,17 +69,6 @@ enum MicrosoftTranslatorApi {
 }
 ```
 
-Note that the `Language` type used above does not necessarily need to be an `Encodable` type:
-
-```Swift
-enum Language: String {
-    case english = "en"
-    case german = "de"
-    case japanese = "jp"
-    case turkish = "tr"
-}
-```
-
 ### Step 2: Making your Api `Endpoint` compliant
 
 Add an extension for your Api `enum` that makes it `Endpoint` compliant, which means you need to add implementations for the following protocol:
@@ -176,10 +165,10 @@ Call an API endpoint providing a `Decodable` type of the expected result (if any
 
 ```Swift
 /// Performs the asynchornous request for the chosen endpoint and calls the completion closure with the result.
-performRequest<T: Decodable>(
+performRequest<ResultType: Decodable>(
     on endpoint: EndpointType,
-    decodeBodyTo: T,
-    completion: @escaping (Result<T, ApiError<ClientErrorType>>) -> Void
+    decodeBodyTo: ResultType.Type,
+    completion: @escaping (Result<ResultType, ApiError<ClientErrorType>>) -> Void
 )
 
 /// Performs the request for the chosen endpoint synchronously (waits for the result) and returns the result.
@@ -193,7 +182,7 @@ There's also extra methods for endpoints where you don't expect a response body:
 
 ```swift
 /// Performs the asynchronous request for the chosen write-only endpoint and calls the completion closure with the result.
-performRequest(on endpoint: EndpointType, completion: @escaping (Result<T, ApiError<ClientErrorType>>) -> Void)
+performRequest(on endpoint: EndpointType, completion: @escaping (Result<EmptyBodyResponse, ApiError<ClientErrorType>>) -> Void)
 
 /// Performs the request for the chosen write-only endpoint synchronously (waits for the result).
 performRequestAndWait(on endpoint: EndpointType) -> Result<EmptyBodyResponse, ApiError<ClientErrorType>>
@@ -217,7 +206,7 @@ provider.performRequest(on: endpoint, decodeBodyTo: [String: String].self) { res
     }
 }
 
-// OR, if you prefere a synchronous call, use the `AndWait` variant
+// OR, if you prefer a synchronous call, use the `AndWait` variant
 
 switch provider.performRequestAndWait(on: endpoint, decodeBodyTo: [String: String].self) {
 case let .success(translationsByLanguage):
@@ -228,7 +217,7 @@ case let .failure(apiError):
 }
 ```
 
-Note that you can also use the throwing `get()` function of Swift 5's `Result` type instead of using a `switch` statement:
+Note that you can also use the throwing `get()` function of Swift 5's `Result` type instead of using a `switch`:
 
 ```Swift
 provider.performRequest(on: endpoint, decodeBodyTo: [String: String].self) { result in
@@ -236,7 +225,7 @@ provider.performRequest(on: endpoint, decodeBodyTo: [String: String].self) { res
     // use the already decoded `[String: String]` result
 }
 
-// OR, if you prefere a synchronous call, use the `AndWait` variant
+// OR, if you prefer a synchronous call, use the `AndWait` variant
 
 let translationsByLanguage = try provider.performRequestAndWait(on: endpoint, decodeBodyTo: [String: String].self).get()
 // use the already decoded `[String: String]` result
