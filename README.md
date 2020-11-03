@@ -13,8 +13,8 @@
              alt="codebeat badge">
     </a>
     <a href="https://github.com/Flinesoft/HandySwift/releases">
-    <img src="https://img.shields.io/badge/Version-0.2.0-blue.svg"
-         alt="Version: 0.2.0">
+    <img src="https://img.shields.io/badge/Version-0.3.0-blue.svg"
+         alt="Version: 0.3.0">
     <img src="https://img.shields.io/badge/Swift-5.3-FFAC45.svg"
          alt="Swift: 5.3">
     <img src="https://img.shields.io/badge/Platforms-Apple%20%7C%20Linux-FF69B4.svg"
@@ -117,7 +117,7 @@ extension MicrosoftTranslatorEndpoint: Endpoint {
     var baseUrl: URL {
         return URL(string: "https://api.cognitive.microsofttranslator.com")!
     }
-    
+
     var headers: [String: String] {
         switch self {
         case .languages:
@@ -273,7 +273,7 @@ class RequestResponseLoggerPlugin<EndpointType: Endpoint>: Plugin<EndpointType> 
     override func willPerformRequest(_ request: URLRequest, endpoint: EndpointType) {
         print("Endpoint: \(endpoint), Request: \(request)")
     }
-    
+
     override func didPerformRequest<ResultType: Decodable>(
         urlSessionResult: ApiProvider<EndpointType>.URLSessionResult,
         typedResult: ApiProvider<EndpointType>.TypedResult<ResultType>,
