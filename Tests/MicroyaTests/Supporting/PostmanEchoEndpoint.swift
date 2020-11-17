@@ -87,10 +87,10 @@ extension PostmanEchoEndpoint: Endpoint {
         }
     }
 
-    var queryParameters: [String: String] {
+    var queryParameters: [String: QueryParameterValue] {
         switch self {
         case let .index(sortedBy):
-            return ["sortedBy": sortedBy]
+            return ["sortedBy": .string(sortedBy)]
 
         default:
             return [:]

@@ -7,7 +7,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 ### Added
 - None.
 ### Changed
-- None.
+- The `queryParameters` is no longer of type `[String: String]`, but `[String: QueryParameterValue]` now. Existing code like `["search": searchTerm]` will need to be updated to `["search": .string(searchTerm)]`. Apart from `.string` this now also allows specifying an array of strings like so: `["tags": .array(userSelectedTags)]`. String & array literals are supported directly, e.g. `["sort": "createdAt"]` or `["sort": ["createdAt", "id"]]`.
 ### Deprecated
 - None.
 ### Removed

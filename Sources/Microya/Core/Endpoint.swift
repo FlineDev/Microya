@@ -30,7 +30,7 @@ public protocol Endpoint {
     var method: HttpMethod { get }
 
     /// The URL query parameters to be sent (part after ? in URLs, e.g. google.com?query=Harry+Potter).
-    var queryParameters: [String: String] { get }
+    var queryParameters: [String: QueryParameterValue] { get }
 }
 
 extension Endpoint {
@@ -55,7 +55,9 @@ extension Endpoint {
         if !queryParameters.isEmpty {
             urlComponents.queryItems = []
             for (key, value) in queryParameters {
-                urlComponents.queryItems?.append(URLQueryItem(name: key, value: value))
+                for stringValue in value.values {
+                    urlComponents.queryItems?.append(URLQueryItem(name: key, value: stringValue))
+                }
             }
         }
 
@@ -87,7 +89,7 @@ extension Endpoint {
         ]
     }
 
-    public var queryParameters: [String: String] {
+    public var queryParameters: [String: QueryParameterValue] {
         [:]
     }
 }
