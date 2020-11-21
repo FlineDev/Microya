@@ -10,6 +10,10 @@ import XCTest
 class MicroyaIntegrationTests: XCTestCase {
   private let fooBarID: String = "aBcDeF012-gHiJkLMnOpQ3456-RsTuVwXyZ789"
 
+  #if canImport(Combine)
+    var cancellables: Set<AnyCancellable> = []
+  #endif
+
   override func setUpWithError() throws {
     try super.setUpWithError()
 
@@ -155,10 +159,8 @@ class MicroyaIntegrationTests: XCTestCase {
     XCTAssertNotNil(TestDataStore.urlSessionResult?.response)
   }
 
-  #if canImport(Combine)
-    var cancellables: Set<AnyCancellable>!
-
-    func testIndexCombine() throws {
+  func testIndexCombine() throws {
+    #if canImport(Combine)
       let expectation = XCTestExpectation()
 
       sampleApiProvider.publisher(
@@ -193,9 +195,11 @@ class MicroyaIntegrationTests: XCTestCase {
       .store(in: &cancellables)
 
       wait(for: [expectation], timeout: 10)
-    }
+    #endif
+  }
 
-    func testPostCombine() throws {
+  func testPostCombine() throws {
+    #if canImport(Combine)
       let expectation = XCTestExpectation()
 
       sampleApiProvider.publisher(
@@ -230,9 +234,11 @@ class MicroyaIntegrationTests: XCTestCase {
       .store(in: &cancellables)
 
       wait(for: [expectation], timeout: 10)
-    }
+    #endif
+  }
 
-    func testGetCombine() throws {
+  func testGetCombine() throws {
+    #if canImport(Combine)
       let expectation = XCTestExpectation()
 
       XCTAssertFalse(TestDataStore.showingProgressIndicator)
@@ -264,9 +270,11 @@ class MicroyaIntegrationTests: XCTestCase {
 
       XCTAssertTrue(TestDataStore.showingProgressIndicator)
       wait(for: [expectation], timeout: 10)
-    }
+    #endif
+  }
 
-    func testPatchCombine() throws {
+  func testPatchCombine() throws {
+    #if canImport(Combine)
       let expectation = XCTestExpectation()
 
       sampleApiProvider.publisher(
@@ -305,9 +313,11 @@ class MicroyaIntegrationTests: XCTestCase {
       .store(in: &cancellables)
 
       wait(for: [expectation], timeout: 10)
-    }
+    #endif
+  }
 
-    func testDeleteCombine() throws {
+  func testDeleteCombine() throws {
+    #if canImport(Combine)
       let expectation = XCTestExpectation()
 
       sampleApiProvider.publisher(on: .delete)
@@ -334,6 +344,6 @@ class MicroyaIntegrationTests: XCTestCase {
         .store(in: &cancellables)
 
       wait(for: [expectation], timeout: 10)
-    }
-  #endif
+    #endif
+  }
 }
