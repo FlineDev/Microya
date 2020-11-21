@@ -51,20 +51,22 @@ open class ApiProvider<EndpointType: Endpoint> {
         plugin.willPerformRequest(request, endpoint: endpoint)
       }
 
+      var urlSessionResult: URLSessionResult?
+
       return URLSession.shared.dataTaskPublisher(for: request)
         .mapError { (urlError) -> ApiError<EndpointType.ClientErrorType> in
-          let urlSessionResult: URLSessionResult = (data: nil, response: nil, error: urlError)
+          urlSessionResult = (data: nil, response: nil, error: urlError)
           let apiError: ApiError<EndpointType.ClientErrorType> = self.mapToClientErrorType(error: urlError)
           let typedResult: TypedResult<ResultType> = .failure(apiError)
 
           for plugin in self.plugins {
-            plugin.didPerformRequest(urlSessionResult: urlSessionResult, typedResult: typedResult, endpoint: endpoint)
+            plugin.didPerformRequest(urlSessionResult: urlSessionResult!, typedResult: typedResult, endpoint: endpoint)
           }
 
           return apiError
         }
         .tryMap { (data: Data, response: URLResponse) -> ResultType in
-          let urlSessionResult: URLSessionResult = (data: data, response: response, error: nil)
+          urlSessionResult = (data: data, response: response, error: nil)
           let resultType: ResultType = try self.decodeBodyToResultType(
             data: data,
             response: response,
@@ -73,7 +75,7 @@ open class ApiProvider<EndpointType: Endpoint> {
 
           for plugin in self.plugins {
             plugin.didPerformRequest(
-              urlSessionResult: urlSessionResult,
+              urlSessionResult: urlSessionResult!,
               typedResult: .success(resultType),
               endpoint: endpoint
             )
@@ -83,7 +85,7 @@ open class ApiProvider<EndpointType: Endpoint> {
         }
         .mapError { error in
           let apiError = error as! ApiError<EndpointType.ClientErrorType>
-          let urlSessionResult: URLSessionResult = (data: nil, response: nil, error: nil)
+          let urlSessionResult: URLSessionResult = urlSessionResult ?? (data: nil, response: nil, error: nil)
           let typedResult: TypedResult<ResultType> = .failure(apiError)
 
           for plugin in self.plugins {

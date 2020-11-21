@@ -4,6 +4,8 @@
 @testable import MicroyaTests
 import XCTest
 
+// swiftlint:disable line_length file_length
+
 extension MicroyaIntegrationTests {
   static var allTests: [(String, (MicroyaIntegrationTests) -> () throws -> Void)] = [
     ("testIndex", testIndex),
@@ -11,6 +13,11 @@ extension MicroyaIntegrationTests {
     ("testGet", testGet),
     ("testPatch", testPatch),
     ("testDelete", testDelete),
+    ("testIndexCombine", testIndexCombine),
+    ("testPostCombine", testPostCombine),
+    ("testGetCombine", testGetCombine),
+    ("testPatchCombine", testPatchCombine),
+    ("testDeleteCombine", testDeleteCombine),
   ]
 }
 
