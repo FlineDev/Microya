@@ -10,8 +10,7 @@ This section will tell you how you can get started contributing to Microya.
 
 Before you start developing, please make sure you have the following tools installed on your machine:
 
-- Xcode 10.0+
-- [SwiftLint](https://github.com/realm/SwiftLint)
+- Xcode 12.2+
 
 ### Commit Messages
 

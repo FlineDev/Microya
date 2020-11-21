@@ -1,6 +1,6 @@
 import Foundation
 
 struct FooBar: Encodable {
-    let foo: String
-    let bar: String
+  let foo: String
+  let bar: String
 }
