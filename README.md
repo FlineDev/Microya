@@ -13,8 +13,8 @@
              alt="codebeat badge">
     </a>
     <a href="https://github.com/Flinesoft/HandySwift/releases">
-    <img src="https://img.shields.io/badge/Version-0.3.0-blue.svg"
-         alt="Version: 0.3.0">
+    <img src="https://img.shields.io/badge/Version-0.4.0-blue.svg"
+         alt="Version: 0.4.0">
     <img src="https://img.shields.io/badge/Swift-5.3-FFAC45.svg"
          alt="Swift: 5.3">
     <img src="https://img.shields.io/badge/Platforms-Apple%20%7C%20Linux-FF69B4.svg"
@@ -82,7 +82,7 @@ public protocol Endpoint {
     var headers: [String: String] { get }
     var subpath: String { get }
     var method: HttpMethod { get }
-    var queryParameters: [String: String] { get }
+    var queryParameters: [String: QueryParameterValue] { get }
 }
 ```
 
@@ -140,16 +140,16 @@ extension MicrosoftTranslatorEndpoint: Endpoint {
         }
     }
 
-    var queryParameters: [String: String] {
-        var queryParameters: [String: String] = ["api-version": "3.0"]
+    var queryParameters: [String: QueryParameterValue] {
+        var queryParameters: [String: QueryParameterValue] = ["api-version": "3.0"]
 
         switch self {
         case .languages:
             break
 
         case let .translate(_, sourceLanguage, targetLanguages, _):
-            queryParameters["from"] = sourceLanguage.rawValue
-            queryParameters["to"] = targetLanguages.map { $0.rawValue }.joined(by: ",")
+            queryParameters["from"] = .string(sourceLanguage.rawValue)
+            queryParameters["to"] = .array(targetLanguages.map { $0.rawValue })
         }
 
         return queryParameters
@@ -233,6 +233,38 @@ let translationsByLanguage = try provider.performRequestAndWait(on: endpoint, de
 
 There's even useful functional methods defined on the `Result` type like `map()`, `flatMap()` or `mapError()` and `flatMapError()`. See the "Transforming Result" section in [this](https://www.hackingwithswift.com/articles/161/how-to-use-result-in-swift) article for more information.
 
+### Combine Support
+
+ `performRequest(on:decodeBodyTo:)` or `performRequest()`
+
+If you are using Combine in your project (e.g. because you're using SwiftUI), you might want to replace the calls to `performRequest(on:decodeBodyTo:)` or `performRequest(on:)` with the Combine calls `publisher(on:decodeBodyTo:)` or `publisher(on:)`. This will give you an `AnyPublisher` request stream to subscribe to. In success cases you will receive the decoded typed object, in error cases an `ApiError` object exactly like within the `performRequest` completion closure. But instead of a `Result` type you can use `sink` or `catch` from the Combine framework.
+
+For example, the usage with Combine might look something like this:
+
+```Swift
+var cancellables: Set<AnyCancellable> = []
+
+provider.publisher(on: endpoint, decodeBodyTo: TranslationsResponse.self)
+  .debounce(for: .seconds(0.5), scheduler: DispatchQueue.main)
+  .subscribe(on: DispatchQueue.global())
+  .receive(on: DispatchQueue.main)
+  .sink(
+    receiveCompletion: { _ in }
+    receiveValue: { (translationsResponse: TranslationsResponse) in
+      // do something with the success response object
+    }
+  )
+  .catch { apiError in
+    switch apiError {
+    case let .clientError(statusCode, clientError):
+      // show an alert to customer with status code & data from clientError body
+    default:
+      logger.handleApiError(apiError)
+    }
+  }
+  .store(in: &cancellables)
+```
+
 ### Plugins
 
 The initializer of `ApiProvider` accepts an array of `Plugin` objects. You can implement your own plugins or use one of the existing ones in the [Plugins](https://github.com/Flinesoft/Microya/tree/main/Sources/Microya/Plugins) directory. Here's are the callbacks a custom `Plugin` subclass can override:
@@ -297,7 +329,7 @@ public var headers: [String: String] {
     ]
 }
 
-public var queryParameters: [String: String] { [:] }
+public var queryParameters: [String: QueryParameterValue] { [:] }
 ```
 
 So technically, the `Endpoint` type only requires you to specify the following 4 things:

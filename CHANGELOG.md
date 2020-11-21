@@ -5,9 +5,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 ## [Unreleased]
 ### Added
-- Microya now supports Combine publishers, just call `publisher(on:decodeBodyTo:)` or `publisher(on:)` instead of `performRequest(on:decodeBodyTo:)` or `performRequest(on:)` and you'll get an `AnyPublisher` request stream to subscribe to. In success cases you will receive the decoded typed object, in error cases an `ApiError` object exactly like within the `performRequest` completion closure. But instead of a `Result` type you can use `sink` or `catch` from the Combine framework.
+- None.
 ### Changed
-- The `queryParameters` is no longer of type `[String: String]`, but `[String: QueryParameterValue]` now. Existing code like `["search": searchTerm]` will need to be updated to `["search": .string(searchTerm)]`. Apart from `.string` this now also allows specifying an array of strings like so: `["tags": .array(userSelectedTags)]`. String & array literals are supported directly, e.g. `["sort": "createdAt"]` or `["sort": ["createdAt", "id"]]`.
+- None.
 ### Deprecated
 - None.
 ### Removed
@@ -16,6 +16,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 - None.
 ### Security
 - None.
+
+## [0.4.0] - 2020-11-21
+### Added
+- Microya now supports Combine publishers, just call `publisher(on:decodeBodyTo:)` or `publisher(on:)` instead of `performRequest(on:decodeBodyTo:)` or `performRequest(on:)` and you'll get an `AnyPublisher` request stream to subscribe to. In success cases you will receive the decoded typed object, in error cases an `ApiError` object exactly like within the `performRequest` completion closure. But instead of a `Result` type you can use `sink` or `catch` from the Combine framework.
+### Changed
+- The `queryParameters` is no longer of type `[String: String]`, but `[String: QueryParameterValue]` now. Existing code like `["search": searchTerm]` will need to be updated to `["search": .string(searchTerm)]`. Apart from `.string` this now also allows specifying an array of strings like so: `["tags": .array(userSelectedTags)]`. String & array literals are supported directly, e.g. `["sort": "createdAt"]` or `["sort": ["createdAt", "id"]]`.
 
 ## [0.3.0] - 2020-11-03
 ### Added
