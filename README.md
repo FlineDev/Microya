@@ -235,8 +235,6 @@ There's even useful functional methods defined on the `Result` type like `map()`
 
 ### Combine Support
 
- `performRequest(on:decodeBodyTo:)` or `performRequest()`
-
 If you are using Combine in your project (e.g. because you're using SwiftUI), you might want to replace the calls to `performRequest(on:decodeBodyTo:)` or `performRequest(on:)` with the Combine calls `publisher(on:decodeBodyTo:)` or `publisher(on:)`. This will give you an `AnyPublisher` request stream to subscribe to. In success cases you will receive the decoded typed object, in error cases an `ApiError` object exactly like within the `performRequest` completion closure. But instead of a `Result` type you can use `sink` or `catch` from the Combine framework.
 
 For example, the usage with Combine might look something like this:
