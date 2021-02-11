@@ -26,3 +26,26 @@ public enum ApiError<ClientErrorType: Decodable>: Error {
   /// Server responded with a non HTTP response, although an HTTP request was made. Either a bug in `JsonApi` or on the server side.
   case unexpectedResponseType(response: URLResponse)
 }
+
+extension ApiError: Equatable where ClientErrorType: Equatable {
+  public static func == (lhs: ApiError<ClientErrorType>, rhs: ApiError<ClientErrorType>) -> Bool {
+    switch (lhs, rhs) {
+    case (.noResponseReceived, .noResponseReceived), (.unexpectedResponseType, .unexpectedResponseType):
+      return true
+
+    case let (.noDataInResponse(leftStatusCode), .noDataInResponse(rightStatusCode)),
+      let (.unexpectedStatusCode(leftStatusCode), .unexpectedStatusCode(rightStatusCode)),
+      let (.serverError(leftStatusCode), .serverError(rightStatusCode)):
+      return leftStatusCode == rightStatusCode
+
+    case let (.clientError(leftStatusCode, leftClientError), .clientError(rightStatusCode, rightClientError)):
+      return leftStatusCode == rightStatusCode && leftClientError == rightClientError
+
+    case let (.responseDataConversionFailed(leftType, _), .responseDataConversionFailed(rightType, _)):
+      return leftType == rightType
+
+    default:
+      return false
+    }
+  }
+}
