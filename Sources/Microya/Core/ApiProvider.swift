@@ -17,10 +17,15 @@ open class ApiProvider<EndpointType: Endpoint> {
   /// The plugins to apply per request.
   public let plugins: [Plugin<EndpointType>]
 
+  /// The common base URL of the API endpoints.
+  public let baseUrl: URL
+
   /// Initializes a new API provider with the given plugins applied to every request.
   public init(
+    baseUrl: URL,
     plugins: [Plugin<EndpointType>] = []
   ) {
+    self.baseUrl = baseUrl
     self.plugins = plugins
   }
 
@@ -41,7 +46,7 @@ open class ApiProvider<EndpointType: Endpoint> {
       on endpoint: EndpointType,
       decodeBodyTo: ResultType.Type
     ) -> AnyPublisher<ResultType, ApiError<EndpointType.ClientErrorType>> {
-      var request: URLRequest = endpoint.buildRequest()
+      var request: URLRequest = endpoint.buildRequest(baseUrl: baseUrl)
 
       for plugin in plugins {
         plugin.modifyRequest(&request, endpoint: endpoint)
@@ -123,7 +128,7 @@ open class ApiProvider<EndpointType: Endpoint> {
     decodeBodyTo: ResultType.Type,
     completion: @escaping (TypedResult<ResultType>) -> Void
   ) {
-    var request: URLRequest = endpoint.buildRequest()
+    var request: URLRequest = endpoint.buildRequest(baseUrl: baseUrl)
 
     for plugin in plugins {
       plugin.modifyRequest(&request, endpoint: endpoint)

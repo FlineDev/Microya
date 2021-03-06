@@ -17,9 +17,6 @@ public protocol Endpoint {
   /// The JSON encoder to be used for encoding.
   var encoder: JSONEncoder { get }
 
-  /// The common base URL of the API endpoints.
-  var baseUrl: URL { get }
-
   /// The headers to be sent per request.
   var headers: [String: String] { get }
 
@@ -34,8 +31,8 @@ public protocol Endpoint {
 }
 
 extension Endpoint {
-  func buildRequest() -> URLRequest {
-    var request = URLRequest(url: buildRequestUrl())
+  func buildRequest(baseUrl: URL) -> URLRequest {
+    var request = URLRequest(url: buildRequestUrl(baseUrl: baseUrl))
 
     method.apply(to: &request)
 
@@ -46,7 +43,7 @@ extension Endpoint {
     return request
   }
 
-  private func buildRequestUrl() -> URL {
+  private func buildRequestUrl(baseUrl: URL) -> URL {
     var urlComponents = URLComponents(
       url: baseUrl.appendingPathComponent(subpath),
       resolvingAgainstBaseURL: false

@@ -5,6 +5,7 @@
 import XCTest
 
 let sampleApiProvider = ApiProvider<PostmanEchoEndpoint>(
+  baseUrl: URL(string: "https://postman-echo.com")!,
   plugins: [
     HttpBasicAuthPlugin<PostmanEchoEndpoint>(tokenClosure: { "abc123" }),
     RequestLoggerPlugin<PostmanEchoEndpoint>(logClosure: { TestDataStore.request = $0 }),
@@ -38,10 +39,6 @@ extension PostmanEchoEndpoint: Endpoint {
     let encoder = JSONEncoder()
     encoder.dateEncodingStrategy = .iso8601
     return encoder
-  }
-
-  var baseUrl: URL {
-    URL(string: "https://postman-echo.com")!
   }
 
   var headers: [String: String] {
