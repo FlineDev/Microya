@@ -55,6 +55,8 @@ A micro version of the [Moya](https://github.com/Moya/Moya) network abstraction 
 
 Installation is only supported via [SwiftPM](https://github.com/apple/swift-package-manager).
 
+> :warning: If you need to support platform where the `Combine` framework is not available (< iOS/tvOS 13, < macOS 10.15), please use the `support/without-combine` branch instead.
+
 ## Usage
 
 ### Step 1: Defining your Endpoints
