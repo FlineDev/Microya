@@ -28,6 +28,9 @@ public protocol Endpoint {
 
   /// The URL query parameters to be sent (part after ? in URLs, e.g. google.com?query=Harry+Potter).
   var queryParameters: [String: QueryParameterValue] { get }
+
+  /// The mocked response for testing purposes. Will be returned instead of making actual calls when `ApiProvider`s `mockBehavior` is set.
+  func mockedResponse(request: URLRequest) -> MockedResponse?
 }
 
 extension Endpoint {
@@ -86,5 +89,9 @@ extension Endpoint {
 
   public var queryParameters: [String: QueryParameterValue] {
     [:]
+  }
+
+  public func mockedResponse(request: URLRequest) -> MockedResponse? {
+    nil
   }
 }
