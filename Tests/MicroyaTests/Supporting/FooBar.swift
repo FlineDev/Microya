@@ -1,6 +1,6 @@
 import Foundation
 
-struct FooBar: Encodable {
+struct FooBar: Codable, Equatable {
   let foo: String
   let bar: String
 }

@@ -9,7 +9,7 @@ import Foundation
 /// The API provider class to make the requests on.
 open class ApiProvider<EndpointType: Endpoint> {
   /// The behavior when mocking is turned on.
-  public enum MockBehavior {
+  public enum MockingBehavior {
     /// Mocked data should be returned immediately without any delay.
     case immediate
 
@@ -30,17 +30,17 @@ open class ApiProvider<EndpointType: Endpoint> {
   public let baseUrl: URL
 
   /// The mocking behavior of the provider. Set this to receive mocked data in your tests. Use `nil` to make actual requests to your server (the default).
-  public let mockBehavior: MockBehavior?
+  public let mockingBehavior: MockingBehavior?
 
   /// Initializes a new API provider with the given plugins applied to every request.
   public init(
     baseUrl: URL,
     plugins: [Plugin<EndpointType>] = [],
-    mockBehavior: MockBehavior? = nil
+    mockingBehavior: MockingBehavior? = nil
   ) {
     self.baseUrl = baseUrl
     self.plugins = plugins
-    self.mockBehavior = mockBehavior
+    self.mockingBehavior = mockingBehavior
   }
 
   #if canImport(Combine)
@@ -72,7 +72,7 @@ open class ApiProvider<EndpointType: Endpoint> {
 
       var urlSessionResult: URLSessionResult?
 
-      switch mockBehavior {
+      switch mockingBehavior {
       case .none:  // this is the main logic, making the actual call
         return URLSession.shared.dataTaskPublisher(for: request)
           .mapError { (urlError) -> ApiError<EndpointType.ClientErrorType> in
@@ -81,7 +81,11 @@ open class ApiProvider<EndpointType: Endpoint> {
             let typedResult: TypedResult<ResultType> = .failure(apiError)
 
             for plugin in self.plugins {
-              plugin.didPerformRequest(urlSessionResult: urlSessionResult!, typedResult: typedResult, endpoint: endpoint)
+              plugin.didPerformRequest(
+                urlSessionResult: urlSessionResult!,
+                typedResult: typedResult,
+                endpoint: endpoint
+              )
             }
 
             return apiError
@@ -118,10 +122,52 @@ open class ApiProvider<EndpointType: Endpoint> {
           .eraseToAnyPublisher()
 
       case .immediate:
-        fatalError()  // TODO: [cg_2021-07-15] not yet implemented
+        let baseUrl = self.baseUrl
+        return Future<ResultType, ApiError<EndpointType.ClientErrorType>> { promise in
+          guard let mockedResponse = endpoint.mockedResponse else {
+            promise(.failure(.emptyMockedResponse))
+            return
+          }
+
+          let urlSessionResult: URLSessionResult = (
+            data: mockedResponse.bodyData,
+            response: mockedResponse.httpUrlResponse(baseUrl: baseUrl),
+            error: nil
+          )
+          let typedResult: TypedResult<ResultType> = self.decodeBody(from: urlSessionResult, endpoint: endpoint)
+
+          for plugin in self.plugins {
+            plugin.didPerformRequest(urlSessionResult: urlSessionResult, typedResult: typedResult, endpoint: endpoint)
+          }
+
+          promise(typedResult)
+        }
+        .eraseToAnyPublisher()
 
       case let .delayed(delay, dispatchQueue):
-        fatalError()  // TODO: [cg_2021-07-15] not yet implemented
+        let baseUrl = self.baseUrl
+        return Future<ResultType, ApiError<EndpointType.ClientErrorType>> { promise in
+          dispatchQueue.asyncAfter(deadline: DispatchTime.now() + delay) {
+            guard let mockedResponse = endpoint.mockedResponse else {
+              promise(.failure(.emptyMockedResponse))
+              return
+            }
+
+            let urlSessionResult: URLSessionResult = (
+              data: mockedResponse.bodyData,
+              response: mockedResponse.httpUrlResponse(baseUrl: baseUrl),
+              error: nil
+            )
+            let typedResult: TypedResult<ResultType> = self.decodeBody(from: urlSessionResult, endpoint: endpoint)
+
+            for plugin in self.plugins {
+              plugin.didPerformRequest(urlSessionResult: urlSessionResult, typedResult: typedResult, endpoint: endpoint)
+            }
+
+            promise(typedResult)
+          }
+        }
+        .eraseToAnyPublisher()
       }
     }
   #endif
@@ -161,26 +207,48 @@ open class ApiProvider<EndpointType: Endpoint> {
       plugin.willPerformRequest(request, endpoint: endpoint)
     }
 
-    switch mockBehavior {
-    case .none:  // this is the main logic, making the actual call
-      let dataTask = URLSession.shared.dataTask(with: request) { data, response, error in
-        let urlSessionResult: URLSessionResult = (data: data, response: response, error: error)
-        let typedResult: TypedResult<ResultType> = self.decodeBody(from: urlSessionResult, endpoint: endpoint)
+    func handleDataTaskCompletion(data: Data?, response: URLResponse?, error: Error?) {
+      let urlSessionResult: URLSessionResult = (data: data, response: response, error: error)
+      let typedResult: TypedResult<ResultType> = self.decodeBody(from: urlSessionResult, endpoint: endpoint)
 
-        for plugin in self.plugins {
-          plugin.didPerformRequest(urlSessionResult: urlSessionResult, typedResult: typedResult, endpoint: endpoint)
-        }
-
-        completion(typedResult)
+      for plugin in self.plugins {
+        plugin.didPerformRequest(urlSessionResult: urlSessionResult, typedResult: typedResult, endpoint: endpoint)
       }
 
-      dataTask.resume()
+      completion(typedResult)
+    }
+
+    switch mockingBehavior {
+    case .none:  // this is the main logic, making the actual call
+      URLSession.shared.dataTask(with: request, completionHandler: handleDataTaskCompletion).resume()
 
     case .immediate:
-      fatalError()  // TODO: [cg_2021-07-15] not yet implemented
+      guard let mockedResponse = endpoint.mockedResponse else {
+        completion(.failure(.emptyMockedResponse))
+        return
+      }
+
+      handleDataTaskCompletion(
+        data: mockedResponse.bodyData,
+        response: mockedResponse.httpUrlResponse(baseUrl: baseUrl),
+        error: nil
+      )
 
     case let .delayed(delay, dispatchQueue):
-      fatalError()  // TODO: [cg_2021-07-15] not yet implemented
+      let baseUrl = self.baseUrl
+
+      dispatchQueue.asyncAfter(deadline: DispatchTime.now() + delay) {
+        guard let mockedResponse = endpoint.mockedResponse else {
+          completion(.failure(.emptyMockedResponse))
+          return
+        }
+
+        handleDataTaskCompletion(
+          data: mockedResponse.bodyData,
+          response: mockedResponse.httpUrlResponse(baseUrl: baseUrl),
+          error: nil
+        )
+      }
     }
   }
 
