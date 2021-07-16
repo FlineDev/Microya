@@ -1,4 +1,7 @@
 import Foundation
+#if canImport(FoundationNetworking)
+  import FoundationNetworking
+#endif
 
 /// A HTTP response status code.
 /// Supports all the codes from http://www.iana.org/assignments/http-status-codes.
