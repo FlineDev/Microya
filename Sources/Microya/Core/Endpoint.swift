@@ -28,6 +28,9 @@ public protocol Endpoint {
 
   /// The URL query parameters to be sent (part after ? in URLs, e.g. google.com?query=Harry+Potter).
   var queryParameters: [String: QueryParameterValue] { get }
+
+  /// The mocked response for testing purposes. Will be returned instead of making actual calls when `ApiProvider`s `mockingBehavior` is set.
+  var mockedResponse: MockedResponse? { get }
 }
 
 extension Endpoint {
@@ -86,5 +89,28 @@ extension Endpoint {
 
   public var queryParameters: [String: QueryParameterValue] {
     [:]
+  }
+
+  public var mockedResponse: MockedResponse? {
+    nil
+  }
+
+  /// Creates a `MockedResponse` object with the given status, body JSON string (optional) and headers (optional).
+  public func mock(status: HttpStatus, bodyJson: String? = nil, headers: [String: String] = [:]) -> MockedResponse {
+    MockedResponse(subpath: subpath, statusCode: status.code, bodyJson: bodyJson, headers: headers)
+  }
+
+  /// Creates a `MockedResponse` object with the given status, body `Encodable` object and headers (optional).
+  public func mock<T: Encodable>(
+    status: HttpStatus,
+    bodyEncodable: T,
+    headers: [String: String] = [:]
+  ) throws -> MockedResponse {
+    MockedResponse(
+      subpath: subpath,
+      statusCode: status.code,
+      bodyData: try encoder.encode(bodyEncodable),
+      headers: headers
+    )
   }
 }

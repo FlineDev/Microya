@@ -85,6 +85,7 @@ public protocol Endpoint {
     var subpath: String { get }
     var method: HttpMethod { get }
     var queryParameters: [String: QueryParameterValue] { get }
+    var mockedResponse: MockedResponse? { get }
 }
 ```
 
@@ -137,7 +138,7 @@ extension MicrosoftTranslatorEndpoint: Endpoint {
         case .languages:
             return .get
 
-        case let .translate(texts, _, _):
+        case let .translate(texts, _, _, _):
             return .post(try! encoder.encode(texts))
         }
     }
@@ -149,12 +150,23 @@ extension MicrosoftTranslatorEndpoint: Endpoint {
         case .languages:
             break
 
-        case let .translate(_, sourceLanguage, targetLanguages, _):
+        case let .translate(_, sourceLanguage, targetLanguages):
             queryParameters["from"] = .string(sourceLanguage.rawValue)
             queryParameters["to"] = .array(targetLanguages.map { $0.rawValue })
         }
 
         return queryParameters
+    }
+    
+    var mockedResponse: MockedResponse? {
+      switch self {
+      case .languages:
+        return mock(status: .ok, bodyJson: #"{ "languages: ["de", "en", "fr", "ja"] }"#)
+
+      case let .translate(texts, _, _):
+        let pseudoTranslationsJson = texts.map { $0.reversed() }.joined(separator: ",")
+        return mock(status: .ok, bodyJson: "[\(pseudoTranslationsJson)]")
+      }
     }
 }
 ```
@@ -330,6 +342,8 @@ public var headers: [String: String] {
 }
 
 public var queryParameters: [String: QueryParameterValue] { [:] }
+
+public var mockedResponse: MockedResponse? { nil }
 ```
 
 So technically, the `Endpoint` type only requires you to specify the following 4 things:
@@ -345,6 +359,40 @@ protocol Endpoint {
 
 This can be a time (/ code) saver for simple APIs you want to access.
 You can also use `EmptyBodyResponse` type for `ClientErrorType` to ignore the client error body structure.
+
+### Testing
+
+Microya supports mocking responses in your tests.
+To do that, just initialize a different `ApiProvider` in your tests and specify `.immediate` or `.delay` as the `mockingBehavior` parameter.
+
+Now, instead of making actual calls, Microya will respond with the provided `mockedResponse` computed property in your `Endpoint` type.
+
+Note that the `.delay` mocking behavior is designed for use with Combine schedulers. Use `DispatchQueue.test` from the [`combine-schedulers` library](https://github.com/pointfreeco/combine-schedulers) (which is included with Microya) to control time in your tests so you don't need to actually wait for the requests when using `.delay`.
+
+For example, you might want to add an extension in your tests to provide a `.mocked` property to use whenever you need an `ApiProvider` like so:
+
+```swift
+import CombineSchedulers
+import Foundation
+import Microya
+
+let testScheduler: AnySchedulerOf<DispatchQueue> = DispatchQueue.test
+
+extension ApiProvider {
+  static var mocked: ApiProvider<MicrosoftTranslatorEndpoint> {
+    ApiProvider<MicrosoftTranslatorEndpoint>(
+      baseUrl: URL(string: "https://api.cognitive.microsofttranslator.com")!,
+      mockingBehavior: .delayed(
+        delay: .milliseconds(300),
+        scheduler: testScheduler.eraseToAnyScheduler()
+      )
+    )
+  }
+}
+
+```
+
+Now, in your tests you can just call `testScheduler.advance(by: .milliseconds(300))` fast-forward the time so your tests stay fast.
 
 ## Donation
 

@@ -25,12 +25,17 @@ public enum ApiError<ClientErrorType: Decodable>: Error {
 
   /// Server responded with a non HTTP response, although an HTTP request was made. Either a bug in `JsonApi` or on the server side.
   case unexpectedResponseType(response: URLResponse)
+
+  /// The `mockingBehavior` was set to non-nil (for testing) but no `mockedResponse` was provided for the requested endpoint.
+  case emptyMockedResponse
 }
 
 extension ApiError: Equatable where ClientErrorType: Equatable {
   public static func == (lhs: ApiError<ClientErrorType>, rhs: ApiError<ClientErrorType>) -> Bool {
     switch (lhs, rhs) {
-    case (.noResponseReceived, .noResponseReceived), (.unexpectedResponseType, .unexpectedResponseType):
+    case (.noResponseReceived, .noResponseReceived),
+      (.unexpectedResponseType, .unexpectedResponseType),
+      (.emptyMockedResponse, .emptyMockedResponse):
       return true
 
     case let (.noDataInResponse(leftStatusCode), .noDataInResponse(rightStatusCode)),

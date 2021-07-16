@@ -3,6 +3,9 @@
 #endif
 @testable import Microya
 import XCTest
+#if canImport(Combine)
+  import CombineSchedulers
+#endif
 
 let sampleApiProvider = ApiProvider<PostmanEchoEndpoint>(
   baseUrl: URL(string: "https://postman-echo.com")!,
@@ -15,6 +18,20 @@ let sampleApiProvider = ApiProvider<PostmanEchoEndpoint>(
       hideIndicator: { TestDataStore.showingProgressIndicator = false }
     ),
   ]
+)
+
+let mockedApiProvider = ApiProvider<PostmanEchoEndpoint>(
+  baseUrl: URL(string: "https://postman-echo.com")!,
+  plugins: [
+    HttpBasicAuthPlugin<PostmanEchoEndpoint>(tokenClosure: { "abc123" }),
+    RequestLoggerPlugin<PostmanEchoEndpoint>(logClosure: { TestDataStore.request = $0 }),
+    ResponseLoggerPlugin<PostmanEchoEndpoint>(logClosure: { TestDataStore.urlSessionResult = $0 }),
+    ProgressIndicatorPlugin<PostmanEchoEndpoint>(
+      showIndicator: { TestDataStore.showingProgressIndicator = true },
+      hideIndicator: { TestDataStore.showingProgressIndicator = false }
+    ),
+  ],
+  mockingBehavior: .delayed(delay: .seconds(0.2), scheduler: DispatchQueue.main.eraseToAnyScheduler())
 )
 
 enum PostmanEchoEndpoint {
@@ -91,6 +108,22 @@ extension PostmanEchoEndpoint: Endpoint {
 
     default:
       return [:]
+    }
+  }
+
+  var mockedResponse: MockedResponse? {
+    switch self {
+    case let .get(fooBarID):
+      return try! mock(
+        status: .ok,
+        bodyEncodable: FooBar(foo: "foo\(fooBarID)", bar: "bar\(fooBarID)")
+      )
+
+    case .delete:
+      return mock(status: .noContent)
+
+    default:
+      return nil
     }
   }
 }
