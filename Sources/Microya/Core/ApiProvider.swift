@@ -1,5 +1,6 @@
 #if canImport(Combine)
   import Combine
+  import CombineSchedulers
 #endif
 import Foundation
 #if canImport(FoundationNetworking)
@@ -13,8 +14,10 @@ open class ApiProvider<EndpointType: Endpoint> {
     /// Mocked data should be returned immediately without any delay.
     case immediate
 
-    /// Mocked data should be returned after the given delay on the given dispatch queue.
-    case delayed(seconds: TimeInterval, dispatchQueue: DispatchQueue)
+    #if canImport(Combine)
+      /// Mocked data should be returned after the given delay on the given dispatch queue.
+      case delayed(delay: DispatchQueue.SchedulerTimeType.Stride, scheduler: AnySchedulerOf<DispatchQueue>)
+    #endif
   }
 
   /// The Result received, either the expected `Decodable` response object or a `JsonApiError` case.
@@ -144,10 +147,10 @@ open class ApiProvider<EndpointType: Endpoint> {
         }
         .eraseToAnyPublisher()
 
-      case let .delayed(delay, dispatchQueue):
+      case let .delayed(delay, scheduler):
         let baseUrl = self.baseUrl
         return Future<ResultType, ApiError<EndpointType.ClientErrorType>> { promise in
-          dispatchQueue.asyncAfter(deadline: DispatchTime.now() + delay) {
+          scheduler.schedule(after: scheduler.now.advanced(by: delay)) {
             guard let mockedResponse = endpoint.mockedResponse else {
               promise(.failure(.emptyMockedResponse))
               return
@@ -234,21 +237,23 @@ open class ApiProvider<EndpointType: Endpoint> {
         error: nil
       )
 
-    case let .delayed(delay, dispatchQueue):
-      let baseUrl = self.baseUrl
+    #if canImport(Combine)
+      case let .delayed(delay, scheduler):
+        let baseUrl = self.baseUrl
 
-      dispatchQueue.asyncAfter(deadline: DispatchTime.now() + delay) {
-        guard let mockedResponse = endpoint.mockedResponse else {
-          completion(.failure(.emptyMockedResponse))
-          return
+        scheduler.schedule(after: scheduler.now.advanced(by: delay)) {
+          guard let mockedResponse = endpoint.mockedResponse else {
+            completion(.failure(.emptyMockedResponse))
+            return
+          }
+
+          handleDataTaskCompletion(
+            data: mockedResponse.bodyData,
+            response: mockedResponse.httpUrlResponse(baseUrl: baseUrl),
+            error: nil
+          )
         }
-
-        handleDataTaskCompletion(
-          data: mockedResponse.bodyData,
-          response: mockedResponse.httpUrlResponse(baseUrl: baseUrl),
-          error: nil
-        )
-      }
+    #endif
     }
   }
 
