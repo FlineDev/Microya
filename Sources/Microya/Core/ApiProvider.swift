@@ -1,7 +1,5 @@
-#if canImport(Combine)
-  import Combine
-  import CombineSchedulers
-#endif
+import Combine
+import CombineSchedulers
 import Foundation
 #if canImport(FoundationNetworking)
   import FoundationNetworking
@@ -9,17 +7,6 @@ import Foundation
 
 /// The API provider class to make the requests on.
 open class ApiProvider<EndpointType: Endpoint> {
-  /// The behavior when mocking is turned on.
-  public enum MockingBehavior {
-    /// Mocked data should be returned immediately without any delay.
-    case immediate
-
-    #if canImport(Combine)
-      /// Mocked data should be returned after the given delay on the given dispatch queue.
-      case delayed(delay: DispatchQueue.SchedulerTimeType.Stride, scheduler: AnySchedulerOf<DispatchQueue>)
-    #endif
-  }
-
   /// The Result received, either the expected `Decodable` response object or a `JsonApiError` case.
   public typealias TypedResult<T: Decodable> = Result<T, ApiError<EndpointType.ClientErrorType>>
 
@@ -33,101 +20,52 @@ open class ApiProvider<EndpointType: Endpoint> {
   public let baseUrl: URL
 
   /// The mocking behavior of the provider. Set this to receive mocked data in your tests. Use `nil` to make actual requests to your server (the default).
-  public let mockingBehavior: MockingBehavior?
+  public let mockingBehavior: MockingBehavior<EndpointType>?
 
   /// Initializes a new API provider with the given plugins applied to every request.
   public init(
     baseUrl: URL,
     plugins: [Plugin<EndpointType>] = [],
-    mockingBehavior: MockingBehavior? = nil
+    mockingBehavior: MockingBehavior<EndpointType>? = nil
   ) {
     self.baseUrl = baseUrl
     self.plugins = plugins
     self.mockingBehavior = mockingBehavior
   }
 
-  #if canImport(Combine)
-    /// Returns a publisher which performs a request to the server when new values are requested.
-    /// Returns a `EmptyBodyResponse` on success.
-    ///
-    /// - WARNING: Do not use this if you expect a body response, use `publisher(on:decodeBodyTo:)` instead.
-    public func publisher(
-      on endpoint: EndpointType
-    ) -> AnyPublisher<EmptyBodyResponse, ApiError<EndpointType.ClientErrorType>> {
-      self.publisher(on: endpoint, decodeBodyTo: EmptyBodyResponse.self)
+  /// Returns a publisher which performs a request to the server when new values are requested.
+  /// Returns a `EmptyBodyResponse` on success.
+  ///
+  /// - WARNING: Do not use this if you expect a body response, use `publisher(on:decodeBodyTo:)` instead.
+  public func publisher(
+    on endpoint: EndpointType
+  ) -> AnyPublisher<EmptyBodyResponse, ApiError<EndpointType.ClientErrorType>> {
+    self.publisher(on: endpoint, decodeBodyTo: EmptyBodyResponse.self)
+  }
+
+  /// Returns a publisher which performs a request to the server when new values are requested.
+  /// Specify the expected result type as the `Decodable` generic type.
+  public func publisher<ResultType: Decodable>(
+    on endpoint: EndpointType,
+    decodeBodyTo: ResultType.Type
+  ) -> AnyPublisher<ResultType, ApiError<EndpointType.ClientErrorType>> {
+    var request: URLRequest = endpoint.buildRequest(baseUrl: baseUrl)
+
+    for plugin in plugins {
+      plugin.modifyRequest(&request, endpoint: endpoint)
     }
 
-    /// Returns a publisher which performs a request to the server when new values are requested.
-    /// Specify the expected result type as the `Decodable` generic type.
-    public func publisher<ResultType: Decodable>(
-      on endpoint: EndpointType,
-      decodeBodyTo: ResultType.Type
-    ) -> AnyPublisher<ResultType, ApiError<EndpointType.ClientErrorType>> {
-      var request: URLRequest = endpoint.buildRequest(baseUrl: baseUrl)
+    for plugin in plugins {
+      plugin.willPerformRequest(request, endpoint: endpoint)
+    }
 
-      for plugin in plugins {
-        plugin.modifyRequest(&request, endpoint: endpoint)
-      }
+    var urlSessionResult: URLSessionResult?
 
-      for plugin in plugins {
-        plugin.willPerformRequest(request, endpoint: endpoint)
-      }
-
-      var urlSessionResult: URLSessionResult?
-
-      switch mockingBehavior {
-      case .none:  // this is the main logic, making the actual call
-        return URLSession.shared.dataTaskPublisher(for: request)
-          .mapError { (urlError) -> ApiError<EndpointType.ClientErrorType> in
-            urlSessionResult = (data: nil, response: nil, error: urlError)
-            let apiError: ApiError<EndpointType.ClientErrorType> = self.mapToClientErrorType(error: urlError)
-            let typedResult: TypedResult<ResultType> = .failure(apiError)
-
-            for plugin in self.plugins {
-              plugin.didPerformRequest(
-                urlSessionResult: urlSessionResult!,
-                typedResult: typedResult,
-                endpoint: endpoint
-              )
-            }
-
-            return apiError
-          }
-          .tryMap { (data: Data, response: URLResponse) -> ResultType in
-            urlSessionResult = (data: data, response: response, error: nil)
-            let resultType: ResultType = try self.decodeBodyToResultType(
-              data: data,
-              response: response,
-              endpoint: endpoint
-            )
-
-            for plugin in self.plugins {
-              plugin.didPerformRequest(
-                urlSessionResult: urlSessionResult!,
-                typedResult: .success(resultType),
-                endpoint: endpoint
-              )
-            }
-
-            return resultType
-          }
-          .mapError { error in
-            let apiError = error as! ApiError<EndpointType.ClientErrorType>
-            let urlSessionResult: URLSessionResult = urlSessionResult ?? (data: nil, response: nil, error: nil)
-            let typedResult: TypedResult<ResultType> = .failure(apiError)
-
-            for plugin in self.plugins {
-              plugin.didPerformRequest(urlSessionResult: urlSessionResult, typedResult: typedResult, endpoint: endpoint)
-            }
-
-            return apiError
-          }
-          .eraseToAnyPublisher()
-
-      case .immediate:
-        let baseUrl = self.baseUrl
-        return Future<ResultType, ApiError<EndpointType.ClientErrorType>> { promise in
-          guard let mockedResponse = endpoint.mockedResponse else {
+    if let mockingBehavior = mockingBehavior {
+      let baseUrl = self.baseUrl
+      return Future<ResultType, ApiError<EndpointType.ClientErrorType>> { promise in
+        mockingBehavior.scheduler.schedule(after: mockingBehavior.scheduler.now.advanced(by: mockingBehavior.delay)) {
+          guard let mockedResponse = mockingBehavior.mockedResponseProvider(endpoint) else {
             promise(.failure(.emptyMockedResponse))
             return
           }
@@ -145,35 +83,59 @@ open class ApiProvider<EndpointType: Endpoint> {
 
           promise(typedResult)
         }
-        .eraseToAnyPublisher()
+      }
+      .eraseToAnyPublisher()
+    }
+    else {
+      // this is the main logic, making the actual call
+      return URLSession.shared.dataTaskPublisher(for: request)
+        .mapError { (urlError) -> ApiError<EndpointType.ClientErrorType> in
+          urlSessionResult = (data: nil, response: nil, error: urlError)
+          let apiError: ApiError<EndpointType.ClientErrorType> = self.mapToClientErrorType(error: urlError)
+          let typedResult: TypedResult<ResultType> = .failure(apiError)
 
-      case let .delayed(delay, scheduler):
-        let baseUrl = self.baseUrl
-        return Future<ResultType, ApiError<EndpointType.ClientErrorType>> { promise in
-          scheduler.schedule(after: scheduler.now.advanced(by: delay)) {
-            guard let mockedResponse = endpoint.mockedResponse else {
-              promise(.failure(.emptyMockedResponse))
-              return
-            }
-
-            let urlSessionResult: URLSessionResult = (
-              data: mockedResponse.bodyData,
-              response: mockedResponse.httpUrlResponse(baseUrl: baseUrl),
-              error: nil
+          for plugin in self.plugins {
+            plugin.didPerformRequest(
+              urlSessionResult: urlSessionResult!,
+              typedResult: typedResult,
+              endpoint: endpoint
             )
-            let typedResult: TypedResult<ResultType> = self.decodeBody(from: urlSessionResult, endpoint: endpoint)
-
-            for plugin in self.plugins {
-              plugin.didPerformRequest(urlSessionResult: urlSessionResult, typedResult: typedResult, endpoint: endpoint)
-            }
-
-            promise(typedResult)
           }
+
+          return apiError
+        }
+        .tryMap { (data: Data, response: URLResponse) -> ResultType in
+          urlSessionResult = (data: data, response: response, error: nil)
+          let resultType: ResultType = try self.decodeBodyToResultType(
+            data: data,
+            response: response,
+            endpoint: endpoint
+          )
+
+          for plugin in self.plugins {
+            plugin.didPerformRequest(
+              urlSessionResult: urlSessionResult!,
+              typedResult: .success(resultType),
+              endpoint: endpoint
+            )
+          }
+
+          return resultType
+        }
+        .mapError { error in
+          let apiError = error as! ApiError<EndpointType.ClientErrorType>
+          let urlSessionResult: URLSessionResult = urlSessionResult ?? (data: nil, response: nil, error: nil)
+          let typedResult: TypedResult<ResultType> = .failure(apiError)
+
+          for plugin in self.plugins {
+            plugin.didPerformRequest(urlSessionResult: urlSessionResult, typedResult: typedResult, endpoint: endpoint)
+          }
+
+          return apiError
         }
         .eraseToAnyPublisher()
-      }
     }
-  #endif
+  }
 
   /// Performs the asynchronous request for the chosen write-only endpoint and calls the completion closure with the result.
   /// Returns a `EmptyBodyResponse` on success.
@@ -221,39 +183,25 @@ open class ApiProvider<EndpointType: Endpoint> {
       completion(typedResult)
     }
 
-    switch mockingBehavior {
-    case .none:  // this is the main logic, making the actual call
-      URLSession.shared.dataTask(with: request, completionHandler: handleDataTaskCompletion).resume()
+    if let mockingBehavior = mockingBehavior {
+      let baseUrl = self.baseUrl
 
-    case .immediate:
-      guard let mockedResponse = endpoint.mockedResponse else {
-        completion(.failure(.emptyMockedResponse))
-        return
-      }
-
-      handleDataTaskCompletion(
-        data: mockedResponse.bodyData,
-        response: mockedResponse.httpUrlResponse(baseUrl: baseUrl),
-        error: nil
-      )
-
-    #if canImport(Combine)
-      case let .delayed(delay, scheduler):
-        let baseUrl = self.baseUrl
-
-        scheduler.schedule(after: scheduler.now.advanced(by: delay)) {
-          guard let mockedResponse = endpoint.mockedResponse else {
-            completion(.failure(.emptyMockedResponse))
-            return
-          }
-
-          handleDataTaskCompletion(
-            data: mockedResponse.bodyData,
-            response: mockedResponse.httpUrlResponse(baseUrl: baseUrl),
-            error: nil
-          )
+      mockingBehavior.scheduler.schedule(after: mockingBehavior.scheduler.now.advanced(by: mockingBehavior.delay)) {
+        guard let mockedResponse = mockingBehavior.mockedResponseProvider(endpoint) else {
+          completion(.failure(.emptyMockedResponse))
+          return
         }
-    #endif
+
+        handleDataTaskCompletion(
+          data: mockedResponse.bodyData,
+          response: mockedResponse.httpUrlResponse(baseUrl: baseUrl),
+          error: nil
+        )
+      }
+    }
+    else {
+      // this is the main logic, making the actual call
+      URLSession.shared.dataTask(with: request, completionHandler: handleDataTaskCompletion).resume()
     }
   }
 

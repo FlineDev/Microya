@@ -363,7 +363,7 @@ You can also use `EmptyBodyResponse` type for `ClientErrorType` to ignore the cl
 ### Testing
 
 Microya supports mocking responses in your tests.
-To do that, just initialize a different `ApiProvider` in your tests and specify `.immediate` or `.delay` as the `mockingBehavior` parameter.
+To do that, just initialize a different `ApiProvider` in your tests and specify with a given `delay` and `scheduler` as the `mockingBehavior` parameter.
 
 Now, instead of making actual calls, Microya will respond with the provided `mockedResponse` computed property in your `Endpoint` type.
 
@@ -382,10 +382,7 @@ extension ApiProvider {
   static var mocked: ApiProvider<MicrosoftTranslatorEndpoint> {
     ApiProvider<MicrosoftTranslatorEndpoint>(
       baseUrl: URL(string: "https://api.cognitive.microsofttranslator.com")!,
-      mockingBehavior: .delayed(
-        delay: .milliseconds(300),
-        scheduler: testScheduler.eraseToAnyScheduler()
-      )
+      mockingBehavior: MockingBehavior(delay: .seconds(0.5), scheduler: testScheduler.eraseToAnyScheduler()
     )
   }
 }
