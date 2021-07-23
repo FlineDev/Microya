@@ -9,6 +9,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 - New optional `mockedResponse` computed property on `Endpoint` protocol expecting an output of type `MockedResponse`. Use this to provide mocked responses when using a `mockingBehavior` in tests. See the [PostmanEchoEndpoint](https://github.com/Flinesoft/Microya/blob/main/Tests/MicroyaTests/Supporting/PostmanEchoEndpoint.swift#L114-127) in the tests for a usage example via the `mock` convenience method.
 ### Changed
 - Moved `baseUrl` from `Endpoint` to `ApiProvider`. This allows for specifying different `baseUrl` even when `Endpoint` is implemented in a library by passing it in the app.
+- Renamed `HttpBasicAuthPlugin` to `HttpAuthPlugin` with a new `scheme` parameter that accepts one of `.basic` or `.bearer` to support multiple authentication methods.
 ### Deprecated
 - None.
 ### Removed

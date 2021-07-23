@@ -8,7 +8,7 @@ import CombineSchedulers
 let sampleApiProvider = ApiProvider<PostmanEchoEndpoint>(
   baseUrl: URL(string: "https://postman-echo.com")!,
   plugins: [
-    HttpBasicAuthPlugin<PostmanEchoEndpoint>(tokenClosure: { "abc123" }),
+    HttpAuthPlugin<PostmanEchoEndpoint>(scheme: .basic, tokenClosure: { "abc123" }),
     RequestLoggerPlugin<PostmanEchoEndpoint>(logClosure: { TestDataStore.request = $0 }),
     ResponseLoggerPlugin<PostmanEchoEndpoint>(logClosure: { TestDataStore.urlSessionResult = $0 }),
     ProgressIndicatorPlugin<PostmanEchoEndpoint>(
@@ -21,7 +21,7 @@ let sampleApiProvider = ApiProvider<PostmanEchoEndpoint>(
 let mockedApiProvider = ApiProvider<PostmanEchoEndpoint>(
   baseUrl: URL(string: "https://postman-echo.com")!,
   plugins: [
-    HttpBasicAuthPlugin<PostmanEchoEndpoint>(tokenClosure: { "abc123" }),
+    HttpAuthPlugin<PostmanEchoEndpoint>(scheme: .basic, tokenClosure: { "abc123" }),
     RequestLoggerPlugin<PostmanEchoEndpoint>(logClosure: { TestDataStore.request = $0 }),
     ResponseLoggerPlugin<PostmanEchoEndpoint>(logClosure: { TestDataStore.urlSessionResult = $0 }),
     ProgressIndicatorPlugin<PostmanEchoEndpoint>(
