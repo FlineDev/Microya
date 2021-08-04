@@ -3,7 +3,6 @@
 #endif
 @testable import Microya
 import XCTest
-import CombineSchedulers
 
 let sampleApiProvider = ApiProvider<PostmanEchoEndpoint>(
   baseUrl: URL(string: "https://postman-echo.com")!,
@@ -29,7 +28,7 @@ let mockedApiProvider = ApiProvider<PostmanEchoEndpoint>(
       hideIndicator: { TestDataStore.showingProgressIndicator = false }
     ),
   ],
-  mockingBehavior: MockingBehavior(delay: .seconds(0.2), scheduler: DispatchQueue.main.eraseToAnyScheduler())
+  mocked: true
 )
 
 enum PostmanEchoEndpoint {

@@ -13,15 +13,7 @@ extension MicroyaIntegrationTests {
     ("testGet", testGet),
     ("testPatch", testPatch),
     ("testDelete", testDelete),
-    ("testIndexCombine", testIndexCombine),
-    ("testPostCombine", testPostCombine),
-    ("testGetCombine", testGetCombine),
-    ("testPatchCombine", testPatchCombine),
-    ("testDeleteCombine", testDeleteCombine),
     ("testMockedGet", testMockedGet),
-    ("testMockedPostCombine", testMockedPostCombine),
-    ("testMockedGetCombine", testMockedGetCombine),
-    ("testMockedDeleteCombine", testMockedDeleteCombine),
   ]
 }
 
