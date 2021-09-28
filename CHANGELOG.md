@@ -5,11 +5,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 ## [Unreleased]
 ### Added
-- New `mockingBehavior` parameter on `ApiProvider` for testing purposes. Specify one with `delay` and `scheduler`, e.g. `.seconds(0.5)` and `DispatchQueue.main.eraseToAnyScheduler()`. Provides `nil` by default to make actual requests.
-- New optional `mockedResponse` computed property on `Endpoint` protocol expecting an output of type `MockedResponse`. Use this to provide mocked responses when using a `mockingBehavior` in tests. See the [PostmanEchoEndpoint](https://github.com/Flinesoft/Microya/blob/main/Tests/MicroyaTests/Supporting/PostmanEchoEndpoint.swift#L114-127) in the tests for a usage example via the `mock` convenience method.
+- None.
 ### Changed
-- Moved `baseUrl` from `Endpoint` to `ApiProvider`. This allows for specifying different `baseUrl` even when `Endpoint` is implemented in a library by passing it in the app.
-- Renamed `HttpBasicAuthPlugin` to `HttpAuthPlugin` with a new `scheme` parameter that accepts one of `.basic` or `.bearer` to support multiple authentication methods.
+- None.
 ### Deprecated
 - None.
 ### Removed
@@ -18,6 +16,14 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 - None.
 ### Security
 - None.
+
+## [0.5.0] - 2021-09-28
+### Added
+- New `mockingBehavior` parameter on `ApiProvider` for testing purposes. Specify one with `delay` and `scheduler`, e.g. `.seconds(0.5)` and `DispatchQueue.main.eraseToAnyScheduler()`. Provides `nil` by default to make actual requests.
+- New optional `mockedResponse` computed property on `Endpoint` protocol expecting an output of type `MockedResponse`. Use this to provide mocked responses when using a `mockingBehavior` in tests. See the [PostmanEchoEndpoint](https://github.com/Flinesoft/Microya/blob/main/Tests/MicroyaTests/Supporting/PostmanEchoEndpoint.swift#L114-127) in the tests for a usage example via the `mock` convenience method.
+### Changed
+- Moved `baseUrl` from `Endpoint` to `ApiProvider`. This allows for specifying different `baseUrl` even when `Endpoint` is implemented in a library by passing it in the app.
+- Renamed `HttpBasicAuthPlugin` to `HttpAuthPlugin` with a new `scheme` parameter that accepts one of `.basic` or `.bearer` to support multiple authentication methods.
 
 ## [0.4.0] - 2020-11-21
 ### Added
