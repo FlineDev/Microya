@@ -1,6 +1,6 @@
 import Foundation
 
-struct PostmanEchoError: Decodable {
+struct PostmanEchoError: Decodable, Equatable {
   let code: Int
   let message: String
 }

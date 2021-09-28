@@ -1,4 +1,4 @@
-// Generated using Sourcery 1.0.0 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 1.0.3 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 
 @testable import MicroyaTests
@@ -18,6 +18,10 @@ extension MicroyaIntegrationTests {
     ("testGetCombine", testGetCombine),
     ("testPatchCombine", testPatchCombine),
     ("testDeleteCombine", testDeleteCombine),
+    ("testMockedGet", testMockedGet),
+    ("testMockedPostCombine", testMockedPostCombine),
+    ("testMockedGetCombine", testMockedGetCombine),
+    ("testMockedDeleteCombine", testMockedDeleteCombine),
   ]
 }
 

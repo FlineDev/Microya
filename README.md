@@ -13,8 +13,8 @@
              alt="codebeat badge">
     </a>
     <a href="https://github.com/Flinesoft/HandySwift/releases">
-    <img src="https://img.shields.io/badge/Version-0.4.0-blue.svg"
-         alt="Version: 0.4.0">
+    <img src="https://img.shields.io/badge/Version-0.5.0-blue.svg"
+         alt="Version: 0.5.0">
     <img src="https://img.shields.io/badge/Swift-5.3-FFAC45.svg"
          alt="Swift: 5.3">
     <img src="https://img.shields.io/badge/Platforms-Apple%20%7C%20Linux-FF69B4.svg"
@@ -55,6 +55,8 @@ A micro version of the [Moya](https://github.com/Moya/Moya) network abstraction 
 
 Installation is only supported via [SwiftPM](https://github.com/apple/swift-package-manager).
 
+> :warning: If you need to support platform where the `Combine` framework is not available (< iOS/tvOS 13, < macOS 10.15), please use the `support/without-combine` branch instead.
+
 ## Usage
 
 ### Step 1: Defining your Endpoints
@@ -83,6 +85,7 @@ public protocol Endpoint {
     var subpath: String { get }
     var method: HttpMethod { get }
     var queryParameters: [String: QueryParameterValue] { get }
+    var mockedResponse: MockedResponse? { get }
 }
 ```
 
@@ -135,7 +138,7 @@ extension MicrosoftTranslatorEndpoint: Endpoint {
         case .languages:
             return .get
 
-        case let .translate(texts, _, _):
+        case let .translate(texts, _, _, _):
             return .post(try! encoder.encode(texts))
         }
     }
@@ -147,12 +150,23 @@ extension MicrosoftTranslatorEndpoint: Endpoint {
         case .languages:
             break
 
-        case let .translate(_, sourceLanguage, targetLanguages, _):
+        case let .translate(_, sourceLanguage, targetLanguages):
             queryParameters["from"] = .string(sourceLanguage.rawValue)
             queryParameters["to"] = .array(targetLanguages.map { $0.rawValue })
         }
 
         return queryParameters
+    }
+    
+    var mockedResponse: MockedResponse? {
+      switch self {
+      case .languages:
+        return mock(status: .ok, bodyJson: #"{ "languages: ["de", "en", "fr", "ja"] }"#)
+
+      case let .translate(texts, _, _):
+        let pseudoTranslationsJson = texts.map { $0.reversed() }.joined(separator: ",")
+        return mock(status: .ok, bodyJson: "[\(pseudoTranslationsJson)]")
+      }
     }
 }
 ```
@@ -234,8 +248,6 @@ let translationsByLanguage = try provider.performRequestAndWait(on: endpoint, de
 There's even useful functional methods defined on the `Result` type like `map()`, `flatMap()` or `mapError()` and `flatMapError()`. See the "Transforming Result" section in [this](https://www.hackingwithswift.com/articles/161/how-to-use-result-in-swift) article for more information.
 
 ### Combine Support
-
- `performRequest(on:decodeBodyTo:)` or `performRequest()`
 
 If you are using Combine in your project (e.g. because you're using SwiftUI), you might want to replace the calls to `performRequest(on:decodeBodyTo:)` or `performRequest(on:)` with the Combine calls `publisher(on:decodeBodyTo:)` or `publisher(on:)`. This will give you an `AnyPublisher` request stream to subscribe to. In success cases you will receive the decoded typed object, in error cases an `ApiError` object exactly like within the `performRequest` completion closure. But instead of a `Result` type you can use `sink` or `catch` from the Combine framework.
 
@@ -330,6 +342,8 @@ public var headers: [String: String] {
 }
 
 public var queryParameters: [String: QueryParameterValue] { [:] }
+
+public var mockedResponse: MockedResponse? { nil }
 ```
 
 So technically, the `Endpoint` type only requires you to specify the following 4 things:
@@ -345,6 +359,37 @@ protocol Endpoint {
 
 This can be a time (/ code) saver for simple APIs you want to access.
 You can also use `EmptyBodyResponse` type for `ClientErrorType` to ignore the client error body structure.
+
+### Testing
+
+Microya supports mocking responses in your tests.
+To do that, just initialize a different `ApiProvider` in your tests and specify with a given `delay` and `scheduler` as the `mockingBehavior` parameter.
+
+Now, instead of making actual calls, Microya will respond with the provided `mockedResponse` computed property in your `Endpoint` type.
+
+Note that the `.delay` mocking behavior is designed for use with Combine schedulers. Use `DispatchQueue.test` from the [`combine-schedulers` library](https://github.com/pointfreeco/combine-schedulers) (which is included with Microya) to control time in your tests so you don't need to actually wait for the requests when using `.delay`.
+
+For example, you might want to add an extension in your tests to provide a `.mocked` property to use whenever you need an `ApiProvider` like so:
+
+```swift
+import CombineSchedulers
+import Foundation
+import Microya
+
+let testScheduler: AnySchedulerOf<DispatchQueue> = DispatchQueue.test
+
+extension ApiProvider {
+  static var mocked: ApiProvider<MicrosoftTranslatorEndpoint> {
+    ApiProvider<MicrosoftTranslatorEndpoint>(
+      baseUrl: URL(string: "https://api.cognitive.microsofttranslator.com")!,
+      mockingBehavior: MockingBehavior(delay: .seconds(0.5), scheduler: testScheduler.eraseToAnyScheduler()
+    )
+  }
+}
+
+```
+
+Now, in your tests you can just call `testScheduler.advance(by: .milliseconds(300))` fast-forward the time so your tests stay fast.
 
 ## Donation
 

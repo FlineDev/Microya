@@ -346,4 +346,124 @@ class MicroyaIntegrationTests: XCTestCase {
       wait(for: [expectation], timeout: 10)
     #endif
   }
+
+  func testMockedGet() throws {
+    let expectation = XCTestExpectation()
+
+    XCTAssertFalse(TestDataStore.showingProgressIndicator)
+
+    mockedApiProvider.performRequest(on: .get(fooBarID: fooBarID), decodeBodyTo: FooBar.self) { result in
+      switch result {
+      case .success:
+        XCTAssertEqual(result, .success(FooBar(foo: "foo\(self.fooBarID)", bar: "bar\(self.fooBarID)")))
+
+      default:
+        break
+      }
+
+      expectation.fulfill()
+    }
+
+    XCTAssertTrue(TestDataStore.showingProgressIndicator)
+    wait(for: [expectation], timeout: 10)
+    XCTAssertFalse(TestDataStore.showingProgressIndicator)
+
+    XCTAssertEqual(TestDataStore.request?.allHTTPHeaderFields?["Content-Type"], "application/json")
+    XCTAssertEqual(TestDataStore.request?.allHTTPHeaderFields?["Accept"], "application/json")
+    XCTAssertEqual(TestDataStore.request?.allHTTPHeaderFields?["Accept-Language"], "en")
+    XCTAssertEqual(TestDataStore.request?.allHTTPHeaderFields?["Authorization"], "Basic abc123")
+
+    XCTAssertEqual(TestDataStore.request?.httpMethod, "GET")
+    XCTAssertEqual(TestDataStore.request?.url?.path, "/get/\(fooBarID)")
+    XCTAssertNil(TestDataStore.request?.url?.query)
+  }
+
+  func testMockedPostCombine() throws {
+    #if canImport(Combine)
+      let expectation = XCTestExpectation()
+
+      mockedApiProvider.publisher(
+        on: .post(fooBar: FooBar(foo: "Lorem", bar: "Ipsum")),
+        decodeBodyTo: PostmanEchoResponse.self
+      )
+      .sink(
+        receiveCompletion: { completion in
+          XCTAssertEqual(completion, .failure(.emptyMockedResponse))
+
+          expectation.fulfill()
+        },
+        receiveValue: { _ in }
+      )
+      .store(in: &cancellables)
+
+      wait(for: [expectation], timeout: 10)
+    #endif
+  }
+
+  func testMockedGetCombine() throws {
+    #if canImport(Combine)
+      let expectation = XCTestExpectation()
+
+      XCTAssertFalse(TestDataStore.showingProgressIndicator)
+
+      mockedApiProvider.publisher(on: .get(fooBarID: fooBarID), decodeBodyTo: PostmanEchoResponse.self)
+        .sink(
+          receiveCompletion: { _ in
+
+            XCTAssertFalse(TestDataStore.showingProgressIndicator)
+
+            XCTAssertEqual(TestDataStore.request?.allHTTPHeaderFields?["Content-Type"], "application/json")
+            XCTAssertEqual(TestDataStore.request?.allHTTPHeaderFields?["Accept"], "application/json")
+            XCTAssertEqual(TestDataStore.request?.allHTTPHeaderFields?["Accept-Language"], "en")
+            XCTAssertEqual(TestDataStore.request?.allHTTPHeaderFields?["Authorization"], "Basic abc123")
+
+            XCTAssertEqual(TestDataStore.request?.httpMethod, "GET")
+            XCTAssertEqual(TestDataStore.request?.url?.path, "/get/\(self.fooBarID)")
+            XCTAssertNil(TestDataStore.request?.url?.query)
+
+            expectation.fulfill()
+          },
+          receiveValue: { typedResponseBody in
+            XCTFail("Expected to receive error due to missing endpoint path.")
+
+            expectation.fulfill()
+          }
+        )
+        .store(in: &cancellables)
+
+      XCTAssertTrue(TestDataStore.showingProgressIndicator)
+      wait(for: [expectation], timeout: 10)
+    #endif
+  }
+
+  func testMockedDeleteCombine() throws {
+    #if canImport(Combine)
+      let expectation = XCTestExpectation()
+
+      mockedApiProvider.publisher(on: .delete)
+        .sink(
+          receiveCompletion: { _ in },
+          receiveValue: { typedResponseBody in
+
+            XCTAssertEqual(TestDataStore.request?.allHTTPHeaderFields?["Content-Type"], "application/json")
+            XCTAssertEqual(TestDataStore.request?.allHTTPHeaderFields?["Accept"], "application/json")
+            XCTAssertEqual(TestDataStore.request?.allHTTPHeaderFields?["Accept-Language"], "en")
+            XCTAssertEqual(TestDataStore.request?.allHTTPHeaderFields?["Authorization"], "Basic abc123")
+
+            XCTAssertEqual(TestDataStore.request?.httpMethod, "DELETE")
+            XCTAssertEqual(TestDataStore.request?.url?.path, "/delete")
+            XCTAssertNil(TestDataStore.request?.url?.query)
+
+            XCTAssertNil(TestDataStore.urlSessionResult?.data)
+            XCTAssertNil(TestDataStore.urlSessionResult?.error)
+            XCTAssertNotNil(TestDataStore.urlSessionResult?.response)
+
+            expectation.fulfill()
+          }
+        )
+        .store(in: &cancellables)
+
+      wait(for: [expectation], timeout: 10)
+    #endif
+  }
 }

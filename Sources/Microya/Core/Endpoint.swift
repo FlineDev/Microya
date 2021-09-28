@@ -4,7 +4,7 @@ import Foundation
 #endif
 
 /// Helper type for request where no body is expected as part of the response.
-public struct EmptyBodyResponse: Decodable { /* no body needed */  }
+public struct EmptyBodyResponse: Decodable, Equatable { /* no body needed */  }
 
 /// The protocol which defines the structure of an API endpoint.
 public protocol Endpoint {
@@ -17,9 +17,6 @@ public protocol Endpoint {
   /// The JSON encoder to be used for encoding.
   var encoder: JSONEncoder { get }
 
-  /// The common base URL of the API endpoints.
-  var baseUrl: URL { get }
-
   /// The headers to be sent per request.
   var headers: [String: String] { get }
 
@@ -31,11 +28,14 @@ public protocol Endpoint {
 
   /// The URL query parameters to be sent (part after ? in URLs, e.g. google.com?query=Harry+Potter).
   var queryParameters: [String: QueryParameterValue] { get }
+
+  /// The mocked response for testing purposes. Will be returned instead of making actual calls when `ApiProvider`s `mockingBehavior` is set.
+  var mockedResponse: MockedResponse? { get }
 }
 
 extension Endpoint {
-  func buildRequest() -> URLRequest {
-    var request = URLRequest(url: buildRequestUrl())
+  func buildRequest(baseUrl: URL) -> URLRequest {
+    var request = URLRequest(url: buildRequestUrl(baseUrl: baseUrl))
 
     method.apply(to: &request)
 
@@ -46,7 +46,7 @@ extension Endpoint {
     return request
   }
 
-  private func buildRequestUrl() -> URL {
+  private func buildRequestUrl(baseUrl: URL) -> URL {
     var urlComponents = URLComponents(
       url: baseUrl.appendingPathComponent(subpath),
       resolvingAgainstBaseURL: false
@@ -89,5 +89,28 @@ extension Endpoint {
 
   public var queryParameters: [String: QueryParameterValue] {
     [:]
+  }
+
+  public var mockedResponse: MockedResponse? {
+    nil
+  }
+
+  /// Creates a `MockedResponse` object with the given status, body JSON string (optional) and headers (optional).
+  public func mock(status: HttpStatus, bodyJson: String? = nil, headers: [String: String] = [:]) -> MockedResponse {
+    MockedResponse(subpath: subpath, statusCode: status.code, bodyJson: bodyJson, headers: headers)
+  }
+
+  /// Creates a `MockedResponse` object with the given status, body `Encodable` object and headers (optional).
+  public func mock<T: Encodable>(
+    status: HttpStatus,
+    bodyEncodable: T,
+    headers: [String: String] = [:]
+  ) throws -> MockedResponse {
+    MockedResponse(
+      subpath: subpath,
+      statusCode: status.code,
+      bodyData: try encoder.encode(bodyEncodable),
+      headers: headers
+    )
   }
 }

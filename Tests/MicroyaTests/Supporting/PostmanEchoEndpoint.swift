@@ -3,10 +3,12 @@
 #endif
 @testable import Microya
 import XCTest
+import CombineSchedulers
 
 let sampleApiProvider = ApiProvider<PostmanEchoEndpoint>(
+  baseUrl: URL(string: "https://postman-echo.com")!,
   plugins: [
-    HttpBasicAuthPlugin<PostmanEchoEndpoint>(tokenClosure: { "abc123" }),
+    HttpAuthPlugin<PostmanEchoEndpoint>(scheme: .basic, tokenClosure: { "abc123" }),
     RequestLoggerPlugin<PostmanEchoEndpoint>(logClosure: { TestDataStore.request = $0 }),
     ResponseLoggerPlugin<PostmanEchoEndpoint>(logClosure: { TestDataStore.urlSessionResult = $0 }),
     ProgressIndicatorPlugin<PostmanEchoEndpoint>(
@@ -14,6 +16,20 @@ let sampleApiProvider = ApiProvider<PostmanEchoEndpoint>(
       hideIndicator: { TestDataStore.showingProgressIndicator = false }
     ),
   ]
+)
+
+let mockedApiProvider = ApiProvider<PostmanEchoEndpoint>(
+  baseUrl: URL(string: "https://postman-echo.com")!,
+  plugins: [
+    HttpAuthPlugin<PostmanEchoEndpoint>(scheme: .basic, tokenClosure: { "abc123" }),
+    RequestLoggerPlugin<PostmanEchoEndpoint>(logClosure: { TestDataStore.request = $0 }),
+    ResponseLoggerPlugin<PostmanEchoEndpoint>(logClosure: { TestDataStore.urlSessionResult = $0 }),
+    ProgressIndicatorPlugin<PostmanEchoEndpoint>(
+      showIndicator: { TestDataStore.showingProgressIndicator = true },
+      hideIndicator: { TestDataStore.showingProgressIndicator = false }
+    ),
+  ],
+  mockingBehavior: MockingBehavior(delay: .seconds(0.2), scheduler: DispatchQueue.main.eraseToAnyScheduler())
 )
 
 enum PostmanEchoEndpoint {
@@ -38,10 +54,6 @@ extension PostmanEchoEndpoint: Endpoint {
     let encoder = JSONEncoder()
     encoder.dateEncodingStrategy = .iso8601
     return encoder
-  }
-
-  var baseUrl: URL {
-    URL(string: "https://postman-echo.com")!
   }
 
   var headers: [String: String] {
@@ -94,6 +106,22 @@ extension PostmanEchoEndpoint: Endpoint {
 
     default:
       return [:]
+    }
+  }
+
+  var mockedResponse: MockedResponse? {
+    switch self {
+    case let .get(fooBarID):
+      return try! mock(
+        status: .ok,
+        bodyEncodable: FooBar(foo: "foo\(fooBarID)", bar: "bar\(fooBarID)")
+      )
+
+    case .delete:
+      return mock(status: .noContent)
+
+    default:
+      return nil
     }
   }
 }
