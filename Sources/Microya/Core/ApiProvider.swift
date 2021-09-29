@@ -137,6 +137,68 @@ open class ApiProvider<EndpointType: Endpoint> {
     }
   }
 
+  @available(iOS 15, tvOS 15, macOS 12, watchOS 8, *)
+  public func response(on endpoint: EndpointType) async -> TypedResult<EmptyBodyResponse> {
+    await self.response(on: endpoint, decodeBodyTo: EmptyBodyResponse.self)
+  }
+
+  @available(iOS 15, tvOS 15, macOS 12, watchOS 8, *)
+  public func response<ResultType: Decodable>(
+    on endpoint: EndpointType,
+    decodeBodyTo: ResultType.Type
+  ) async -> TypedResult<ResultType> {
+    var request: URLRequest = endpoint.buildRequest(baseUrl: baseUrl)
+
+    for plugin in plugins {
+      plugin.modifyRequest(&request, endpoint: endpoint)
+    }
+
+    for plugin in plugins {
+      plugin.willPerformRequest(request, endpoint: endpoint)
+    }
+
+    func handleResponse(data: Data?, response: URLResponse?, error: Error?) -> TypedResult<ResultType> {
+      let urlSessionResult: URLSessionResult = (data: data, response: response, error: error)
+      let typedResult: TypedResult<ResultType> = self.decodeBody(from: urlSessionResult, endpoint: endpoint)
+
+      for plugin in self.plugins {
+        plugin.didPerformRequest(urlSessionResult: urlSessionResult, typedResult: typedResult, endpoint: endpoint)
+      }
+
+      return typedResult
+    }
+
+    if let mockingBehavior = mockingBehavior {
+      let baseUrl = self.baseUrl
+
+      var schedulerFired: Bool = false
+      mockingBehavior.scheduler.schedule(after: mockingBehavior.scheduler.now.advanced(by: mockingBehavior.delay)) {
+        schedulerFired = true
+      }
+      while !schedulerFired { /* wait for scheduler to schedule */  }
+
+      guard let mockedResponse = mockingBehavior.mockedResponseProvider(endpoint) else {
+        return .failure(.emptyMockedResponse)
+      }
+
+      return handleResponse(
+        data: mockedResponse.bodyData,
+        response: mockedResponse.httpUrlResponse(baseUrl: baseUrl),
+        error: nil
+      )
+    }
+    else {
+      // this is the main logic, making the actual call
+      do {
+        let (data, response) = try await URLSession.shared.data(for: request)
+        return handleResponse(data: data, response: response, error: nil)
+      }
+      catch {
+        return handleResponse(data: nil, response: nil, error: error)
+      }
+    }
+  }
+
   /// Performs the asynchronous request for the chosen write-only endpoint and calls the completion closure with the result.
   /// Returns a `EmptyBodyResponse` on success.
   ///
