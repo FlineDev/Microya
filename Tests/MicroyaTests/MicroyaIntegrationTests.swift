@@ -466,4 +466,128 @@ class MicroyaIntegrationTests: XCTestCase {
       wait(for: [expectation], timeout: 10)
     #endif
   }
+
+  @available(iOS 15, tvOS 15, macOS 12, watchOS 8, *)
+  func testIndexAsync() async throws {
+    let typedResponseBody =
+      try await sampleApiProvider.response(
+        on: .index(sortedBy: "updatedAt"),
+        decodeBodyTo: PostmanEchoResponse.self
+      )
+      .get()
+
+    XCTAssertEqual(TestDataStore.request?.allHTTPHeaderFields?["Content-Type"], "application/json")
+    XCTAssertEqual(TestDataStore.request?.allHTTPHeaderFields?["Accept"], "application/json")
+    XCTAssertEqual(TestDataStore.request?.allHTTPHeaderFields?["Accept-Language"], "en")
+    XCTAssertEqual(TestDataStore.request?.allHTTPHeaderFields?["Authorization"], "Basic abc123")
+
+    XCTAssertEqual(TestDataStore.request?.httpMethod, "GET")
+    XCTAssertEqual(TestDataStore.request?.url?.path, "/get")
+    XCTAssertEqual(TestDataStore.request?.url?.query, "sortedBy=updatedAt")
+
+    XCTAssertNotNil(TestDataStore.urlSessionResult?.data)
+    XCTAssertNil(TestDataStore.urlSessionResult?.error)
+    XCTAssertNotNil(TestDataStore.urlSessionResult?.response)
+
+    XCTAssertEqual(typedResponseBody.args, ["sortedBy": "updatedAt"])
+    XCTAssertEqual(typedResponseBody.headers["content-type"], "application/json")
+    XCTAssertEqual(typedResponseBody.headers["accept"], "application/json")
+    XCTAssertEqual(typedResponseBody.headers["accept-language"], "en")
+    XCTAssertEqual(typedResponseBody.url, "https://postman-echo.com/get?sortedBy=updatedAt")
+  }
+
+  @available(iOS 15, tvOS 15, macOS 12, watchOS 8, *)
+  func testPostAsync() async throws {
+    let typedResponseBody =
+      try await sampleApiProvider.response(
+        on: .post(fooBar: FooBar(foo: "Lorem", bar: "Ipsum")),
+        decodeBodyTo: PostmanEchoResponse.self
+      )
+      .get()
+
+    XCTAssertEqual(TestDataStore.request?.allHTTPHeaderFields?["Content-Type"], "application/json")
+    XCTAssertEqual(TestDataStore.request?.allHTTPHeaderFields?["Accept"], "application/json")
+    XCTAssertEqual(TestDataStore.request?.allHTTPHeaderFields?["Accept-Language"], "en")
+    XCTAssertEqual(TestDataStore.request?.allHTTPHeaderFields?["Authorization"], "Basic abc123")
+
+    XCTAssertEqual(TestDataStore.request?.httpMethod, "POST")
+    XCTAssertEqual(TestDataStore.request?.url?.path, "/post")
+    XCTAssertNil(TestDataStore.request?.url?.query)
+
+    XCTAssertNotNil(TestDataStore.urlSessionResult?.data)
+    XCTAssertNil(TestDataStore.urlSessionResult?.error)
+    XCTAssertNotNil(TestDataStore.urlSessionResult?.response)
+
+    XCTAssertEqual(typedResponseBody.args, [:])
+    XCTAssertEqual(typedResponseBody.headers["content-type"], "application/json")
+    XCTAssertEqual(typedResponseBody.headers["accept"], "application/json")
+    XCTAssertEqual(typedResponseBody.headers["accept-language"], "en")
+    XCTAssertEqual(typedResponseBody.url, "https://postman-echo.com/post")
+  }
+
+  @available(iOS 15, tvOS 15, macOS 12, watchOS 8, *)
+  func testGetAsync() async {
+    let response = await sampleApiProvider.response(
+      on: .get(fooBarID: fooBarID),
+      decodeBodyTo: PostmanEchoResponse.self
+    )
+    XCTAssertThrowsError(try response.get())
+
+    XCTAssertEqual(TestDataStore.request?.allHTTPHeaderFields?["Content-Type"], "application/json")
+    XCTAssertEqual(TestDataStore.request?.allHTTPHeaderFields?["Accept"], "application/json")
+    XCTAssertEqual(TestDataStore.request?.allHTTPHeaderFields?["Accept-Language"], "en")
+    XCTAssertEqual(TestDataStore.request?.allHTTPHeaderFields?["Authorization"], "Basic abc123")
+
+    XCTAssertEqual(TestDataStore.request?.httpMethod, "GET")
+    XCTAssertEqual(TestDataStore.request?.url?.path, "/get/\(fooBarID)")
+    XCTAssertNil(TestDataStore.request?.url?.query)
+  }
+
+  @available(iOS 15, tvOS 15, macOS 12, watchOS 8, *)
+  func testPatchAsync() async throws {
+    let response = await sampleApiProvider.response(
+      on: .patch(fooBarID: fooBarID, fooBar: FooBar(foo: "Dolor", bar: "Amet")),
+      decodeBodyTo: PostmanEchoResponse.self
+    )
+    XCTAssertThrowsError(try response.get())
+
+    XCTAssertEqual(TestDataStore.request?.allHTTPHeaderFields?["Content-Type"], "application/json")
+    XCTAssertEqual(TestDataStore.request?.allHTTPHeaderFields?["Accept"], "application/json")
+    XCTAssertEqual(TestDataStore.request?.allHTTPHeaderFields?["Accept-Language"], "en")
+    XCTAssertEqual(TestDataStore.request?.allHTTPHeaderFields?["Authorization"], "Basic abc123")
+
+    XCTAssertEqual(TestDataStore.request?.httpMethod, "PATCH")
+    XCTAssertEqual(TestDataStore.request?.url?.path, "/patch/\(fooBarID)")
+    XCTAssertNil(TestDataStore.request?.url?.query)
+
+    XCTAssertNotNil(TestDataStore.urlSessionResult?.data)
+    XCTAssertNil(TestDataStore.urlSessionResult?.error)
+    XCTAssertNotNil(TestDataStore.urlSessionResult?.response)
+  }
+
+  @available(iOS 15, tvOS 15, macOS 12, watchOS 8, *)
+  func testDeleteAsync() async throws {
+    let result = await sampleApiProvider.response(on: .delete)
+
+    switch result {
+    case .success:
+      break
+
+    default:
+      XCTFail("Expected request to succeed.")
+    }
+
+    XCTAssertEqual(TestDataStore.request?.allHTTPHeaderFields?["Content-Type"], "application/json")
+    XCTAssertEqual(TestDataStore.request?.allHTTPHeaderFields?["Accept"], "application/json")
+    XCTAssertEqual(TestDataStore.request?.allHTTPHeaderFields?["Accept-Language"], "en")
+    XCTAssertEqual(TestDataStore.request?.allHTTPHeaderFields?["Authorization"], "Basic abc123")
+
+    XCTAssertEqual(TestDataStore.request?.httpMethod, "DELETE")
+    XCTAssertEqual(TestDataStore.request?.url?.path, "/delete")
+    XCTAssertNil(TestDataStore.request?.url?.query)
+
+    XCTAssertNotNil(TestDataStore.urlSessionResult?.data)
+    XCTAssertNil(TestDataStore.urlSessionResult?.error)
+    XCTAssertNotNil(TestDataStore.urlSessionResult?.response)
+  }
 }
