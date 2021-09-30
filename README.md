@@ -277,6 +277,22 @@ provider.publisher(on: endpoint, decodeBodyTo: TranslationsResponse.self)
   .store(in: &cancellables)
 ```
 
+### Concurrency Support
+
+If you are using Swift 5.5 in your project and your minimum target is iOS/tvOS 15+, macOS 12+ or watchOS 8+, you might want to use the `async` method `response` instead. For example, the usage might look something like this:
+
+```Swift
+let result = await provider.response(on: endpoint, decodeBodyTo: TranslationsResponse.self)
+
+switch result {
+case let .success(translationsByLanguage):
+    // use the already decoded `[String: String]` result
+
+case let .failure(apiError):
+    // error handling
+}
+```
+
 ### Plugins
 
 The initializer of `ApiProvider` accepts an array of `Plugin` objects. You can implement your own plugins or use one of the existing ones in the [Plugins](https://github.com/Flinesoft/Microya/tree/main/Sources/Microya/Plugins) directory. Here's are the callbacks a custom `Plugin` subclass can override:
