@@ -5,7 +5,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 ## [Unreleased]
 ### Added
-- New async `response` method based on the new concurrency features available in Swift 5.5.
+- None.
 ### Changed
 - None.
 ### Deprecated
@@ -16,6 +16,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 - None.
 ### Security
 - None.
+
+## [0.6.0] - 2021-09-30
+### Added
+- New async `response` method based on the new concurrency features available in Swift 5.5.
 
 ## [0.5.0] - 2021-09-28
 ### Added
