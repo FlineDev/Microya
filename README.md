@@ -347,8 +347,6 @@ public var decoder: JSONDecoder { JSONDecoder() }
 
 public var encoder: JSONEncoder { JSONEncoder() }
 
-public var plugins: [Plugin<Self>] { [] }
-
 public var headers: [String: String] {
     [
         "Content-Type": "application/json",
@@ -367,7 +365,6 @@ So technically, the `Endpoint` type only requires you to specify the following 4
 ```swift
 protocol Endpoint {
     associatedtype ClientErrorType: Decodable
-    var baseUrl: URL { get }
     var subpath: String { get }
     var method: HttpMethod { get }
 }
