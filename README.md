@@ -13,10 +13,10 @@
              alt="codebeat badge">
     </a>
     <a href="https://github.com/Flinesoft/HandySwift/releases">
-    <img src="https://img.shields.io/badge/Version-0.6.0-blue.svg"
-         alt="Version: 0.6.0">
-    <img src="https://img.shields.io/badge/Swift-5.3-FFAC45.svg"
-         alt="Swift: 5.3">
+    <img src="https://img.shields.io/badge/Version-0.6.1-blue.svg"
+         alt="Version: 0.6.1">
+    <img src="https://img.shields.io/badge/Swift-5.4-FFAC45.svg"
+         alt="Swift: 5.4">
     <img src="https://img.shields.io/badge/Platforms-Apple%20%7C%20Linux-FF69B4.svg"
         alt="Platforms: Apple | Linux">
     <a href="https://github.com/Flinesoft/Microya/blob/main/LICENSE.md">
@@ -277,6 +277,22 @@ provider.publisher(on: endpoint, decodeBodyTo: TranslationsResponse.self)
   .store(in: &cancellables)
 ```
 
+### Concurrency Support
+
+If you are using Swift 5.5 in your project and your minimum target is iOS/tvOS 15+, macOS 12+ or watchOS 8+, you might want to use the `async` method `response` instead. For example, the usage might look something like this:
+
+```Swift
+let result = await provider.response(on: endpoint, decodeBodyTo: TranslationsResponse.self)
+
+switch result {
+case let .success(translationsByLanguage):
+    // use the already decoded `[String: String]` result
+
+case let .failure(apiError):
+    // error handling
+}
+```
+
 ### Plugins
 
 The initializer of `ApiProvider` accepts an array of `Plugin` objects. You can implement your own plugins or use one of the existing ones in the [Plugins](https://github.com/Flinesoft/Microya/tree/main/Sources/Microya/Plugins) directory. Here's are the callbacks a custom `Plugin` subclass can override:
@@ -331,8 +347,6 @@ public var decoder: JSONDecoder { JSONDecoder() }
 
 public var encoder: JSONEncoder { JSONEncoder() }
 
-public var plugins: [Plugin<Self>] { [] }
-
 public var headers: [String: String] {
     [
         "Content-Type": "application/json",
@@ -351,7 +365,6 @@ So technically, the `Endpoint` type only requires you to specify the following 4
 ```swift
 protocol Endpoint {
     associatedtype ClientErrorType: Decodable
-    var baseUrl: URL { get }
     var subpath: String { get }
     var method: HttpMethod { get }
 }
