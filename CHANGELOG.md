@@ -7,7 +7,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 ### Added
 - None.
 ### Changed
-- Allowed to change the baseUrl.
+- Made the `baseUrl` parameter of `ApiProvider` editable.
 ### Deprecated
 - None.
 ### Removed
