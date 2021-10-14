@@ -17,7 +17,7 @@ open class ApiProvider<EndpointType: Endpoint> {
   public let plugins: [Plugin<EndpointType>]
 
   /// The common base URL of the API endpoints.
-  public let baseUrl: URL
+  public var baseUrl: URL
 
   /// The mocking behavior of the provider. Set this to receive mocked data in your tests. Use `nil` to make actual requests to your server (the default).
   public let mockingBehavior: MockingBehavior<EndpointType>?
