@@ -5,7 +5,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 ## [Unreleased]
 ### Added
-- None.
+- New methods for requesting raw `Data` response to allow for using alternative decoding methods such as [SwiftyJSON](https://github.com/SwiftyJSON/SwiftyJSON): `performRawDataRequest(AndWait)` (classic approach), `rawDataPublisher` (Combine) and `rawDataResponse` (Swift concurrency).
 ### Changed
 - None.
 ### Deprecated

@@ -34,6 +34,16 @@ open class ApiProvider<EndpointType: Endpoint> {
   }
 
   /// Returns a publisher which performs a request to the server when new values are requested.
+  /// Returns the raw response `Data` on success for custom handling, skipping the decoding logic.
+  ///
+  /// - NOTE: Do not use this if you expect a `Decodable` response, use `publisher(on:decodeBodyTo:)` instead.
+  public func rawDataPublisher(
+    on endpoint: EndpointType
+  ) -> AnyPublisher<Data, ApiError<EndpointType.ClientErrorType>> {
+    self.publisher(on: endpoint, decodeBodyTo: Data.self)
+  }
+
+  /// Returns a publisher which performs a request to the server when new values are requested.
   /// Returns a `EmptyBodyResponse` on success.
   ///
   /// - WARNING: Do not use this if you expect a body response, use `publisher(on:decodeBodyTo:)` instead.
@@ -137,6 +147,13 @@ open class ApiProvider<EndpointType: Endpoint> {
     }
   }
 
+  /// - NOTE: Do not use this if you expect a `Decodable` response, use `response(on:decodeBodyTo:)` instead.
+  @available(iOS 15, tvOS 15, macOS 12, watchOS 8, *)
+  public func rawDataResponse(on endpoint: EndpointType) async -> TypedResult<Data> {
+    await self.response(on: endpoint, decodeBodyTo: Data.self)
+  }
+
+  /// - WARNING: Do not use this if you expect a body response, use `response(on:decodeBodyTo:)` instead.
   @available(iOS 15, tvOS 15, macOS 12, watchOS 8, *)
   public func response(on endpoint: EndpointType) async -> TypedResult<EmptyBodyResponse> {
     await self.response(on: endpoint, decodeBodyTo: EmptyBodyResponse.self)
@@ -197,6 +214,25 @@ open class ApiProvider<EndpointType: Endpoint> {
         return handleResponse(data: nil, response: nil, error: error)
       }
     }
+  }
+
+  /// Performs the asynchronous request for the chosen write-only endpoint and calls the completion closure with the result.
+  /// Returns the raw response `Data` on success for custom handling, skipping the decoding logic.
+  ///
+  /// - NOTE: Do not use this if you expect a `Decodable` response, use `performRequest(on:decodeBodyTo:completion:)` instead.
+  public func performRawDataRequest(
+    on endpoint: EndpointType,
+    completion: @escaping (TypedResult<Data>) -> Void
+  ) {
+    self.performRequest(on: endpoint, decodeBodyTo: Data.self, completion: completion)
+  }
+
+  /// Performs the request for the chosen write-only endpoint synchronously (waits for the result).
+  /// Returns the raw response `Data` on success for custom handling, skipping the decoding logic.
+  ///
+  /// - NOTE: Do not use this if you expect a `Decodable` response, use `performRequestAndWait(on:decodeBodyTo:)` instead.
+  public func performRawDataRequestAndWait(on endpoint: EndpointType) -> TypedResult<Data> {
+    self.performRequestAndWait(on: endpoint, decodeBodyTo: Data.self)
   }
 
   /// Performs the asynchronous request for the chosen write-only endpoint and calls the completion closure with the result.
@@ -333,6 +369,10 @@ open class ApiProvider<EndpointType: Endpoint> {
 
       guard let data = data else {
         throw ApiError<EndpointType.ClientErrorType>.noDataInResponse(statusCode: httpResponse.statusCode)
+      }
+
+      guard ResultType.self != Data.self else {
+        return data as! ResultType
       }
 
       do {
