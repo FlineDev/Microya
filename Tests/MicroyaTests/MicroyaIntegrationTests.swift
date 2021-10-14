@@ -80,6 +80,35 @@ class MicroyaIntegrationTests: XCTestCase {
     XCTAssertEqual(typedResponseBody.url, "https://postman-echo.com/post")
   }
 
+  func testRawDataPost() throws {
+    let dataResponseBody =
+      try sampleApiProvider.performRawDataRequestAndWait(
+        on: .post(fooBar: FooBar(foo: "Lorem", bar: "Ipsum"))
+      )
+      .get()
+
+    XCTAssertEqual(TestDataStore.request?.allHTTPHeaderFields?["Content-Type"], "application/json")
+    XCTAssertEqual(TestDataStore.request?.allHTTPHeaderFields?["Accept"], "application/json")
+    XCTAssertEqual(TestDataStore.request?.allHTTPHeaderFields?["Accept-Language"], "en")
+    XCTAssertEqual(TestDataStore.request?.allHTTPHeaderFields?["Authorization"], "Basic abc123")
+
+    XCTAssertEqual(TestDataStore.request?.httpMethod, "POST")
+    XCTAssertEqual(TestDataStore.request?.url?.path, "/post")
+    XCTAssertNil(TestDataStore.request?.url?.query)
+
+    XCTAssertNotNil(TestDataStore.urlSessionResult?.data)
+    XCTAssertNil(TestDataStore.urlSessionResult?.error)
+    XCTAssertNotNil(TestDataStore.urlSessionResult?.response)
+
+    let typedResponseBody = try JSONDecoder().decode(PostmanEchoResponse.self, from: dataResponseBody)
+
+    XCTAssertEqual(typedResponseBody.args, [:])
+    XCTAssertEqual(typedResponseBody.headers["content-type"], "application/json")
+    XCTAssertEqual(typedResponseBody.headers["accept"], "application/json")
+    XCTAssertEqual(typedResponseBody.headers["accept-language"], "en")
+    XCTAssertEqual(typedResponseBody.url, "https://postman-echo.com/post")
+  }
+
   func testGet() throws {
     let expectation = XCTestExpectation()
 
@@ -221,6 +250,46 @@ class MicroyaIntegrationTests: XCTestCase {
           XCTAssertNotNil(TestDataStore.urlSessionResult?.data)
           XCTAssertNil(TestDataStore.urlSessionResult?.error)
           XCTAssertNotNil(TestDataStore.urlSessionResult?.response)
+
+          XCTAssertEqual(typedResponseBody.args, [:])
+          XCTAssertEqual(typedResponseBody.headers["content-type"], "application/json")
+          XCTAssertEqual(typedResponseBody.headers["accept"], "application/json")
+          XCTAssertEqual(typedResponseBody.headers["accept-language"], "en")
+          XCTAssertEqual(typedResponseBody.url, "https://postman-echo.com/post")
+
+          expectation.fulfill()
+        }
+      )
+      .store(in: &cancellables)
+
+      wait(for: [expectation], timeout: 10)
+    #endif
+  }
+
+  func testPostRawDataCombine() throws {
+    #if canImport(Combine)
+      let expectation = XCTestExpectation()
+
+      sampleApiProvider.rawDataPublisher(
+        on: .post(fooBar: FooBar(foo: "Lorem", bar: "Ipsum"))
+      )
+      .sink(
+        receiveCompletion: { _ in },
+        receiveValue: { dataResponseBody in
+          XCTAssertEqual(TestDataStore.request?.allHTTPHeaderFields?["Content-Type"], "application/json")
+          XCTAssertEqual(TestDataStore.request?.allHTTPHeaderFields?["Accept"], "application/json")
+          XCTAssertEqual(TestDataStore.request?.allHTTPHeaderFields?["Accept-Language"], "en")
+          XCTAssertEqual(TestDataStore.request?.allHTTPHeaderFields?["Authorization"], "Basic abc123")
+
+          XCTAssertEqual(TestDataStore.request?.httpMethod, "POST")
+          XCTAssertEqual(TestDataStore.request?.url?.path, "/post")
+          XCTAssertNil(TestDataStore.request?.url?.query)
+
+          XCTAssertNotNil(TestDataStore.urlSessionResult?.data)
+          XCTAssertNil(TestDataStore.urlSessionResult?.error)
+          XCTAssertNotNil(TestDataStore.urlSessionResult?.response)
+
+          let typedResponseBody = try! JSONDecoder().decode(PostmanEchoResponse.self, from: dataResponseBody)
 
           XCTAssertEqual(typedResponseBody.args, [:])
           XCTAssertEqual(typedResponseBody.headers["content-type"], "application/json")
@@ -517,6 +586,36 @@ class MicroyaIntegrationTests: XCTestCase {
     XCTAssertNotNil(TestDataStore.urlSessionResult?.data)
     XCTAssertNil(TestDataStore.urlSessionResult?.error)
     XCTAssertNotNil(TestDataStore.urlSessionResult?.response)
+
+    XCTAssertEqual(typedResponseBody.args, [:])
+    XCTAssertEqual(typedResponseBody.headers["content-type"], "application/json")
+    XCTAssertEqual(typedResponseBody.headers["accept"], "application/json")
+    XCTAssertEqual(typedResponseBody.headers["accept-language"], "en")
+    XCTAssertEqual(typedResponseBody.url, "https://postman-echo.com/post")
+  }
+
+  @available(iOS 15, tvOS 15, macOS 12, watchOS 8, *)
+  func testPostRawDataAsync() async throws {
+    let dataResponseBody =
+      try await sampleApiProvider.rawDataResponse(
+        on: .post(fooBar: FooBar(foo: "Lorem", bar: "Ipsum"))
+      )
+      .get()
+
+    XCTAssertEqual(TestDataStore.request?.allHTTPHeaderFields?["Content-Type"], "application/json")
+    XCTAssertEqual(TestDataStore.request?.allHTTPHeaderFields?["Accept"], "application/json")
+    XCTAssertEqual(TestDataStore.request?.allHTTPHeaderFields?["Accept-Language"], "en")
+    XCTAssertEqual(TestDataStore.request?.allHTTPHeaderFields?["Authorization"], "Basic abc123")
+
+    XCTAssertEqual(TestDataStore.request?.httpMethod, "POST")
+    XCTAssertEqual(TestDataStore.request?.url?.path, "/post")
+    XCTAssertNil(TestDataStore.request?.url?.query)
+
+    XCTAssertNotNil(TestDataStore.urlSessionResult?.data)
+    XCTAssertNil(TestDataStore.urlSessionResult?.error)
+    XCTAssertNotNil(TestDataStore.urlSessionResult?.response)
+
+    let typedResponseBody = try JSONDecoder().decode(PostmanEchoResponse.self, from: dataResponseBody)
 
     XCTAssertEqual(typedResponseBody.args, [:])
     XCTAssertEqual(typedResponseBody.headers["content-type"], "application/json")
