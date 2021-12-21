@@ -3,8 +3,8 @@ import CombineSchedulers
 
 /// The behavior when mocking is turned on.
 public struct MockingBehavior<EndpointType: Endpoint> {
-  /// Mocked data should be returned after the given delay.
-  public let delay: DispatchQueue.SchedulerTimeType.Stride
+  /// Mocked data should be returned after the given delay. Provide `nil` if response should be received without any delay.
+  public let delay: DispatchQueue.SchedulerTimeType.Stride?
 
   /// Mocked data should be returned on the given dispatch queue.
   public let scheduler: AnySchedulerOf<DispatchQueue>
@@ -14,7 +14,7 @@ public struct MockingBehavior<EndpointType: Endpoint> {
 
   /// Creates a mocking behavior where mocked data should be returned after the given delay and on the given dispatch queue.
   public init(
-    delay: DispatchQueue.SchedulerTimeType.Stride,
+    delay: DispatchQueue.SchedulerTimeType.Stride? = nil,
     scheduler: AnySchedulerOf<DispatchQueue>,
     mockedResponseProvider: @escaping (EndpointType) -> MockedResponse? = { $0.mockedResponse }
   ) {

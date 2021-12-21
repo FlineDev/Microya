@@ -74,7 +74,7 @@ open class ApiProvider<EndpointType: Endpoint> {
     if let mockingBehavior = mockingBehavior {
       let baseUrl = self.baseUrl
       return Future<ResultType, ApiError<EndpointType.ClientErrorType>> { promise in
-        mockingBehavior.scheduler.schedule(after: mockingBehavior.scheduler.now.advanced(by: mockingBehavior.delay)) {
+        func futureBody() {
           guard let mockedResponse = mockingBehavior.mockedResponseProvider(endpoint) else {
             promise(.failure(.emptyMockedResponse))
             return
@@ -92,6 +92,15 @@ open class ApiProvider<EndpointType: Endpoint> {
           }
 
           promise(typedResult)
+        }
+
+        if let delay = mockingBehavior.delay {
+          mockingBehavior.scheduler.schedule(after: mockingBehavior.scheduler.now.advanced(by: delay)) {
+            futureBody()
+          }
+        }
+        else {
+          futureBody()
         }
       }
       .eraseToAnyPublisher()
@@ -189,9 +198,15 @@ open class ApiProvider<EndpointType: Endpoint> {
       let baseUrl = self.baseUrl
 
       var schedulerFired: Bool = false
-      mockingBehavior.scheduler.schedule(after: mockingBehavior.scheduler.now.advanced(by: mockingBehavior.delay)) {
+      if let delay = mockingBehavior.delay {
+        mockingBehavior.scheduler.schedule(after: mockingBehavior.scheduler.now.advanced(by: delay)) {
+          schedulerFired = true
+        }
+      }
+      else {
         schedulerFired = true
       }
+
       while !schedulerFired { /* wait for scheduler to schedule */  }
 
       guard let mockedResponse = mockingBehavior.mockedResponseProvider(endpoint) else {
@@ -284,7 +299,7 @@ open class ApiProvider<EndpointType: Endpoint> {
     if let mockingBehavior = mockingBehavior {
       let baseUrl = self.baseUrl
 
-      mockingBehavior.scheduler.schedule(after: mockingBehavior.scheduler.now.advanced(by: mockingBehavior.delay)) {
+      func body() {
         guard let mockedResponse = mockingBehavior.mockedResponseProvider(endpoint) else {
           completion(.failure(.emptyMockedResponse))
           return
@@ -295,6 +310,15 @@ open class ApiProvider<EndpointType: Endpoint> {
           response: mockedResponse.httpUrlResponse(baseUrl: baseUrl),
           error: nil
         )
+      }
+
+      if let delay = mockingBehavior.delay {
+        mockingBehavior.scheduler.schedule(after: mockingBehavior.scheduler.now.advanced(by: delay)) {
+          body()
+        }
+      }
+      else {
+        body()
       }
     }
     else {

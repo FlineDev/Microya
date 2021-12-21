@@ -18,7 +18,21 @@ let sampleApiProvider = ApiProvider<PostmanEchoEndpoint>(
   ]
 )
 
-let mockedApiProvider = ApiProvider<PostmanEchoEndpoint>(
+let mockedImmediateApiProvider = ApiProvider<PostmanEchoEndpoint>(
+  baseUrl: URL(string: "https://postman-echo.com")!,
+  plugins: [
+    HttpAuthPlugin<PostmanEchoEndpoint>(scheme: .basic, tokenClosure: { "abc123" }),
+    RequestLoggerPlugin<PostmanEchoEndpoint>(logClosure: { TestDataStore.request = $0 }),
+    ResponseLoggerPlugin<PostmanEchoEndpoint>(logClosure: { TestDataStore.urlSessionResult = $0 }),
+    ProgressIndicatorPlugin<PostmanEchoEndpoint>(
+      showIndicator: { TestDataStore.showingProgressIndicator = true },
+      hideIndicator: { TestDataStore.showingProgressIndicator = false }
+    ),
+  ],
+  mockingBehavior: MockingBehavior(scheduler: DispatchQueue.main.eraseToAnyScheduler())
+)
+
+let mockedWithDelayApiProvider = ApiProvider<PostmanEchoEndpoint>(
   baseUrl: URL(string: "https://postman-echo.com")!,
   plugins: [
     HttpAuthPlugin<PostmanEchoEndpoint>(scheme: .basic, tokenClosure: { "abc123" }),
@@ -30,6 +44,45 @@ let mockedApiProvider = ApiProvider<PostmanEchoEndpoint>(
     ),
   ],
   mockingBehavior: MockingBehavior(delay: .seconds(0.2), scheduler: DispatchQueue.main.eraseToAnyScheduler())
+)
+
+let mockedWithCustomResponseApiProvider = ApiProvider<PostmanEchoEndpoint>(
+  baseUrl: URL(string: "https://postman-echo.com")!,
+  plugins: [
+    HttpAuthPlugin<PostmanEchoEndpoint>(scheme: .basic, tokenClosure: { "abc123" }),
+    RequestLoggerPlugin<PostmanEchoEndpoint>(logClosure: { TestDataStore.request = $0 }),
+    ResponseLoggerPlugin<PostmanEchoEndpoint>(logClosure: { TestDataStore.urlSessionResult = $0 }),
+    ProgressIndicatorPlugin<PostmanEchoEndpoint>(
+      showIndicator: { TestDataStore.showingProgressIndicator = true },
+      hideIndicator: { TestDataStore.showingProgressIndicator = false }
+    ),
+  ],
+  mockingBehavior: MockingBehavior(
+    delay: .seconds(0.2),
+    scheduler: DispatchQueue.main.eraseToAnyScheduler(),
+    mockedResponseProvider: { endpoint in
+      switch endpoint {
+      case let .index(sortedBy):
+        return MockedResponse(subpath: "get", statusCode: HttpStatus.ok.code)
+
+      case let .post(fooBar):
+        return nil
+
+      case let .get(fooBarID):
+        return MockedResponse(subpath: "get/\(fooBarID)", statusCode: HttpStatus.ok.code)
+
+      case let .patch(fooBarID, fooBar):
+        return MockedResponse(
+          subpath: "patch/\(fooBarID)",
+          statusCode: HttpStatus.ok.code,
+          bodyData: try! JSONEncoder().encode(fooBar)
+        )
+
+      case .delete:
+        return MockedResponse(subpath: "delete", statusCode: HttpStatus.ok.code)
+      }
+    }
+  )
 )
 
 enum PostmanEchoEndpoint {
