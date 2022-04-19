@@ -1,25 +1,25 @@
 <p align="center">
-    <img src="https://raw.githubusercontent.com/Flinesoft/Microya/main/Logo.png"
+    <img src="https://raw.githubusercontent.com/FlineDev/Microya/main/Logo.png"
       width=396>
 </p>
 
 <p align="center">
-    <a href="https://github.com/Flinesoft/Microya/actions?query=workflow%3ACI+branch%3Amain">
-        <img src="https://github.com/Flinesoft/Microya/workflows/CI/badge.svg?branch=main"
+    <a href="https://github.com/FlineDev/Microya/actions?query=workflow%3ACI+branch%3Amain">
+        <img src="https://github.com/FlineDev/Microya/workflows/CI/badge.svg?branch=main"
              alt="CI Status">
     </a>    
     <a href="https://codebeat.co/projects/github-com-flinesoft-microya-main">
         <img src="https://codebeat.co/badges/a669e100-d30d-4801-b72d-3625ab7240be"
              alt="codebeat badge">
     </a>
-    <a href="https://github.com/Flinesoft/HandySwift/releases">
+    <a href="https://github.com/FlineDev/HandySwift/releases">
     <img src="https://img.shields.io/badge/Version-0.7.0-blue.svg"
          alt="Version: 0.7.0">
     <img src="https://img.shields.io/badge/Swift-5.4-FFAC45.svg"
          alt="Swift: 5.4">
     <img src="https://img.shields.io/badge/Platforms-Apple%20%7C%20Linux-FF69B4.svg"
         alt="Platforms: Apple | Linux">
-    <a href="https://github.com/Flinesoft/Microya/blob/main/LICENSE.md">
+    <a href="https://github.com/FlineDev/Microya/blob/main/LICENSE.md">
         <img src="https://img.shields.io/badge/License-MIT-lightgrey.svg"
               alt="License: MIT">
     </a>
@@ -42,7 +42,7 @@
     <a href="#installation">Installation</a>
   • <a href="#usage">Usage</a>
   • <a href="#donation">Donation</a>
-  • <a href="https://github.com/Flinesoft/Microya/issues">Issues</a>
+  • <a href="https://github.com/FlineDev/Microya/issues">Issues</a>
   • <a href="#contributing">Contributing</a>
   • <a href="#license">License</a>
 </p>
@@ -295,7 +295,7 @@ case let .failure(apiError):
 
 ### Plugins
 
-The initializer of `ApiProvider` accepts an array of `Plugin` objects. You can implement your own plugins or use one of the existing ones in the [Plugins](https://github.com/Flinesoft/Microya/tree/main/Sources/Microya/Plugins) directory. Here's are the callbacks a custom `Plugin` subclass can override:
+The initializer of `ApiProvider` accepts an array of `Plugin` objects. You can implement your own plugins or use one of the existing ones in the [Plugins](https://github.com/FlineDev/Microya/tree/main/Sources/Microya/Plugins) directory. Here's are the callbacks a custom `Plugin` subclass can override:
 
 ```swift
 /// Called to modify a request before sending.
@@ -406,14 +406,14 @@ Now, in your tests you can just call `testScheduler.advance(by: .milliseconds(30
 
 ## Donation
 
-Microya was brought to you by [Cihat Gündüz](https://github.com/Jeehut) in his free time. If you want to thank me and support the development of this project, please **make a small donation on [PayPal](https://paypal.me/Dschee/5EUR)**. In case you also like my other [open source contributions](https://github.com/Flinesoft) and [articles](https://medium.com/@Jeehut), please consider motivating me by **becoming a sponsor on [GitHub](https://github.com/sponsors/Jeehut)** or a **patron on [Patreon](https://www.patreon.com/Jeehut)**.
+Microya was brought to you by [Cihat Gündüz](https://github.com/Jeehut) in his free time. If you want to thank me and support the development of this project, please **make a small donation on [PayPal](https://paypal.me/Dschee/5EUR)**. In case you also like my other [open source contributions](https://github.com/FlineDev) and [articles](https://medium.com/@Jeehut), please consider motivating me by **becoming a sponsor on [GitHub](https://github.com/sponsors/Jeehut)** or a **patron on [Patreon](https://www.patreon.com/Jeehut)**.
 
 Thank you very much for any donation, it really helps out a lot! 💯
 
 
 ## Contributing
 
-See the file [CONTRIBUTING.md](https://github.com/Flinesoft/Microya/blob/main/CONTRIBUTING.md).
+See the file [CONTRIBUTING.md](https://github.com/FlineDev/Microya/blob/main/CONTRIBUTING.md).
 
 
 ## License
