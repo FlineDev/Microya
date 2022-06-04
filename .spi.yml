@@ -1,5 +1,4 @@
 version: 1
 builder:
   configs:
-    - platform: macos
-      documentation_targets: [Microya]
+    - documentation_targets: [Microya]
