@@ -30,6 +30,9 @@ public class HttpAuthPlugin<EndpointType: Endpoint>: Plugin<EndpointType> {
    }
    
    override public func modifyRequest(_ request: inout URLRequest, endpoint: EndpointType) {
+      // prefer any 'Authorization' header set by a specific endpoint over the plugin
+      guard request.value(forHTTPHeaderField: "Authorization") == nil else { return }
+
       if let token = tokenClosure() {
          request.addValue("\(scheme.rawValue) \(token)", forHTTPHeaderField: "Authorization")
       }
