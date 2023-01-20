@@ -133,14 +133,14 @@ extension Endpoint {
    
    public func post(dictToWwwUrlEncode: [String: String]) -> HttpMethod {
       let bodyString = dictToWwwUrlEncode
-         .map { "\($0.key)=\($0.value.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)!)" }
+         .map { "\($0.key)=\($0.value.urlEncoded)" }
          .joined(separator: "&")
       return .post(body: bodyString.data(using: .utf8)!)
    }
    
    public func patch(dictToWwwUrlEncode: [String: String]) -> HttpMethod {
       let bodyString = dictToWwwUrlEncode
-         .map { "\($0.key)=\($0.value.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)!)" }
+         .map { "\($0.key)=\($0.value.urlEncoded)" }
          .joined(separator: "&")
       return .patch(body: bodyString.data(using: .utf8)!)
    }
