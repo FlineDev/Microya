@@ -16,9 +16,6 @@ public enum HttpMethod {
    
    /// The DELETE HTTP method.
    case delete
-
-   /// The POST HTTP method with internal handling of uploading large amounts of data.
-   case upload(data: Data)
    
    func apply(to request: inout URLRequest) {
       switch self {
@@ -35,9 +32,6 @@ public enum HttpMethod {
          
       case .delete:
          request.httpMethod = "DELETE"
-
-      case .upload:
-         request.httpMethod = "POST"
       }
    }
 }

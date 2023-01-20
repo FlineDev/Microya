@@ -222,14 +222,8 @@ open class ApiProvider<EndpointType: Endpoint> {
       else {
          // this is the main logic, making the actual call
          do {
-            #warning("🧑‍💻 TODO: add upload method to other perform methods, too")
-            if case let .upload(data) = endpoint.method {
-               let (data, response) = try await URLSession.shared.upload(for: request, from: data)
-               return handleResponse(data: data, response: response, error: nil)
-            } else {
-               let (data, response) = try await URLSession.shared.data(for: request)
-               return handleResponse(data: data, response: response, error: nil)
-            }
+            let (data, response) = try await URLSession.shared.data(for: request)
+            return handleResponse(data: data, response: response, error: nil)
          }
          catch {
             return handleResponse(data: nil, response: nil, error: error)
