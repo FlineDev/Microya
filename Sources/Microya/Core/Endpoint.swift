@@ -131,16 +131,16 @@ extension Endpoint {
       return .patch(body: encodedData)
    }
    
-   public func post(dictToWwwUrlEncode: [String: String]) -> HttpMethod {
-      let bodyString = dictToWwwUrlEncode
-         .map { "\($0.key)=\($0.value.urlEncoded)" }
+   public func post(queryItemsToWwwUrlEncode: [URLQueryItem]) -> HttpMethod {
+      let bodyString = queryItemsToWwwUrlEncode
+         .map { "\($0.name)=\(($0.value ?? "").urlEncoded)" }
          .joined(separator: "&")
       return .post(body: bodyString.data(using: .utf8)!)
    }
    
-   public func patch(dictToWwwUrlEncode: [String: String]) -> HttpMethod {
-      let bodyString = dictToWwwUrlEncode
-         .map { "\($0.key)=\($0.value.urlEncoded)" }
+   public func patch(queryItemsToWwwUrlEncode: [URLQueryItem]) -> HttpMethod {
+      let bodyString = queryItemsToWwwUrlEncode
+         .map { "\($0.name)=\(($0.value ?? "").urlEncoded)" }
          .joined(separator: "&")
       return .patch(body: bodyString.data(using: .utf8)!)
    }
