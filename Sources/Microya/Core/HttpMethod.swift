@@ -17,7 +17,7 @@ public enum HttpMethod {
    /// The DELETE HTTP method.
    case delete
    
-   func apply(to request: inout URLRequest) {
+   public func apply(to request: inout URLRequest) {
       switch self {
       case .get:
          request.httpMethod = "GET"

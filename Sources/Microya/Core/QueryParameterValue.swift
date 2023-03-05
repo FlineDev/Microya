@@ -8,7 +8,7 @@ public enum QueryParameterValue {
    /// The array string entry.
    case array([String])
    
-   var values: [String] {
+  public var values: [String] {
       switch self {
       case let .string(value):
          return [value]

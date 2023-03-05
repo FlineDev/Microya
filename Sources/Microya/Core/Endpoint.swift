@@ -34,7 +34,7 @@ public protocol Endpoint {
 }
 
 extension Endpoint {
-   func buildRequest(baseUrl: URL) -> URLRequest {
+  public func buildRequest(baseUrl: URL) -> URLRequest {
       var request = URLRequest(url: buildRequestUrl(baseUrl: baseUrl))
       
       method.apply(to: &request)
@@ -46,7 +46,7 @@ extension Endpoint {
       return request
    }
    
-   private func buildRequestUrl(baseUrl: URL) -> URL {
+  public func buildRequestUrl(baseUrl: URL) -> URL {
       var urlComponents = URLComponents(
          url: baseUrl.appendingPathComponent(subpath),
          resolvingAgainstBaseURL: false
