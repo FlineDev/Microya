@@ -350,7 +350,7 @@ open class ApiProvider<EndpointType: Endpoint> {
       return result!
    }
    
-   private func decodeBody<ResultType: Decodable>(
+   public func decodeBody<ResultType: Decodable>(
       from urlSessionResult: URLSessionResult,
       endpoint: EndpointType
    ) -> TypedResult<ResultType> {
@@ -368,11 +368,11 @@ open class ApiProvider<EndpointType: Endpoint> {
       }
    }
    
-   private func mapToClientErrorType(error: Error) -> ApiError<EndpointType.ClientErrorType> {
+   public func mapToClientErrorType(error: Error) -> ApiError<EndpointType.ClientErrorType> {
       .noResponseReceived(error: error)
    }
    
-   private func decodeBodyToResultType<ResultType: Decodable>(
+   public func decodeBodyToResultType<ResultType: Decodable>(
       data: Data?,
       response: URLResponse?,
       endpoint: EndpointType
