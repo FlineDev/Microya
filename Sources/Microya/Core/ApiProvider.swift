@@ -22,20 +22,15 @@ open class ApiProvider<EndpointType: Endpoint> {
   /// The mocking behavior of the provider. Set this to receive mocked data in your tests. Use `nil` to make actual requests to your server (the default).
   public let mockingBehavior: MockingBehavior<EndpointType>?
 
-  /// The session used for making API requests.
-  public let urlSession: URLSession
-
   /// Initializes a new API provider with the given plugins applied to every request.
   public init(
     baseUrl: URL,
     plugins: [Plugin<EndpointType>] = [],
-    mockingBehavior: MockingBehavior<EndpointType>? = nil,
-    urlSession: URLSession = .shared
+    mockingBehavior: MockingBehavior<EndpointType>? = nil
   ) {
     self.baseUrl = baseUrl
     self.plugins = plugins
     self.mockingBehavior = mockingBehavior
-    self.urlSession = urlSession
   }
 
   /// Returns a publisher which performs a request to the server when new values are requested.
@@ -103,7 +98,7 @@ open class ApiProvider<EndpointType: Endpoint> {
     }
     else {
       // this is the main logic, making the actual call
-      return urlSession.dataTaskPublisher(for: request)
+      return URLSession.shared.dataTaskPublisher(for: request)
         .mapError { (urlError) -> ApiError<EndpointType.ClientErrorType> in
           urlSessionResult = (data: nil, response: nil, error: urlError)
           let apiError: ApiError<EndpointType.ClientErrorType> = self.mapToClientErrorType(error: urlError)
@@ -212,7 +207,7 @@ open class ApiProvider<EndpointType: Endpoint> {
     else {
       // this is the main logic, making the actual call
       do {
-        let (data, response) = try await urlSession.data(for: request)
+        let (data, response) = try await URLSession.shared.data(for: request)
         return handleResponse(data: data, response: response, error: nil)
       }
       catch {
@@ -304,7 +299,7 @@ open class ApiProvider<EndpointType: Endpoint> {
     }
     else {
       // this is the main logic, making the actual call
-      urlSession.dataTask(with: request, completionHandler: handleDataTaskCompletion).resume()
+      URLSession.shared.dataTask(with: request, completionHandler: handleDataTaskCompletion).resume()
     }
   }
 
