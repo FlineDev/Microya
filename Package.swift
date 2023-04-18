@@ -1,5 +1,15 @@
-// swift-tools-version:5.4
+// swift-tools-version:5.8
 import PackageDescription
+
+let swiftSettings: [SwiftSetting] = [
+   .enableUpcomingFeature("BareSlashRegexLiterals"),
+   .enableUpcomingFeature("ConciseMagicFile"),
+   .enableUpcomingFeature("ExistentialAny"),
+   .enableUpcomingFeature("ForwardTrailingClosures"),
+   .enableUpcomingFeature("ImplicitOpenExistentials"),
+   .enableUpcomingFeature("StrictConcurrency"),
+   .unsafeFlags(["-warn-concurrency", "-enable-actor-data-race-checks"]),
+]
 
 let package = Package(
    name: "Microya",
@@ -16,11 +26,13 @@ let package = Package(
          name: "Microya",
          dependencies: [
             .product(name: "CombineSchedulers", package: "combine-schedulers")
-         ]
+         ],
+         swiftSettings: swiftSettings
       ),
       .testTarget(
          name: "MicroyaTests",
-         dependencies: ["Microya"]
+         dependencies: ["Microya"],
+         swiftSettings: swiftSettings
       ),
    ]
 )

@@ -5,7 +5,7 @@ import FoundationNetworking
 
 /// A HTTP response status code.
 /// Supports all the codes from http://www.iana.org/assignments/http-status-codes.
-public enum HttpStatus: Equatable {
+public enum HttpStatus: Equatable, Sendable {
    // MARK: 1xx
    /// 100
    case `continue`

@@ -4,7 +4,7 @@ import FoundationNetworking
 #endif
 
 /// Helper type for request where no body is expected as part of the response.
-public struct EmptyBodyResponse: Decodable, Equatable { /* no body needed */  }
+public struct EmptyBodyResponse: Decodable, Equatable, Sendable { /* no body needed */  }
 
 /// The protocol which defines the structure of an API endpoint.
 public protocol Endpoint {

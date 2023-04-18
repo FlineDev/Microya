@@ -1,7 +1,7 @@
 import Foundation
 
 /// The value of a query parameter. Supports initialization via string & array literals.
-public enum QueryParameterValue {
+public enum QueryParameterValue: Sendable {
    /// The singular string entry.
    case string(String)
    

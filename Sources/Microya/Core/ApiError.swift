@@ -4,7 +4,7 @@ import FoundationNetworking
 #endif
 
 /// Collection of all possible exception that can be thrown when using `JsonApi`.
-public enum ApiError<ClientErrorType: Decodable>: Error {
+public enum ApiError<ClientErrorType: Decodable>: Error, Sendable {
    /// The request was sent, but the server response was not received. Typically an issue with the internet connection.
    case noResponseReceived(error: Error?)
    
