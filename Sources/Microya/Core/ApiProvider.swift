@@ -443,3 +443,95 @@ open class ApiProvider<EndpointType: Endpoint> {
       }
    }
 }
+
+// Handling multipart requests with two ways (publishers, async&await)
+extension ApiProvider {
+  public func multipartPublisher<ResultType: Decodable>(
+    media: [MultipartMediaModel],
+    params: [String: String]?,
+    on endpoint: EndpointType,
+    decodeBodyTo: ResultType.Type
+  ) -> AnyPublisher<ResultType, ApiError<EndpointType.ClientErrorType>> {
+    var urlRequest = endpoint.buildMultipartRequest(baseUrl: baseUrl, media: media, params: params)
+    for plugin in plugins {
+       plugin.modifyRequest(&urlRequest, endpoint: endpoint)
+    }
+    var urlSessionResult: URLSessionResult?
+    return self.urlSession.dataTaskPublisher(for: urlRequest)
+       .mapError { (urlError) -> ApiError<EndpointType.ClientErrorType> in
+          urlSessionResult = (data: nil, response: nil, error: urlError)
+          let apiError: ApiError<EndpointType.ClientErrorType> = self.mapToClientErrorType(error: urlError)
+          let typedResult: TypedResult<ResultType> = .failure(apiError)
+          
+          for plugin in self.plugins {
+             plugin.didPerformRequest(
+                urlSessionResult: urlSessionResult!,
+                typedResult: typedResult,
+                endpoint: endpoint
+             )
+          }
+          
+          return apiError
+       }
+       .tryMap { (data: Data, response: URLResponse) -> ResultType in
+          urlSessionResult = (data: data, response: response, error: nil)
+          let resultType: ResultType = try self.decodeBodyToResultType(
+             data: data,
+             response: response,
+             endpoint: endpoint
+          )
+          
+          for plugin in self.plugins {
+             plugin.didPerformRequest(
+                urlSessionResult: urlSessionResult!,
+                typedResult: .success(resultType),
+                endpoint: endpoint
+             )
+          }
+          
+          return resultType
+       }
+       .mapError { error in
+          let apiError = error as! ApiError<EndpointType.ClientErrorType>
+          let urlSessionResult: URLSessionResult = urlSessionResult ?? (data: nil, response: nil, error: nil)
+          let typedResult: TypedResult<ResultType> = .failure(apiError)
+          
+          for plugin in self.plugins {
+             plugin.didPerformRequest(urlSessionResult: urlSessionResult, typedResult: typedResult, endpoint: endpoint)
+          }
+          
+          return apiError
+       }
+       .eraseToAnyPublisher()
+  }
+
+  public func multipartPublisher<ResultType: Decodable>(
+    media: [MultipartMediaModel],
+    params: [String: String]?,
+    on endpoint: EndpointType,
+    decodeBodyTo: ResultType.Type
+  ) async -> TypedResult<ResultType> {
+    var urlRequest = endpoint.buildMultipartRequest(baseUrl: baseUrl, media: media, params: params)
+    for plugin in plugins {
+       plugin.modifyRequest(&urlRequest, endpoint: endpoint)
+    }
+    for plugin in plugins {
+       plugin.willPerformRequest(urlRequest, endpoint: endpoint)
+    }
+    func handleResponse<ResultType: Decodable>(on endpoint: EndpointType, data: Data?, response: URLResponse?, error: Error?) -> TypedResult<ResultType> {
+       let urlSessionResult: URLSessionResult = (data: data, response: response, error: error)
+       let typedResult: TypedResult<ResultType> = self.decodeBody(from: urlSessionResult, endpoint: endpoint)
+       
+       for plugin in self.plugins {
+          plugin.didPerformRequest(urlSessionResult: urlSessionResult, typedResult: typedResult, endpoint: endpoint)
+       }
+       return typedResult
+    }
+    do {
+      let (data, response) = try await URLSession.shared.data(for: urlRequest)
+      return handleResponse(on: endpoint, data: data, response: response, error: nil)
+    } catch {
+      return handleResponse(on: endpoint, data: nil, response: nil, error: error)
+    }
+  }
+}
