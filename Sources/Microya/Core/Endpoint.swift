@@ -63,6 +63,37 @@ extension Endpoint {
       
       return urlComponents.url!
    }
+  
+  func buildMultipartRequest(baseUrl: URL, media: [MultipartMediaModel], params: [String: String]?) -> URLRequest {
+    var request: URLRequest = buildRequest(baseUrl: baseUrl)
+    let boundary = "Boundary-\(NSUUID().uuidString)"
+    request.setValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
+    request.httpMethod = "POST"
+    let dataBody = createDataBody(withParameters: params, media: media, boundary: boundary)
+    request.httpBody = dataBody
+    return request
+  }
+
+  private func createDataBody(withParameters params: [String: String]?, media: [MultipartMediaModel], boundary: String) -> Data {
+    let lineBreak = "\r\n"
+    var body = Data()
+    if let parameters = params {
+      for (key, value) in parameters {
+        body.append("--\(boundary + lineBreak)")
+        body.append("Content-Disposition: form-data; name=\"\(key)\"\(lineBreak + lineBreak)")
+        body.append("\(value + lineBreak)")
+      }
+    }
+    for item in media {
+      body.append("--\(boundary + lineBreak)")
+      body.append("Content-Disposition: form-data; name=\"\(item.key)\"; filename=\"\(item.fileName)\"\(lineBreak)")
+      body.append("Content-Type: \(item.mimeType + lineBreak + lineBreak)")
+      body.append(item.data)
+      body.append(lineBreak)
+    }
+    body.append("--\(boundary)--\(lineBreak)")
+    return body
+  }
 }
 
 // Provide sensible default to effectively make some of the protocol requirements optional.
