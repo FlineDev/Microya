@@ -11,7 +11,7 @@ open class ApiProvider<EndpointType: Endpoint> {
    public typealias TypedResult<T: Decodable> = Result<T, ApiError<EndpointType.ClientErrorType>>
    
    /// The lower level Result structure received directly from the native `URLSession` data task calls.
-   public typealias URLSessionResult = (data: Data?, response: URLResponse?, error: Error?)
+   public typealias URLSessionResult = (data: Data?, response: URLResponse?, error: (any Error)?)
    
    /// The plugins to apply per request.
    public let plugins: [Plugin<EndpointType>]
@@ -188,7 +188,7 @@ open class ApiProvider<EndpointType: Endpoint> {
          plugin.willPerformRequest(request, endpoint: endpoint)
       }
       
-      func handleResponse(data: Data?, response: URLResponse?, error: Error?) -> TypedResult<ResultType> {
+      func handleResponse(data: Data?, response: URLResponse?, error: (any Error)?) -> TypedResult<ResultType> {
          let urlSessionResult: URLSessionResult = (data: data, response: response, error: error)
          let typedResult: TypedResult<ResultType> = self.decodeBody(from: urlSessionResult, endpoint: endpoint)
          
@@ -290,7 +290,7 @@ open class ApiProvider<EndpointType: Endpoint> {
          plugin.willPerformRequest(request, endpoint: endpoint)
       }
       
-      func handleDataTaskCompletion(data: Data?, response: URLResponse?, error: Error?) {
+      func handleDataTaskCompletion(data: Data?, response: URLResponse?, error: (any Error)?) {
          let urlSessionResult: URLSessionResult = (data: data, response: response, error: error)
          let typedResult: TypedResult<ResultType> = self.decodeBody(from: urlSessionResult, endpoint: endpoint)
          
@@ -373,7 +373,7 @@ open class ApiProvider<EndpointType: Endpoint> {
       }
    }
    
-   private func mapToClientErrorType(error: Error) -> ApiError<EndpointType.ClientErrorType> {
+   private func mapToClientErrorType(error: any Error) -> ApiError<EndpointType.ClientErrorType> {
       .noResponseReceived(error: error)
    }
    
@@ -518,7 +518,12 @@ extension ApiProvider {
     for plugin in plugins {
        plugin.willPerformRequest(urlRequest, endpoint: endpoint)
     }
-    func handleResponse<ResultType: Decodable>(on endpoint: EndpointType, data: Data?, response: URLResponse?, error: Error?) -> TypedResult<ResultType> {
+     func handleResponse<ResultType: Decodable>(
+        on endpoint: EndpointType,
+        data: Data?,
+        response: URLResponse?,
+        error: (any Error)?
+     ) -> TypedResult<ResultType> {
        let urlSessionResult: URLSessionResult = (data: data, response: response, error: error)
        let typedResult: TypedResult<ResultType> = self.decodeBody(from: urlSessionResult, endpoint: endpoint)
        

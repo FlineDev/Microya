@@ -6,13 +6,13 @@ import FoundationNetworking
 /// Collection of all possible exception that can be thrown when using `JsonApi`.
 public enum ApiError<ClientErrorType: Decodable>: Error, Sendable {
    /// The request was sent, but the server response was not received. Typically an issue with the internet connection.
-   case noResponseReceived(error: Error?)
+   case noResponseReceived(error: (any Error)?)
    
    /// The request was sent and the server responded, but the response did not include any body although a body was requested.
    case noDataInResponse(statusCode: Int)
    
    /// The request was sent and the server responded with a body, but the conversion of the body to the given type failed.
-   case responseDataConversionFailed(type: String, error: Error)
+   case responseDataConversionFailed(type: String, error: any Error)
    
    /// The request was sent and the server responded, but the server reports that something is wrong with the request.
    case clientError(statusCode: Int, clientError: ClientErrorType?)

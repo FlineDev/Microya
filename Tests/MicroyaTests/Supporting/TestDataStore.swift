@@ -6,7 +6,7 @@ import FoundationNetworking
 
 enum TestDataStore {
    static var request: URLRequest?
-   static var urlSessionResult: (data: Data?, response: URLResponse?, error: Error?)?
+   static var urlSessionResult: (data: Data?, response: URLResponse?, error: (any Error)?)?
    static var showingProgressIndicator: Bool = false
    
    static func reset() {
