@@ -19,7 +19,7 @@ let package = Package(
    ],
    dependencies: [
       // ⏰ A few schedulers that make working with Combine more testable and more versatile.
-      .package(url: "https://github.com/pointfreeco/combine-schedulers.git", from: "0.5.0")
+      .package(url: "https://github.com/pointfreeco/combine-schedulers.git", from: "1.0.0")
    ],
    targets: [
       .target(
